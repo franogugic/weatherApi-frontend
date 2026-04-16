@@ -1,9 +1,12 @@
+import { DashboardPage } from "./pages/DashboardPage"
+import { AppLayout } from "./shared/ui/app-layout/AppLayout"
+
 function App() {
 
   return (
-    <div>
-      <p className="text-6xl text-red-500">test</p>
-    </div>
+    <AppLayout >
+      <DashboardPage />
+    </AppLayout>
   )
 }
 
