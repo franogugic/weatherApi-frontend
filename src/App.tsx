@@ -1,4 +1,4 @@
-import { DashboardPage } from "./pages/DashboardPage"
+import { DashboardPage } from "./pages/dashboard/DashboardPage"
 import { AppLayout } from "./shared/ui/app-layout/AppLayout"
 
 function App() {
