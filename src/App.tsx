@@ -1,12 +1,15 @@
+import { LocationProvider } from "@/features/selected-location/model/location-context"
 import { DashboardPage } from "./pages/dashboard/ui/DashboardPage"
 import { AppLayout } from "./shared/ui/app-layout/AppLayout"
 
 function App() {
 
   return (
-    <AppLayout >
-      <DashboardPage />
-    </AppLayout>
+    <LocationProvider>
+      <AppLayout >
+        <DashboardPage />
+      </AppLayout>
+    </LocationProvider>
   )
 }
 

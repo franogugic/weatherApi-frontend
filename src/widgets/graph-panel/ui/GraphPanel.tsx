@@ -81,7 +81,7 @@ function getChartItems(forecast: WeatherForecastItem[]) {
   })
 }
 
-// Formatira datum za oznake dana na x-osi i prvi dan prikazuje kao "Today".
+// racuna dan za svaki datum
 function getDayLabel(dateString: string, firstDateString?: string) {
   const date = new Date(dateString)
   const firstDate = firstDateString ? new Date(firstDateString) : null
@@ -100,12 +100,11 @@ function getDayLabel(dateString: string, firstDateString?: string) {
   })
 }
 
-// Pronalazi srednji indeks svake grupe dana kako bi se naziv dana prikazao približno na sredini.
+// grupira indexe datuma po danima  
 function getDayMidpointIndexes(labels: string[]) {
-  //za dane
   const midpoints = new Map<number, string>()
-  //indexi dana po datumu
   const groupedIndexes = new Map<string, number[]>()
+
 
   labels.forEach((label, index) => {
     const dayKey = new Date(label).toDateString()
@@ -126,7 +125,7 @@ function getDayMidpointIndexes(labels: string[]) {
   return midpoints
 }
 
-// Slaže puni datum i vrijeme koji se prikazuju u tooltipu kad korisnik hovera graf.
+// pretvra string u datum
 function getFullTooltipLabel(dateString: string) {
   return new Date(dateString).toLocaleString("en-GB", {
     weekday: "short",
@@ -138,7 +137,7 @@ function getFullTooltipLabel(dateString: string) {
   })
 }
 
-// Kreira vertikalni gradient linije tako da niže vrijednosti ostanu tamnije, a više svjetlije.
+// samo vizualno za gradient da bude
 function getMetricGradient(
   context: ScriptableContext<"line">,
   startColor: string,
@@ -158,7 +157,7 @@ function getMetricGradient(
   return gradient
 }
 
-// Kreira ili dohvaća prilagođeni tooltip element koji renderiramo izvan Chart.js canvasa.
+// prikaza pdoataka za svaku tocnku na grafu
 function getOrCreateTooltip(chart: ChartJS) {
   const parent = chart.canvas.parentElement
 
@@ -190,7 +189,7 @@ function getOrCreateTooltip(chart: ChartJS) {
   return tooltipEl
 }
 
-// Zamjenjuje zadani Chart.js tooltip našim tooltipom s custom izgledom i sadržajem.
+// minja zadani Chart.js tooltip nasim tooltipomom.
 function externalTooltipHandler(
   context: any,
   labels: string[],
@@ -229,7 +228,7 @@ function externalTooltipHandler(
   tooltipEl.style.top = `${offsetTop + tooltip.caretY}px`
 }
 
-// Priprema filtrirane podatke prognoze i renderira linijski graf pregleda temperature.
+// main metoda
 export function GraphPanel({ forecast }: GraphPanelProps) {
   const [metric, setMetric] = useState<GraphMetric>("temperature")
   const chartItems = getChartItems(forecast)
@@ -350,7 +349,7 @@ export function GraphPanel({ forecast }: GraphPanelProps) {
                   },
                 },
                 grid: {
-                  color: (context) => {
+                  color: (context: any) => {
                     if (
                       metric === "precipitation" &&
                       Number(context.tick.value) === maxY

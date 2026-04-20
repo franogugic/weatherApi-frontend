@@ -5,25 +5,27 @@ import type {
 } from "@/entities/weather/model/types"
 import { WeatherStat } from "@/entities/weather/ui/WeatherStat"
 import { formatShortDate } from "@/shared/lib/format-date"
+import { useLocation } from "@/features/selected-location/model/location-context"
 
 type CurrentForecastPanelProps = {
   forecast: WeatherForecastItem
   meta: WeatherMeta
 }
 
+
 export function CurrentForecastPanel({
   forecast,
   meta,
 }: CurrentForecastPanelProps) {
   const formattedDate = formatShortDate(new Date())
-
+  const locationName =  useLocation().selectedLocation.name
   return (
     <div className="row-span-2 bg-linear-to-b flex flex-col justify-between from-lightBlue to-blue rounded-4xl p-6">
       <div className="text-[14px]">
         <p>Today, {formattedDate}</p>
         <div className="flex cursor-pointer items-center gap-1 text-[14px] font-bold">
           <MapPin className="w-6" />
-          <p>Sydney &#9662;</p>
+          <p>{locationName} &#9662;</p>
         </div>
       </div>
 
