@@ -10,7 +10,6 @@ body {
   color: white;
 }
 
-
 @theme {
   --color-div: #303135;
   --color-subtext: rgba(255, 255, 255, 0.8);
