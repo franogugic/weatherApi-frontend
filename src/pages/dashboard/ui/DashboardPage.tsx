@@ -10,7 +10,7 @@ export function DashboardPage() {
   const data = useWeatherForecast(102)
 
   return (
-    <div className="grid h-full grid-cols-[29fr_33fr_38fr] grid-rows-[8fr_45fr_47fr] gap-5">
+    <div className="grid h-full min-h-0 grid-cols-[29fr_33fr_38fr] grid-rows-[8fr_45fr_47fr] gap-5">
       <SettingsPanel />
       {data?.items?.[0] && data?.meta ? (
         <CurrentForecastPanel forecast={data.items[0]} meta={data.meta} />
@@ -18,7 +18,7 @@ export function DashboardPage() {
       <SearchPanel />
       <NextHourlysPanel forecast={data?.items.slice(0,12) ?? []} />
       <MapPanel />
-      <GraphPanel />
+      <GraphPanel forecast={data?.items ?? []} />
     </div>
   )
 }
