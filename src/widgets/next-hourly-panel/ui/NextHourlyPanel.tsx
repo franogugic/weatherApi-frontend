@@ -1,10 +1,15 @@
-import type { WeatherForecastItem } from "@/entities/weather/model/types"
+import type { WeatherForecastItem, WeatherMeta } from "@/entities/weather/model/types"
+import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
+import { useTimezone } from "@/features/selected-timezone/model/timezone-context"
 
 type NextHourlyPanelProps = {
-  forecast: WeatherForecastItem[]
+  forecast: WeatherForecastItem[],
+  meta: WeatherMeta;
+  
 }
 
-export function NextHourlysPanel( {forecast}: NextHourlyPanelProps) {
+export function NextHourlysPanel( {forecast, meta}: NextHourlyPanelProps) {
+  const { selectedTimezone } = useTimezone()
   
   return (
   <div className="row-span-2 bg-div rounded-4xl p-6">
@@ -21,13 +26,13 @@ export function NextHourlysPanel( {forecast}: NextHourlyPanelProps) {
 
     {forecast.map((item, index) => (
       <div key={index} className="flex items-center justify-between rounded-full mb-1 px-2">
-        <p className="font-light">{getHourFromForecastTime(item.forecastTime)}</p>
+        <p className="font-light">{getHourFromForecastTime(item.forecastTime, selectedTimezone)}</p>
         <img
           src={`/${item.weatherSymbol}.svg`}
           alt="weather icon"
           className="w-10"
         />
-        <p className="font-light">{item.airTemperature}°</p>
+        <p className="font-light">{item.airTemperature} {meta.air_temperature?.unitDisplayName}</p>
       </div>
     ))}
 
@@ -39,9 +44,10 @@ export function NextHourlysPanel( {forecast}: NextHourlyPanelProps) {
 }
 
 
-function getHourFromForecastTime(dateString: string) {
-  return new Date(dateString).toLocaleTimeString("en-GB", {
+function getHourFromForecastTime(dateString: string, timeZone: string) {
+  return parseForecastDate(dateString).toLocaleTimeString("en-GB", {
     hour: "2-digit",
     hour12: false,
+    timeZone,
   })
 }

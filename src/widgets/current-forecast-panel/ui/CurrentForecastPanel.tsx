@@ -6,6 +6,7 @@ import type {
 import { WeatherStat } from "@/entities/weather/ui/WeatherStat"
 import { formatShortDate } from "@/shared/lib/format-date"
 import { useLocation } from "@/features/selected-location/model/location-context"
+import { useTimezone } from "@/features/selected-timezone/model/timezone-context"
 
 type CurrentForecastPanelProps = {
   forecast: WeatherForecastItem
@@ -17,7 +18,8 @@ export function CurrentForecastPanel({
   forecast,
   meta,
 }: CurrentForecastPanelProps) {
-  const formattedDate = formatShortDate(new Date())
+  const { selectedTimezone } = useTimezone()
+  const formattedDate = formatShortDate(new Date(), selectedTimezone)
   const locationName =  useLocation().selectedLocation.name
   return (
     <div className="row-span-2 bg-linear-to-b flex flex-col justify-between from-lightBlue to-blue rounded-4xl p-6">
@@ -30,9 +32,14 @@ export function CurrentForecastPanel({
       </div>
 
       <div className="mx-auto text-center">
-        <p className="translate-y-6 text-6xl font-bold">
-          {forecast.airTemperature}
-        </p>
+        <div className="translate-y-5 text-6xl font-bold flex gap-1">
+          <p>
+            {forecast.airTemperature} 
+          </p>
+          <p className="text-4xl font-semibold">
+            {meta.air_temperature?.unitDisplayName}
+          </p>
+        </div>
         <img
           src={`/${forecast.weatherSymbol}.svg`}
           alt="weather icon"
@@ -51,7 +58,7 @@ export function CurrentForecastPanel({
         <WeatherStat
           icon={<Droplets size={34} />}
           value={forecast.humidity}
-          unit={meta.humidity?.unitDisplayName}
+          unit={meta.relative_humidity?.unitDisplayName}
           label="Humidity"
           showDivider
         />

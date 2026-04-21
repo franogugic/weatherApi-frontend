@@ -1,5 +1,7 @@
 import { useState } from "react"
-import type { WeatherForecastItem } from "@/entities/weather/model/types"
+import type { WeatherForecastItem, WeatherMeta } from "@/entities/weather/model/types"
+import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
+import { useTimezone } from "@/features/selected-timezone/model/timezone-context"
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -23,6 +25,7 @@ ChartJS.register(
 
 type GraphPanelProps = {
   forecast: WeatherForecastItem[]
+  meta: WeatherMeta
 }
 
 type GraphMetric = "temperature" | "precipitation" | "wind"
@@ -30,8 +33,8 @@ type GraphMetric = "temperature" | "precipitation" | "wind"
 const metricConfig = {
   temperature: {
     label: "Temperature",
-    unit: "°",
-    tickUnit: "°",
+    metaKey: "air_temperature",
+    fallbackUnit: "°",
     minValue: undefined,
     startColor: "#4974ef",
     endColor: "#6fbcff",
@@ -39,8 +42,8 @@ const metricConfig = {
   },
   precipitation: {
     label: "Precipitation",
-    unit: " mm",
-    tickUnit: " mm",
+    metaKey: "precipitation_amount",
+    fallbackUnit: "mm",
     minValue: 0,
     startColor: "#7c3aed",
     endColor: "#c084fc",
@@ -48,8 +51,8 @@ const metricConfig = {
   },
   wind: {
     label: "Wind",
-    unit: " m/s",
-    tickUnit: " m/s",
+    metaKey: "wind_speed",
+    fallbackUnit: "m/s",
     minValue: 0,
     startColor: "#15803d",
     endColor: "#4ade80",
@@ -59,8 +62,8 @@ const metricConfig = {
   GraphMetric,
   {
     label: string
-    unit: string
-    tickUnit: string
+    metaKey: string
+    fallbackUnit: string
     minValue?: number
     startColor: string
     endColor: string
@@ -76,20 +79,20 @@ function getChartItems(forecast: WeatherForecastItem[]) {
   endDate.setHours(23, 59, 59, 999)
 
   return forecast.filter((item) => {
-    const forecastDate = new Date(item.forecastTime)
+    const forecastDate = parseForecastDate(item.forecastTime)
     return forecastDate >= now && forecastDate <= endDate
   })
 }
 
 // racuna dan za svaki datum
-function getDayLabel(dateString: string, firstDateString?: string) {
-  const date = new Date(dateString)
-  const firstDate = firstDateString ? new Date(firstDateString) : null
-  const sameDay =
-    firstDate &&
-    date.getFullYear() === firstDate.getFullYear() &&
-    date.getMonth() === firstDate.getMonth() &&
-    date.getDate() === firstDate.getDate()
+function getDayLabel(dateString: string, timeZone: string, firstDateString?: string) {
+  const date = parseForecastDate(dateString)
+  const firstDate = firstDateString ? parseForecastDate(firstDateString) : null
+  const currentDay = date.toLocaleDateString("en-CA", { timeZone })
+  const firstDay = firstDate
+    ? firstDate.toLocaleDateString("en-CA", { timeZone })
+    : null
+  const sameDay = firstDay && currentDay === firstDay
 
   if (sameDay) {
     return "Today"
@@ -97,17 +100,18 @@ function getDayLabel(dateString: string, firstDateString?: string) {
 
   return date.toLocaleDateString("en-GB", {
     weekday: "long",
+    timeZone,
   })
 }
 
 // grupira indexe datuma po danima  
-function getDayMidpointIndexes(labels: string[]) {
+function getDayMidpointIndexes(labels: string[], timeZone: string) {
   const midpoints = new Map<number, string>()
   const groupedIndexes = new Map<string, number[]>()
 
 
   labels.forEach((label, index) => {
-    const dayKey = new Date(label).toDateString()
+    const dayKey = parseForecastDate(label).toLocaleDateString("en-CA", { timeZone })
     const indexes = groupedIndexes.get(dayKey) ?? []
     indexes.push(index)
     groupedIndexes.set(dayKey, indexes)
@@ -118,7 +122,7 @@ function getDayMidpointIndexes(labels: string[]) {
     const label = labels[midpointIndex]
 
     if (label) {
-      midpoints.set(midpointIndex, getDayLabel(label, labels[0]))
+      midpoints.set(midpointIndex, getDayLabel(label, timeZone, labels[0]))
     }
   })
 
@@ -126,14 +130,15 @@ function getDayMidpointIndexes(labels: string[]) {
 }
 
 // pretvra string u datum
-function getFullTooltipLabel(dateString: string) {
-  return new Date(dateString).toLocaleString("en-GB", {
+function getFullTooltipLabel(dateString: string, timeZone: string) {
+  return parseForecastDate(dateString).toLocaleString("en-GB", {
     weekday: "short",
     day: "2-digit",
     month: "short",
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
+    timeZone,
   })
 }
 
@@ -194,6 +199,8 @@ function externalTooltipHandler(
   context: any,
   labels: string[],
   metric: GraphMetric,
+  unit: string,
+  timeZone: string,
 ) {
   const { chart, tooltip } = context
   const tooltipEl = getOrCreateTooltip(chart)
@@ -215,10 +222,10 @@ function externalTooltipHandler(
 
   tooltipEl.innerHTML = `
     <div style="font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.82); margin-bottom: 6px; white-space: nowrap;">
-      ${forecastTime ? getFullTooltipLabel(forecastTime) : ""}
+      ${forecastTime ? getFullTooltipLabel(forecastTime, timeZone) : ""}
     </div>
     <div style="font-size: 28px; font-weight: 700; line-height: 1; color: white; text-align: center;">
-      ${value ? `${value}${config.unit}` : ""}
+      ${value ? `${value}${unit}` : ""}
     </div>
   `
 
@@ -229,17 +236,19 @@ function externalTooltipHandler(
 }
 
 // main metoda
-export function GraphPanel({ forecast }: GraphPanelProps) {
+export function GraphPanel({ forecast, meta }: GraphPanelProps) {
   const [metric, setMetric] = useState<GraphMetric>("temperature")
+  const { selectedTimezone } = useTimezone()
   const chartItems = getChartItems(forecast)
   if (chartItems.length === 0) {
     return <div className="col-span-2 bg-div rounded-4xl p-6" />
   }
 
   const config = metricConfig[metric]
+  const unit = meta[config.metaKey]?.unitDisplayName ?? config.fallbackUnit
   const labels = chartItems.map((item) => item.forecastTime)
   const values = chartItems.map((item) => config.getValue(item))
-  const dayMidpoints = getDayMidpointIndexes(labels)
+  const dayMidpoints = getDayMidpointIndexes(labels, selectedTimezone)
   const minValue = Math.min(...values)
   const maxValue = Math.max(...values)
   const minY = Math.max(config.minValue ?? Number.NEGATIVE_INFINITY, Math.floor(minValue - 3))
@@ -314,7 +323,8 @@ export function GraphPanel({ forecast }: GraphPanelProps) {
               },
               tooltip: {
                 enabled: false,
-                external: (context) => externalTooltipHandler(context, labels, metric),
+                external: (context) =>
+                  externalTooltipHandler(context, labels, metric, unit, selectedTimezone),
               },
             },
             scales: {
@@ -345,7 +355,7 @@ export function GraphPanel({ forecast }: GraphPanelProps) {
                       return ""
                     }
 
-                    return `${value}${config.tickUnit}`
+                    return `${value}${unit}`
                   },
                 },
                 grid: {

@@ -8,7 +8,7 @@ export function useWeatherForecast(locationId: number) {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5001/api/WeatherForecast?locationId=${locationId}`,
+          `http://localhost:5000/api/WeatherForecast?locationId=${locationId}`,
         )
         const jsonData = (await response.json()) as WeatherForecastResponse
         setData(jsonData)
