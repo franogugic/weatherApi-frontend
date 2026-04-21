@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #27282d 0%, #191519 100%);
+  color: white;
+}
+
+@theme {
+  --color-div: #303135;
+  --color-subtext: rgba(255, 255, 255, 0.8);
+  --color-blue: #4974ef;
+  --color-lightBlue: #6fbcff;
+}
