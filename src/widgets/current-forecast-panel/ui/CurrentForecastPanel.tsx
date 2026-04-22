@@ -22,7 +22,7 @@ export function CurrentForecastPanel({
   const formattedDate = formatShortDate(new Date(), selectedTimezone)
   const locationName =  useLocation().selectedLocation.name
   return (
-    <div className="row-span-2 bg-linear-to-b flex flex-col justify-between from-lightBlue to-blue rounded-4xl p-6">
+    <div className="row-span-2 flex flex-col justify-between bg-linear-to-b from-lightBlue to-blue rounded-4xl p-6">
       <div className="text-[14px]">
         <p>Today, {formattedDate}</p>
         <div className="flex cursor-pointer items-center gap-1 text-[14px] font-bold">

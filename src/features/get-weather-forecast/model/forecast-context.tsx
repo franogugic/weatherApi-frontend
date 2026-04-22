@@ -34,7 +34,7 @@ export function ForecastProvider({ children }: React.PropsWithChildren) {
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:5000/api/WeatherForecast?locationId=${selectedLocation.id}`,
+                    `http://localhost:5000/api/WeatherForecast?locationId=${selectedLocation.id}&days=10`,
                 )
                 const jsonData = (await response.json()) as WeatherForecastResponse
                 setForecast({
