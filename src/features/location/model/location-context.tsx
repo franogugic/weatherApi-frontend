@@ -12,6 +12,7 @@ import { useLocations } from "./useLocations"
 export type LocationContextType = {
   selectedLocation: Location
   locations: Location[]
+  isLoading: boolean
   setSelectedLocation: (location: Location) => void
 }
 
@@ -36,7 +37,7 @@ function getInitialLocation() {
 
 export function LocationProvider({ children }: PropsWithChildren) {
   const [selectedLocation, setSelectedLocation] = useState<Location>(getInitialLocation)
-  const locations = useLocations()
+  const { locations, isLoading } = useLocations()
 
   useEffect(() => {
     localStorage.setItem(
@@ -49,6 +50,7 @@ export function LocationProvider({ children }: PropsWithChildren) {
     <LocationContext.Provider
       value={{
         locations: locations.length ? locations : [DEFAULT_LOCATION],
+        isLoading,
         selectedLocation,
         setSelectedLocation,
       }}

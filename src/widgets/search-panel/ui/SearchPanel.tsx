@@ -3,7 +3,7 @@ import { Search } from "lucide-react"
 import { useEffect, useState } from "react"
 
 export function SearchPanel() {
-  const { locations, selectedLocation, setSelectedLocation } = useLocation()
+  const { isLoading, locations, selectedLocation, setSelectedLocation } = useLocation()
   const [locationValue, setLocationValue] = useState(selectedLocation.name)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
 
@@ -55,6 +55,7 @@ export function SearchPanel() {
         <input
           type="text"
           placeholder="Search City..."
+          disabled={isLoading}
           value={locationValue}
           className="w-full bg-transparent border-none font-extralight focus:outline-none"
           onChange={(e) => setLocationValue(e.target.value)}
@@ -84,6 +85,10 @@ export function SearchPanel() {
           }}
         />
       </div>
+
+      {isLoading && (
+        <p className="mt-2 text-xs text-white/45">Loading locations...</p>
+      )}
 
       {shouldShowDropdown && (
         <ul className="absolute left-0 right-0 top-[100%] z-10 mt-2 max-h-72 overflow-y-auto rounded-4xl border border-white/15 bg-white/8 p-4 shadow-lg backdrop-blur-xl">

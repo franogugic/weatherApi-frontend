@@ -8,7 +8,21 @@ import { SearchPanel } from "@/widgets/search-panel/ui/SearchPanel"
 import { SettingsPanel } from "@/widgets/settings-panel/ui/SettingsPanel"
 
 export function DashboardPage() {
-  const {forecast, meta} = useForecast()
+  const {forecast, meta, isLoading} = useForecast()
+
+  if (isLoading) {
+    return (
+      <div className="grid h-full min-h-0 grid-cols-[29fr_33fr_38fr] grid-rows-[8fr_45fr_47fr] gap-5">
+        <SearchPanel />
+        <div className="bg-div rounded-4xl" />
+        <SettingsPanel />
+        <div className="row-span-2 rounded-4xl bg-div p-6 text-white/55">Loading forecast...</div>
+        <div className="rounded-4xl bg-div" />
+        <div className="col-span-2 rounded-4xl bg-div p-6 text-white/55">Loading forecast...</div>
+      </div>
+    )
+  }
+
   const now = new Date()
   const forecastItems = forecast ?? []
   const currentForecast =

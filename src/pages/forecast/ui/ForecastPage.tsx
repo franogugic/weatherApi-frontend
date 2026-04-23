@@ -28,7 +28,7 @@ function formatHourLabel(dateString: string, timeZone: string) {
 }
 
 export function ForecastPage() {
-  const { forecast, meta } = useForecast()
+  const { forecast, meta, isLoading } = useForecast()
   const { selectedLocation } = useLocation()
   const { selectedTimezone } = useTimezone()
 
@@ -114,11 +114,24 @@ export function ForecastPage() {
     }
   }
 
+  if (isLoading) {
+    return (
+      <div className="flex h-full flex-1 flex-col rounded-4xl bg-div p-6">
+        <div className="mb-8">
+          <h2 className="text-4xl">{selectedLocation.name}</h2>
+        </div>
+        <div className="flex flex-1 items-center justify-center text-white/55">
+          Loading forecast...
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex h-full flex-1 flex-col rounded-4xl bg-div p-6">
       <div className="mb-8">
         <h2 className="text-4xl">{selectedLocation.name}</h2>
-        <p className="text-[14px] text-subtext underline cursor-pointer">show on map</p>
+        {/*<p className="text-[14px] text-subtext underline cursor-pointer">show on map</p> */}
       </div>
 
       <div className="mb-8 flex items-center flex-col justify-center">
