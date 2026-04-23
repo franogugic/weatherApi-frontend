@@ -32,6 +32,7 @@ export function ForecastPage() {
   const { selectedLocation } = useLocation()
   const { selectedTimezone } = useTimezone()
 
+  // lista za
   const dateOptions = useMemo(() => {
     const uniqueDates = new Map<string, string>()
 
@@ -97,11 +98,27 @@ export function ForecastPage() {
       .reverse()
       .find((item) => parseForecastDate(item.forecastTime) <= now) ?? forecast[0]
 
+  const currentDateIndex = dateOptions.findIndex((option) => option.key === selectedDate)
+  const hasPreviousDay = currentDateIndex > 0
+  const hasNextDay = currentDateIndex < dateOptions.length - 1
+  
+  function goToPreviousDay() {  
+    if (hasPreviousDay) {
+      setSelectedDate(dateOptions[currentDateIndex - 1].key)
+    }
+  }
+
+  function goToNextDay() {    
+    if (hasNextDay) {
+      setSelectedDate(dateOptions[currentDateIndex + 1].key)
+    }
+  }
+
   return (
     <div className="flex h-full flex-1 flex-col rounded-4xl bg-div p-6">
       <div className="mb-8">
         <h2 className="text-4xl">{selectedLocation.name}</h2>
-        <p className="text-[14px] text-subtext underline">show on map</p>
+        <p className="text-[14px] text-subtext underline cursor-pointer">show on map</p>
       </div>
 
       <div className="mb-8 flex items-center flex-col justify-center">
@@ -228,6 +245,15 @@ export function ForecastPage() {
           ))}
         </div>
       </div>
+        <div className="flex items-center justify-between">
+                <button onClick={goToPreviousDay} disabled={!hasPreviousDay} className="disabled:opacity-0 underline cursor-pointer bg-linear-to-r from-lightBlue to-blue bg-clip-text text-transparent">
+                    &larr; Previous day 
+                </button>
+
+                <button onClick={goToNextDay} disabled={!hasNextDay} className="disabled:opacity-0 underline cursor-pointer bg-linear-to-r from-blue to-lightBlue bg-clip-text text-transparent">
+                    Next day &rarr;
+                </button>
+        </div>
     </div>
   )
 }

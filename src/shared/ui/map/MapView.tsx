@@ -1,4 +1,4 @@
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api"
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api"
 
 const mapContainerStyle = {
   width: "100%",
@@ -59,28 +59,35 @@ export function MapView({
   longitude,
   zoom = 3,
 }: MapViewProps) {
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+  })
+
   const center = {
     lat: latitude,
     lng: longitude,
   }
 
+  if (!isLoaded) {
+    return <div className="flex h-full w-full items-center justify-center text-subtext">Loading map...</div>
+  }
+
   return (
-    <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-      <GoogleMap
-        mapContainerStyle={mapContainerStyle}
-        center={center}
-        zoom={zoom}
-        options={{
-          disableDefaultUI: true,
-          zoomControl: true,
-          streetViewControl: false,
-          mapTypeControl: false,
-          fullscreenControl: false,
-          styles: mapStyles,
-        }}
-      >
-        <Marker position={center} />
-      </GoogleMap>
-    </LoadScript>
+    <GoogleMap
+      mapContainerStyle={mapContainerStyle}
+      center={center}
+      zoom={zoom}
+      options={{
+        disableDefaultUI: true,
+        zoomControl: true,
+        streetViewControl: false,
+        mapTypeControl: false,
+        fullscreenControl: false,
+        styles: mapStyles,
+      }}
+    >
+      <Marker position={center} />
+    </GoogleMap>
   )
 }

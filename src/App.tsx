@@ -4,15 +4,24 @@ import { TimezoneProvider } from "@/features/selected-timezone/model/timezone-co
 import { AppLayout } from "./shared/ui/app-layout/AppLayout"
 import { ForecastPage } from "./pages/forecast/ui/ForecastPage"
 import { DashboardPage } from "./pages/dashboard/ui/DashboardPage"
+import { useLocation } from "react-router-dom"
 
 function App() {
+  const location = useLocation()
+  const isDashboardRoute = location.pathname === "/"
+  const isForecastRoute = location.pathname === "/forecast"
 
   return (
     <LocationProvider>
       <TimezoneProvider>
         <ForecastProvider>
           <AppLayout >
-            <DashboardPage />
+            <div className={isDashboardRoute ? "h-full" : "hidden"} aria-hidden={!isDashboardRoute}>
+              <DashboardPage />
+            </div>
+            <div className={isForecastRoute ? "h-full" : "hidden"} aria-hidden={!isForecastRoute}>
+              <ForecastPage />
+            </div>
           </AppLayout>
         </ForecastProvider>
       </TimezoneProvider>
