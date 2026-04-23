@@ -1,6 +1,7 @@
 import type { WeatherForecastItem, WeatherMeta } from "@/entities/weather/model/types"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 import { useTimezone } from "@/features/selected-timezone/model/timezone-context"
+import { NavLink } from "react-router-dom";
 
 type NextHourlyPanelProps = {
   forecast: WeatherForecastItem[],
@@ -15,7 +16,9 @@ export function NextHourlysPanel( {forecast, meta}: NextHourlyPanelProps) {
   <div className="row-span-2 bg-div rounded-4xl p-6">
     <div className="flex items-center justify-between mb-4">
       <p className="text-[22px] font-semibold">Next 12 Hours</p>
-      <p className="text-[14px] underline cursor-pointer bg-linear-to-t from-blue to-lightBlue bg-clip-text text-transparent">See more</p>
+      <NavLink to="/forecast" className="text-[14px] underline cursor-pointer bg-linear-to-t from-blue to-lightBlue bg-clip-text text-transparent">
+          See more
+      </NavLink>
     </div>
 
     <div className="flex items-center justify-between px-2 mb-2">
@@ -37,7 +40,9 @@ export function NextHourlysPanel( {forecast, meta}: NextHourlyPanelProps) {
     ))}
 
     <div className="bg-linear-to-b flex items-center justify-center from-lightBlue to-blue rounded-4xl py-2 mt-4 cursor-pointer">
-      <p className="text-[18px] font-extralight">See all</p>
+      <NavLink to="/forecast" className="text-[18px] font-extralight">
+        See all
+      </NavLink>
     </div>
   </div>
   )

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import type { WeatherForecastResponse } from "@/entities/weather/model/types"
+import { useForecast } from "./forecast-context"
 
 export function useWeatherForecast(locationId: number) {
-  const [data, setData] = useState<WeatherForecastResponse | null>(null)
+  const {setForecast} = useForecast()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -11,7 +12,10 @@ export function useWeatherForecast(locationId: number) {
           `http://localhost:5000/api/WeatherForecast?locationId=${locationId}`,
         )
         const jsonData = (await response.json()) as WeatherForecastResponse
-        setData(jsonData)
+        setForecast({
+          forecast: jsonData.items,
+          meta: jsonData.meta,
+        })
       } catch (error) {
         console.error("Error fetching data:", error)
       }
@@ -20,5 +24,4 @@ export function useWeatherForecast(locationId: number) {
     void fetchData()
   }, [locationId])
 
-  return data
 }
