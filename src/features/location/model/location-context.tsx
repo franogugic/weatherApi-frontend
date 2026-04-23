@@ -7,9 +7,12 @@ import {
 } from "react"
 import { DEFAULT_LOCATION } from "@/entities/location/model/constants/DEFAULT_LOCATION"
 import type { Location } from "@/entities/location/model/types"
+import { useLocations } from "./useLocations"
 
 export type LocationContextType = {
   selectedLocation: Location
+  locations: Location[]
+  isLoading: boolean
   setSelectedLocation: (location: Location) => void
 }
 
@@ -34,6 +37,7 @@ function getInitialLocation() {
 
 export function LocationProvider({ children }: PropsWithChildren) {
   const [selectedLocation, setSelectedLocation] = useState<Location>(getInitialLocation)
+  const { locations, isLoading } = useLocations()
 
   useEffect(() => {
     localStorage.setItem(
@@ -45,6 +49,8 @@ export function LocationProvider({ children }: PropsWithChildren) {
   return (
     <LocationContext.Provider
       value={{
+        locations: locations.length ? locations : [DEFAULT_LOCATION],
+        isLoading,
         selectedLocation,
         setSelectedLocation,
       }}

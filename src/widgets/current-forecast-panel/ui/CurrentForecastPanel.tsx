@@ -5,7 +5,7 @@ import type {
 } from "@/entities/weather/model/types"
 import { WeatherStat } from "@/entities/weather/ui/WeatherStat"
 import { formatShortDate } from "@/shared/lib/format-date"
-import { useLocation } from "@/features/selected-location/model/location-context"
+import { useLocation } from "@/features/location/model/location-context"
 import { useTimezone } from "@/features/selected-timezone/model/timezone-context"
 
 type CurrentForecastPanelProps = {
@@ -27,7 +27,7 @@ export function CurrentForecastPanel({
         <p>Today, {formattedDate}</p>
         <div className="flex cursor-pointer items-center gap-1 text-[14px] font-bold">
           <MapPin className="w-6" />
-          <p>{locationName} &#9662;</p>
+          <p>{locationName}</p>
         </div>
       </div>
 

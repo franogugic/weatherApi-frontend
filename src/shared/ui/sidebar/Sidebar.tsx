@@ -18,11 +18,13 @@ export function Sidebar() {
                         <CloudSun className={isActive ? "" : "text-white/50"} />
                     )}
                 </NavLink>
+                {/*}
                 <NavLink to="/map" >
                     {({ isActive }) => (
                         <Map className={isActive ? "" : "text-white/50"} />
                     )}
                 </NavLink>
+                */}
             </ul>
         </aside>
     )

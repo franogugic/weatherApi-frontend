@@ -37,12 +37,10 @@ const mapStyles = [
     stylers: [{ color: "#5a5960" }],
   },
   {
-    featureType: "label.text.fill",
     elementType: "labels.text.fill",
     stylers: [{ color: "#d4d5d8" }],
   },
   {
-    featureType: "label.text.stroke",
     elementType: "labels.text.stroke",
     stylers: [{ color: "#313236" }],
   },
