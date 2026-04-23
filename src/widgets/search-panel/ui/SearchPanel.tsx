@@ -49,7 +49,7 @@ export function SearchPanel() {
   }
 
   return (
-    <div className="bg-div relative rounded-4xl px-6 py-5">
+    <div className="bg-div relative min-w-0 rounded-4xl px-6 py-5">
       <div className="flex items-center gap-2">
         <Search size={22} />
         <input
@@ -57,7 +57,7 @@ export function SearchPanel() {
           placeholder="Search City..."
           disabled={isLoading}
           value={locationValue}
-          className="w-full bg-transparent border-none font-extralight focus:outline-none"
+          className="min-w-0 w-full bg-transparent border-none font-extralight focus:outline-none"
           onChange={(e) => setLocationValue(e.target.value)}
           onKeyDown={(e) => {
             if (!shouldShowDropdown) {

@@ -22,21 +22,21 @@ export function CurrentForecastPanel({
   const formattedDate = formatShortDate(new Date(), selectedTimezone)
   const locationName =  useLocation().selectedLocation.name
   return (
-    <div className="row-span-2 flex flex-col justify-between bg-linear-to-b from-lightBlue to-blue rounded-4xl p-6">
+    <div className="xl:row-span-2 flex min-w-0 flex-col justify-between rounded-4xl bg-linear-to-b from-lightBlue to-blue p-6">
       <div className="text-[14px]">
         <p>Today, {formattedDate}</p>
-        <div className="flex cursor-pointer items-center gap-1 text-[14px] font-bold">
+        <div className="flex flex-wrap items-center gap-1 text-[14px] font-bold">
           <MapPin className="w-6" />
-          <p>{locationName}</p>
+          <p className="break-words">{locationName}</p>
         </div>
       </div>
 
       <div className="mx-auto text-center">
-        <div className="translate-y-5 text-6xl font-bold flex gap-1">
+        <div className="flex translate-y-5 flex-wrap items-end justify-center gap-1 text-5xl font-bold 2xl:text-6xl">
           <p>
             {forecast.airTemperature} 
           </p>
-          <p className="text-4xl font-semibold">
+          <p className="text-3xl font-semibold 2xl:text-4xl">
             {meta.air_temperature?.unitDisplayName}
           </p>
         </div>
@@ -47,7 +47,7 @@ export function CurrentForecastPanel({
         />
       </div>
 
-      <div className="mx-auto flex w-full">
+      <div className="mx-auto flex w-full flex-wrap gap-y-4 xl:flex-nowrap">
         <WeatherStat
           icon={<Wind size={34} />}
           value={forecast.windSpeed}

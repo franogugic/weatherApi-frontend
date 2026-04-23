@@ -241,7 +241,7 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
   const { selectedTimezone } = useTimezone()
   const chartItems = getChartItems(forecast)
   if (chartItems.length === 0) {
-    return <div className="col-span-2 bg-div rounded-4xl p-6" />
+    return <div className="xl:col-span-2 bg-div rounded-4xl p-6" />
   }
 
   const config = metricConfig[metric]
@@ -255,10 +255,10 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
   const maxY = Math.ceil(maxValue + 3)
 
   return (
-    <div className="col-span-2 flex min-h-0 h-full flex-col overflow-visible rounded-4xl bg-div p-6">
-      <div className="mb-3 flex shrink-0 items-center justify-between gap-4">
+    <div className="xl:col-span-2 flex h-full min-h-0 min-w-0 flex-col overflow-visible rounded-4xl bg-div p-6">
+      <div className="mb-3 flex shrink-0 flex-wrap items-center justify-between gap-4">
         <p className="text-[22px] font-semibold">Overview</p>
-        <div className="flex items-center gap-2 rounded-full bg-white/6 p-1">
+        <div className="flex flex-wrap items-center gap-2 rounded-full bg-white/6 p-1">
           {(Object.keys(metricConfig) as GraphMetric[]).map((option) => {
             const isActive = metric === option
 

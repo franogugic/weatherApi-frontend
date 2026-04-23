@@ -12,7 +12,7 @@ export function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="grid h-full min-h-0 grid-cols-[29fr_33fr_38fr] grid-rows-[8fr_45fr_47fr] gap-5">
+      <div className="grid min-h-full min-w-0 grid-cols-1 gap-5 xl:h-full xl:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] xl:grid-rows-[auto_minmax(0,1fr)_minmax(0,1fr)]">
         <SearchPanel />
         <div className="bg-div rounded-4xl" />
         <SettingsPanel />
@@ -34,7 +34,7 @@ export function DashboardPage() {
     .slice(0, 12)
 
   return (
-    <div className="grid h-full min-h-0 grid-cols-[29fr_33fr_38fr] grid-rows-[8fr_45fr_47fr] gap-5">
+    <div className="grid min-h-full min-w-0 grid-cols-1 gap-5 xl:h-full xl:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] xl:grid-rows-[auto_minmax(0,1fr)_minmax(0,1fr)]">
       <SearchPanel />
       {currentForecast && meta ? (
         <CurrentForecastPanel forecast={currentForecast} meta={meta} />
