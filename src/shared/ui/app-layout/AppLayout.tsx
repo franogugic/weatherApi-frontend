@@ -6,9 +6,9 @@ type AppLayoutProps = {
 
 export function AppLayout({ children }: AppLayoutProps) {
   return (
-    <div className="min-h-screen container mx-auto grid grid-cols-[8fr_92fr] gap-6 p-[4vh]">
+    <div className="h-screen container mx-auto grid grid-cols-[8fr_92fr] gap-6 overflow-hidden p-[4vh]">
         <Sidebar />
-        <main>
+        <main className="min-h-0">
             {children}
         </main>
     </div>

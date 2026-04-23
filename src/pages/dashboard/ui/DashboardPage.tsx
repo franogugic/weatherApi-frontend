@@ -20,7 +20,7 @@ export function DashboardPage() {
     .slice(0, 12)
 
   return (
-    <div className="grid h-full min-h-0 grid-cols-[29fr_33fr_38fr] grid-rows-[8fr_45fr_47fr] gap-5 overflow-hidden">
+    <div className="grid h-full min-h-0 grid-cols-[29fr_33fr_38fr] grid-rows-[8fr_45fr_47fr] gap-5">
       <SearchPanel />
       {currentForecast && meta ? (
         <CurrentForecastPanel forecast={currentForecast} meta={meta} />

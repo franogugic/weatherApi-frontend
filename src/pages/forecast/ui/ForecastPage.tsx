@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { CloudRain, MoveUp, Thermometer, Wind } from "lucide-react"
 import { useForecast } from "@/features/get-weather-forecast/model/forecast-context"
-import { useLocation } from "@/features/selected-location/model/location-context"
+import { useLocation } from "@/features/location/model/location-context"
 import { useTimezone } from "@/features/selected-timezone/model/timezone-context"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 
@@ -171,8 +171,8 @@ export function ForecastPage() {
         </button>
 
         {isDateDropdownOpen ? (
-          <div className="absolute top-full right-0 z-20 mt-2 max-h-48 min-w-[320px] overflow-y-auto rounded-2xl border border-white/10 bg-white/8 p-2 shadow-lg backdrop-blur-3xl">
-            {dateOptions.map((option) => (
+          <div className="absolute top-full right-0 z-20 mt-2 max-h-48 min-w-[320px] overflow-y-auto rounded-4xl border border-white/15 bg-white/8 p-4 shadow-lg backdrop-blur-xl">
+            {dateOptions.map((option, index) => (
               <button
                 key={option.key}
                 type="button"
@@ -180,13 +180,16 @@ export function ForecastPage() {
                   setSelectedDate(option.key)
                   setIsDateDropdownOpen(false)
                 }}
-                className={`w-full rounded-xl px-3 py-2 text-left transition ${
+                className={`w-full rounded-3xl px-3 py-2 text-left transition ${
                   selectedDate === option.key
-                    ? "bg-white/10 text-white"
-                    : "text-subtext hover:bg-white/5 hover:text-white"
+                    ? "text-blue"
+                    : "text-subtext"
                 }`}
               >
-                {option.label}
+                <span>{option.label}</span>
+                {index < dateOptions.length - 1 && (
+                  <div className="mt-3 border-b border-white/50" />
+                )}
               </button>
             ))}
           </div>

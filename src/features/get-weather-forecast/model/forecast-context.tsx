@@ -3,7 +3,7 @@ import type {
     WeatherForecastResponse,
     WeatherMeta,
 } from "@/entities/weather/model/types"
-import { useLocation } from "@/features/selected-location/model/location-context"
+import { useLocation } from "@/features/location/model/location-context"
 import React, { createContext, useEffect } from "react"
 
 type ForecastData = {
