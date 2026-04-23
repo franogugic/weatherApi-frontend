@@ -116,7 +116,7 @@ export function ForecastPage() {
 
   if (isLoading) {
     return (
-      <div className="flex h-full flex-1 flex-col rounded-4xl bg-div p-6">
+      <div className="flex h-full min-w-0 flex-1 flex-col rounded-4xl bg-div p-6">
         <div className="mb-8">
           <h2 className="text-4xl">{selectedLocation.name}</h2>
         </div>
@@ -128,15 +128,15 @@ export function ForecastPage() {
   }
 
   return (
-    <div className="flex h-full flex-1 flex-col rounded-4xl bg-div p-6">
+    <div className="flex h-full min-w-0 flex-1 flex-col rounded-4xl bg-div p-6">
       <div className="mb-8">
-        <h2 className="text-4xl">{selectedLocation.name}</h2>
+        <h2 className="break-words text-3xl sm:text-4xl">{selectedLocation.name}</h2>
         {/*<p className="text-[14px] text-subtext underline cursor-pointer">show on map</p> */}
       </div>
 
-      <div className="mb-8 flex items-center flex-col justify-center">
+      <div className="mb-8 flex flex-col items-center justify-center">
         <p className="mb-2 text-[20px] font-extralight">Current conditions</p>
-        <div className="flex items-center justify-start gap-8">
+        <div className="flex flex-wrap items-center justify-center gap-6">
           <img
             src={`/${currentForecast?.weatherSymbol}.svg`}
             alt="weather icon"
@@ -210,58 +210,62 @@ export function ForecastPage() {
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto rounded-3xl py-4">
-        <div className="mb-3 grid grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] px-3 text-[12px] text-subtext">
-          <p>Time</p>
-          <p>Weather</p>
-          <p>Temp</p>
-          <p>Pressure</p>
-          <p>Clouds</p>
-          <p>Humidity</p>
-          <p>Precipitation</p>
-          <p>Wind</p>
-        </div>
-
-        <div className="space-y-2">
-          {selectedDayForecast.map((item) => (
-            <div
-              key={item.forecastTime}
-              className="grid grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] items-center border-b-[1px] border-white/20 px-3 py-2"
-            >
-              <p>{formatHourLabel(item.forecastTime, selectedTimezone)}</p>
-              <img
-                src={`/${item.weatherSymbol}.svg`}
-                alt="weather icon"
-                className="w-10"
-              />
-              <p>
-                {item.airTemperature} {meta.air_temperature?.unitDisplayName}
-              </p>
-              <p>
-                {item.airPressureAtSeaLevel} {meta.air_pressure_at_sea_level?.unitDisplayName}
-              </p>
-              <p>
-                {item.cloudiness} {meta.cloud_area_fraction?.unitDisplayName}
-              </p>
-              <p>
-                {item.humidity} {meta.relative_humidity?.unitDisplayName}
-              </p>
-              <p>
-                {item.precipitationAmount} {meta.precipitation_amount?.unitDisplayName}
-              </p>
-              <div className="flex items-center gap-2">
-                <MoveUp
-                  size={16}
-                  style={{ transform: `rotate(${item.windDirection}deg)` }}
-                />
-                <p>
-                  {item.windSpeed} {meta.wind_speed?.unitDisplayName}
-                </p>
-              </div>
+        <div className="overflow-x-auto">
+          <div className="min-w-[860px]">
+            <div className="mb-3 grid grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] px-3 text-[12px] text-subtext">
+              <p>Time</p>
+              <p>Weather</p>
+              <p>Temp</p>
+              <p>Pressure</p>
+              <p>Clouds</p>
+              <p>Humidity</p>
+              <p>Precipitation</p>
+              <p>Wind</p>
             </div>
-          ))}
+
+            <div className="space-y-2">
+              {selectedDayForecast.map((item) => (
+                <div
+                  key={item.forecastTime}
+                  className="grid grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] items-center border-b-[1px] border-white/20 px-3 py-2"
+                >
+                  <p>{formatHourLabel(item.forecastTime, selectedTimezone)}</p>
+                  <img
+                    src={`/${item.weatherSymbol}.svg`}
+                    alt="weather icon"
+                    className="w-10"
+                  />
+                  <p>
+                    {item.airTemperature} {meta.air_temperature?.unitDisplayName}
+                  </p>
+                  <p>
+                    {item.airPressureAtSeaLevel} {meta.air_pressure_at_sea_level?.unitDisplayName}
+                  </p>
+                  <p>
+                    {item.cloudiness} {meta.cloud_area_fraction?.unitDisplayName}
+                  </p>
+                  <p>
+                    {item.humidity} {meta.relative_humidity?.unitDisplayName}
+                  </p>
+                  <p>
+                    {item.precipitationAmount} {meta.precipitation_amount?.unitDisplayName}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <MoveUp
+                      size={16}
+                      style={{ transform: `rotate(${item.windDirection}deg)` }}
+                    />
+                    <p>
+                      {item.windSpeed} {meta.wind_speed?.unitDisplayName}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3">
                 <button onClick={goToPreviousDay} disabled={!hasPreviousDay} className="disabled:opacity-0 underline cursor-pointer bg-linear-to-r from-lightBlue to-blue bg-clip-text text-transparent">
                     &larr; Previous day 
                 </button>

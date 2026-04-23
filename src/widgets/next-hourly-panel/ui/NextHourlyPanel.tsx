@@ -13,7 +13,7 @@ export function NextHourlysPanel( {forecast, meta}: NextHourlyPanelProps) {
   const { selectedTimezone } = useTimezone()
   
   return (
-  <div className="row-span-2 flex h-full min-h-0 flex-col bg-div rounded-4xl p-6">
+  <div className="xl:row-span-2 flex h-full min-h-0 min-w-0 flex-col rounded-4xl bg-div p-6">
     <div className="mb-4 flex items-center justify-between">
       <p className="text-[22px] font-semibold">Next 12 Hours</p>
       <NavLink to="/forecast" className="text-[14px] underline cursor-pointer bg-linear-to-t from-blue to-lightBlue bg-clip-text text-transparent">
