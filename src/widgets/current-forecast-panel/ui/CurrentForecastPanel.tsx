@@ -32,7 +32,7 @@ export function CurrentForecastPanel({
       </div>
 
       <div className="mx-auto text-center">
-        <div className="flex translate-y-5 flex-wrap items-end justify-center gap-1 text-5xl font-bold 2xl:text-6xl">
+        <div className="flex translate-y-2 flex-wrap items-end justify-center gap-1 text-5xl font-bold 2xl:text-6xl">
           <p className="text-6xl font-bold 2xl:text-7xl">
             {forecast.airTemperature} 
           </p>
