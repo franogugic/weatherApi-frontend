@@ -12,9 +12,9 @@ export function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="grid min-h-full min-w-0 grid-cols-1 gap-5 xl:h-full xl:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] xl:grid-rows-[auto_minmax(0,1fr)_minmax(0,1fr)]">
+      <div className="grid min-h-full min-w-0 grid-cols-1 gap-5 xl:h-full xl:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] xl:grid-rows-[auto_minmax(0,1fr)_minmax(0,1fr)] [@media(min-width:1280px)_and_(max-height:820px)]:h-auto [@media(min-width:1280px)_and_(max-height:820px)]:grid-cols-1 [@media(min-width:1280px)_and_(max-height:820px)]:grid-rows-none">
         <SearchPanel />
-        <div className="bg-div rounded-4xl" />
+        <div className="hidden rounded-4xl bg-div xl:block" />
         <SettingsPanel />
         <div className="row-span-2 rounded-4xl bg-div p-6 text-white/55">Loading forecast...</div>
         <div className="rounded-4xl bg-div" />
@@ -37,7 +37,7 @@ export function DashboardPage() {
     .slice(0, 12)
 
   return (
-    <div className="grid min-h-full min-w-0 grid-cols-1 gap-5 xl:h-full xl:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] xl:grid-rows-[auto_minmax(0,1fr)_minmax(0,1fr)]">
+    <div className="grid min-h-full min-w-0 grid-cols-1 gap-5 xl:h-full xl:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] xl:grid-rows-[auto_minmax(0,1fr)_minmax(0,1fr)] [@media(min-width:1280px)_and_(max-height:820px)]:h-auto [@media(min-width:1280px)_and_(max-height:820px)]:grid-cols-1 [@media(min-width:1280px)_and_(max-height:820px)]:grid-rows-none">
       <SearchPanel />
       {currentForecast && meta ? (
         <CurrentForecastPanel forecast={currentForecast} meta={meta} />
@@ -46,7 +46,9 @@ export function DashboardPage() {
       {forecast[0] && meta ? (
         <NextHourlysPanel forecast={nextHourlyForecast} meta={meta} />
       ) : null}
-      <MapPanel />
+      <div className="hidden xl:block">
+        <MapPanel />
+      </div>
       <GraphPanel forecast={forecast ?? []} meta={meta ?? {}} />
     </div>
   )

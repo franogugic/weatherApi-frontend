@@ -73,11 +73,11 @@ const metricConfig = {
   }
 >
 
-// Uzima podatke za danas + odabrani broj buducih dana.
+// Uzima podatke za danas i jos onoliko dana koliko stane u odabrani broj.
 function getChartItems(forecast: WeatherForecastItem[], selectedForecastDays: number) {
   const now = new Date()
   const endDate = new Date(now)
-  endDate.setDate(endDate.getDate() + Math.max(selectedForecastDays, 0))
+  endDate.setDate(endDate.getDate() + Math.max(selectedForecastDays - 1, 0))
   endDate.setHours(23, 59, 59, 999)
 
   return forecast.filter((item) => {

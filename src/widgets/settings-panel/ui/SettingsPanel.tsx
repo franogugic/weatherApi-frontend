@@ -35,7 +35,7 @@ export function SettingsPanel() {
   }, [])
 
   return (
-    <div ref={dropdownRef} className="relative ml-auto flex h-fit w-full flex-wrap justify-end gap-3 self-start">
+    <div ref={dropdownRef} className="relative ml-auto flex h-fit w-fit max-w-full flex-wrap justify-end gap-3 place-self-start">
       <div className="relative">
         <button
           type="button"

@@ -50,7 +50,7 @@ export function SearchPanel() {
   }
 
   return (
-    <div className="bg-div relative min-w-0 rounded-4xl px-6 py-5">
+    <div className="bg-div relative h-fit min-w-0 self-start rounded-4xl px-6 py-5">
       <div className="flex items-center gap-2">
         <Search size={22} />
         <input
