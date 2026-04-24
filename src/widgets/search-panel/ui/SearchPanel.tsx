@@ -32,6 +32,7 @@ export function SearchPanel() {
         return 0
       }
 
+      // pri smanjenu rezultat pretrage vraca na zadnji element trenutne rpetrage
       return Math.min(current, filteredLocations.length - 1)
     })
   }, [filteredLocations.length, shouldShowDropdown])
@@ -90,6 +91,7 @@ export function SearchPanel() {
         <p className="mt-2 text-xs text-white/45">Loading locations...</p>
       )}
 
+      {/*dropwdon reUltata lokacija*/}
       {shouldShowDropdown && (
         <ul className="absolute left-0 right-0 top-[100%] z-10 mt-2 max-h-72 overflow-y-auto rounded-4xl border border-white/15 bg-white/8 p-4 shadow-lg backdrop-blur-xl">
           {filteredLocations.map((loc, index) => (

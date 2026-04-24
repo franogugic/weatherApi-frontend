@@ -32,7 +32,7 @@ export function ForecastPage() {
   const { selectedLocation } = useLocation()
   const { selectedTimezone } = useTimezone()
 
-  // lista za
+  // lista za sve datume koji forecast vraca
   const dateOptions = useMemo(() => {
     const uniqueDates = new Map<string, string>()
 
@@ -58,11 +58,13 @@ export function ForecastPage() {
       return
     }
 
+    // provjera ako trenutni datum ne psotji vise u listi
     if (!selectedDate || !dateOptions.some((option) => option.key === selectedDate)) {
       setSelectedDate(dateOptions[0].key)
     }
   }, [dateOptions, selectedDate])
 
+  // dropdown
   const [isDateDropdownOpen, setIsDateDropdownOpen] = useState(false)
   const dateDropdownRef = useRef<HTMLDivElement | null>(null)
 

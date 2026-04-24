@@ -33,7 +33,7 @@ export function CurrentForecastPanel({
 
       <div className="mx-auto text-center">
         <div className="flex translate-y-5 flex-wrap items-end justify-center gap-1 text-5xl font-bold 2xl:text-6xl">
-          <p>
+          <p className="text-6xl font-bold 2xl:text-7xl">
             {forecast.airTemperature} 
           </p>
           <p className="text-3xl font-semibold 2xl:text-4xl">

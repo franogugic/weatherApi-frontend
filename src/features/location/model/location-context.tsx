@@ -19,6 +19,7 @@ export type LocationContextType = {
 const LocationContext = createContext<LocationContextType | undefined>(undefined)
 const LOCATION_STORAGE_KEY = "selected-location"
 
+// postavljanje lokacije pri pocetku cita iz storagea ako psotji
 function getInitialLocation() {
   const storedLocation = localStorage.getItem(LOCATION_STORAGE_KEY)
 

@@ -44,6 +44,7 @@ const fallbackTimezones = [
   "Pacific/Kiritimati",
 ]
 
+// pretvara gmt u utc tipa GMT+2 -> UTC+02:00
 function normalizeOffset(offset: string) {
   if (offset === "GMT") {
     return "UTC+00:00"
@@ -60,6 +61,8 @@ function normalizeOffset(offset: string) {
   return `UTC${sign}${hours.padStart(2, "0")}:${minutes}`
 }
 
+
+//uzima trenutno vrijeme zone, radi ljetnog i zimskog racunaja vrimena
 function getTimezoneOffsetLabel(timeZone: string) {
   const parts = new Intl.DateTimeFormat("en-GB", {
     timeZone,
@@ -71,6 +74,7 @@ function getTimezoneOffsetLabel(timeZone: string) {
   return normalizeOffset(offset)
 }
 
+// fomratira u ljepsi zapis samo
 function formatTimezoneLabel(timeZone: string) {
   const offset = getTimezoneOffsetLabel(timeZone)
   const location = timeZone.replaceAll("_", " ").replaceAll("/", " / ")
@@ -78,6 +82,7 @@ function formatTimezoneLabel(timeZone: string) {
   return `${offset} · ${location}`
 }
 
+// za dropwodn na vremenskim zonima u settings widgetu
 export const TIMEZONE_OPTIONS: TimezoneOption[] = fallbackTimezones.map((timeZone) => ({
   value: timeZone,
   label: formatTimezoneLabel(timeZone),

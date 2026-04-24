@@ -15,6 +15,7 @@ export type TimezoneContextType = {
 const TimezoneContext = createContext<TimezoneContextType | undefined>(undefined)
 const TIMEZONE_STORAGE_KEY = "selected-timezone"
 
+// pocetno postavljanje vremenske zone... ako ne postji uzima se default... stavljena nasa za sdad
 function getInitialTimezone() {
   const storedTimezone = localStorage.getItem(TIMEZONE_STORAGE_KEY)
 

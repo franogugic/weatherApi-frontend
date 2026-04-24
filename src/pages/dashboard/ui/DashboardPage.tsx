@@ -25,10 +25,13 @@ export function DashboardPage() {
 
   const now = new Date()
   const forecastItems = forecast ?? []
+  // uzima timeslot koji je najlbize sdasnjostia. da je vec prosa
   const currentForecast =
     [...forecastItems]
       .reverse()
       .find((item) => parseForecastDate(item.forecastTime) <= now) ?? forecastItems[0]
+
+  // odvaja za next 12.. samo buduce
   const nextHourlyForecast = forecastItems
     .filter((item) => parseForecastDate(item.forecastTime) > now)
     .slice(0, 12)
