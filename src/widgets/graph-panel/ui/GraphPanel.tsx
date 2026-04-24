@@ -1,4 +1,6 @@
-import { useState } from "react"
+import { DEFAULT_FORECAST_DAYS, FORECAST_DAY_OPTIONS } from "@/features/selected-forecast-days/model/days"
+import { useForecastDays } from "@/features/selected-forecast-days/model/days-context"
+import { useEffect, useState } from "react"
 import type { WeatherForecastItem, WeatherMeta } from "@/entities/weather/model/types"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 import { useTimezone } from "@/features/selected-timezone/model/timezone-context"
@@ -71,11 +73,11 @@ const metricConfig = {
   }
 >
 
-// Uzima podatke samo za odredjeni N broj dana (defaultno danas + 2 dana)
-function getChartItems(forecast: WeatherForecastItem[]) {
+// Uzima podatke za danas + odabrani broj buducih dana.
+function getChartItems(forecast: WeatherForecastItem[], selectedForecastDays: number) {
   const now = new Date()
   const endDate = new Date(now)
-  endDate.setDate(endDate.getDate() + 2)
+  endDate.setDate(endDate.getDate() + Math.max(selectedForecastDays, 0))
   endDate.setHours(23, 59, 59, 999)
 
   return forecast.filter((item) => {
@@ -85,7 +87,13 @@ function getChartItems(forecast: WeatherForecastItem[]) {
 }
 
 // racuna dan za svaki datum
-function getDayLabel(dateString: string, timeZone: string, firstDateString?: string) {
+//za sve iste datume ko prvi prikazuje TODAY a za ostale ime dana
+function getDayLabel(
+  dateString: string,
+  timeZone: string,
+  firstDateString?: string,
+  labelLength: "short" | "long" = "long",
+) {
   const date = parseForecastDate(dateString)
   const firstDate = firstDateString ? parseForecastDate(firstDateString) : null
   const currentDay = date.toLocaleDateString("en-CA", { timeZone })
@@ -99,17 +107,24 @@ function getDayLabel(dateString: string, timeZone: string, firstDateString?: str
   }
 
   return date.toLocaleDateString("en-GB", {
-    weekday: "long",
+    weekday: labelLength,
     timeZone,
   })
 }
 
-// grupira indexe datuma po danima  
-function getDayMidpointIndexes(labels: string[], timeZone: string) {
+// za sve sate jednog dana uzima srednji index i tu stavi label dana
+function getDayMidpointIndexes(
+  labels: string[],
+  timeZone: string,
+  labelLength: "short" | "long" = "long",
+) {
+  //key je index srednjeg sata, value je labela dana
   const midpoints = new Map<number, string>()
+  // svi datumi + sati jednog dana 
   const groupedIndexes = new Map<string, number[]>()
 
 
+  // za svaki datum napravi listu indexa s tim datumima
   labels.forEach((label, index) => {
     const dayKey = parseForecastDate(label).toLocaleDateString("en-CA", { timeZone })
     const indexes = groupedIndexes.get(dayKey) ?? []
@@ -117,16 +132,42 @@ function getDayMidpointIndexes(labels: string[], timeZone: string) {
     groupedIndexes.set(dayKey, indexes)
   })
 
+  // za svaku tu lsitu indexa
+  //uzima srednji index i na njega stavi labelu dana
   groupedIndexes.forEach((indexes) => {
     const midpointIndex = indexes[Math.floor(indexes.length / 2)]
     const label = labels[midpointIndex]
 
     if (label) {
-      midpoints.set(midpointIndex, getDayLabel(label, timeZone, labels[0]))
+      midpoints.set(midpointIndex, getDayLabel(label, timeZone, labels[0], labelLength))
     }
   })
 
   return midpoints
+}
+// samo racuna koje dane ce priakzat jer ne mogu svi stat
+function getVisibleDayMidpoints(dayMidpoints: Map<number, string>, maxVisibleLabels = 5) {
+  const midpointEntries = Array.from(dayMidpoints.entries())
+
+  if (midpointEntries.length <= maxVisibleLabels) {
+    return dayMidpoints
+  }
+
+  const visibleMidpoints = new Map<number, string>()
+  const lastIndex = midpointEntries.length - 1
+  const step = Math.ceil(lastIndex / Math.max(maxVisibleLabels - 1, 1))
+
+  midpointEntries.forEach(([index, label], position) => {
+    const isFirst = position === 0
+    const isLast = position === lastIndex
+    const shouldShow = isFirst || isLast || position % step === 0
+
+    if (shouldShow) {
+      visibleMidpoints.set(index, label)
+    }
+  })
+
+  return visibleMidpoints
 }
 
 // pretvra string u datum
@@ -239,7 +280,31 @@ function externalTooltipHandler(
 export function GraphPanel({ forecast, meta }: GraphPanelProps) {
   const [metric, setMetric] = useState<GraphMetric>("temperature")
   const { selectedTimezone } = useTimezone()
-  const chartItems = getChartItems(forecast)
+  const { selectedForecastDays } = useForecastDays()
+  const [graphDays, setGraphDays] = useState(DEFAULT_FORECAST_DAYS)
+
+  useEffect(() => {
+    const fallbackDays = Math.min(DEFAULT_FORECAST_DAYS, selectedForecastDays)
+
+    setGraphDays((current) => {
+      const isCurrentOptionAvailable = current > 0 && current <= selectedForecastDays
+
+      if (isCurrentOptionAvailable) {
+        return current
+      }
+
+      const largestAvailableOption = [...FORECAST_DAY_OPTIONS]
+        .reverse()
+        .find((option) => option.value <= selectedForecastDays)
+
+      return largestAvailableOption?.value ?? fallbackDays
+    })
+  }, [selectedForecastDays])
+
+  const graphDayOptions = FORECAST_DAY_OPTIONS.filter(
+    (option) => option.value <= selectedForecastDays,
+  )
+  const chartItems = getChartItems(forecast, graphDays)
   if (chartItems.length === 0) {
     return <div className="xl:col-span-2 bg-div rounded-4xl p-6" />
   }
@@ -248,7 +313,9 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
   const unit = meta[config.metaKey]?.unitDisplayName ?? config.fallbackUnit
   const labels = chartItems.map((item) => item.forecastTime)
   const values = chartItems.map((item) => config.getValue(item))
-  const dayMidpoints = getDayMidpointIndexes(labels, selectedTimezone)
+  const labelLength = graphDays > 5 ? "short" : "long"
+  const dayMidpoints = getDayMidpointIndexes(labels, selectedTimezone, labelLength)
+  const visibleDayMidpoints = getVisibleDayMidpoints(dayMidpoints)
   const minValue = Math.min(...values)
   const maxValue = Math.max(...values)
   const minY = Math.max(config.minValue ?? Number.NEGATIVE_INFINITY, Math.floor(minValue - 3))
@@ -257,34 +324,55 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
   return (
     <div className="xl:col-span-2 flex h-full min-h-0 min-w-0 flex-col overflow-visible rounded-4xl bg-div p-6">
       <div className="mb-3 flex shrink-0 flex-wrap items-center justify-between gap-4">
-        <p className="text-[22px] font-semibold">Overview</p>
-        <div className="flex flex-wrap items-center gap-2 rounded-full bg-white/6 p-1">
-          {(Object.keys(metricConfig) as GraphMetric[]).map((option) => {
-            const isActive = metric === option
+        <div className="flex flex-wrap items-center justify-between gap-3 w-full">
+          <div className="flex flex-wrap items-center gap-2 rounded-full bg-white/6 p-1">
+            {graphDayOptions.map((option) => {
+              const isActive = graphDays === option.value
 
-            return (
-              <button
-                key={option}
-                type="button"
-                onClick={() => setMetric(option)}
-                style={
-                  isActive
-                    ? {
-                        background: `linear-gradient(180deg, ${metricConfig[option].endColor} 0%, ${metricConfig[option].startColor} 100%)`,
-                        color: "white",
-                      }
-                    : undefined
-                }
-                className={`rounded-full px-3 py-1.5 text-sm transition ${
-                  isActive
-                    ? ""
-                    : "text-subtext hover:text-white"
-                }`}
-              >
-                {metricConfig[option].label}
-              </button>
-            )
-          })}
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => setGraphDays(option.value)}
+                  className={`rounded-full px-3 py-1.5 text-sm transition ${
+                    isActive
+                      ? "bg-white text-black"
+                      : "text-subtext hover:text-white"
+                  }`}
+                >
+                  {option.value}d
+                </button>
+              )
+            })}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 rounded-full bg-white/6 p-1">
+            {(Object.keys(metricConfig) as GraphMetric[]).map((option) => {
+              const isActive = metric === option
+              return (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => setMetric(option)}
+                  style={
+                    isActive
+                      ? {
+                          background: `linear-gradient(180deg, ${metricConfig[option].endColor} 0%, ${metricConfig[option].startColor} 100%)`,
+                          color: "white",
+                        }
+                      : undefined
+                  }
+                  className={`rounded-full px-3 py-1.5 text-sm transition ${
+                    isActive
+                      ? ""
+                      : "text-subtext hover:text-white"
+                  }`}
+                >
+                  {metricConfig[option].label}
+                </button>
+              )
+            })}
+          </div>
         </div>
       </div>
       <div className="relative min-h-0 flex-1">
@@ -337,7 +425,7 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
                   maxRotation: 0,
                   autoSkip: false,
                   callback: (_value, index) => {
-                    return dayMidpoints.get(index) ?? ""
+                    return visibleDayMidpoints.get(index) ?? ""
                   },
                 },
                 border: {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import type { WeatherForecastResponse } from "@/entities/weather/model/types"
+import { DEFAULT_FORECAST_DAYS } from "@/features/selected-forecast-days/model/days"
 
 type UseWeatherForecastResult = {
   forecast: WeatherForecastResponse["items"]
@@ -8,7 +9,6 @@ type UseWeatherForecastResult = {
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
-const DEFAULT_FORECAST_DAYS = Number(import.meta.env.VITE_FORECAST_DAYS ?? 10)
 
 export function useWeatherForecast(locationId: number, days = DEFAULT_FORECAST_DAYS) {
   const [data, setData] = useState<UseWeatherForecastResult>({
