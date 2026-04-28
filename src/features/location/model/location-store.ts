@@ -23,7 +23,13 @@ export const useLocationStore = create<LocationStore>((set) => ({
         try {
             const response = await fetch(`${API_BASE_URL}/WeatherForecast/locations`)
             const jsonData = (await response.json()) as Location[]
-            set({ locations: jsonData })
+            set((state) => ({
+                locations: jsonData,
+                selectedLocation:
+                    state.selectedLocation.id === DEFAULT_LOCATION.id && jsonData.length > 0
+                        ? jsonData[0]
+                        : state.selectedLocation,
+            }))
         } catch (error) {
             console.error("Error fetching locations:", error)
         } finally {

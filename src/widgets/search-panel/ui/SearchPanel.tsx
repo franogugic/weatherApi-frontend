@@ -1,13 +1,16 @@
 import { useLocationStore } from "@/features/location/model/location-store"
+import { getLocationSlug } from "@/shared/lib/get-lcoation-slug"
 import { Search } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
 
 export function SearchPanel() {
   const { t } = useTranslation()
   const { isLoading, locations, selectedLocation, setSelectedLocation } = useLocationStore()
   const [locationValue, setLocationValue] = useState(selectedLocation.name)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLocationValue(selectedLocation.name)
@@ -49,6 +52,7 @@ export function SearchPanel() {
     setSelectedLocation(location)
     setLocationValue(location.name)
     setHighlightedIndex(-1)
+    navigate(`/dashboard/${getLocationSlug(location)}`)
   }
 
   return (
@@ -106,6 +110,7 @@ export function SearchPanel() {
                 setSelectedLocation(loc)
                 setLocationValue(loc.name)
                 setHighlightedIndex(-1)
+                navigate(`/dashboard/${getLocationSlug(loc)}`)
               }}
               onMouseEnter={() => setHighlightedIndex(index)}
             >

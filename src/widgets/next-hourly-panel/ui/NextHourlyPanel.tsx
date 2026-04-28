@@ -1,4 +1,5 @@
 import type { WeatherForecastItem, WeatherMeta } from "@/entities/weather/model/types"
+import { useLocationStore } from "@/features/location/model/location-store"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next"
@@ -11,13 +12,14 @@ type NextHourlyPanelProps = {
 
 export function NextHourlysPanel( {forecast, meta}: NextHourlyPanelProps) {
   const { t, i18n } = useTranslation()
+  const selectedLocation = useLocationStore((state) => state.selectedLocation)
   const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
   
   return (
   <div className="xl:row-span-2 flex h-full min-h-0 min-w-0 flex-col rounded-4xl bg-div p-6">
     <div className="mb-4 flex items-center justify-between">
       <p className="text-[22px] font-semibold">{t("nextHourly.title")}</p>
-      <NavLink to="/forecast" className="text-[14px] underline cursor-pointer bg-linear-to-t from-blue to-lightBlue bg-clip-text text-transparent">
+      <NavLink to={`/forecast/${selectedLocation.id}`} className="text-[14px] underline cursor-pointer bg-linear-to-t from-blue to-lightBlue bg-clip-text text-transparent">
           {t("nextHourly.seeMore")}
       </NavLink>
     </div>
@@ -45,7 +47,7 @@ export function NextHourlysPanel( {forecast, meta}: NextHourlyPanelProps) {
       ))}
     </div>
 
-    <NavLink to="/forecast" className="mt-4 text-[18px] font-extralight">
+    <NavLink to={`/forecast/${selectedLocation.id}`} className="mt-4 text-[18px] font-extralight">
       <div className="bg-linear-to-b flex items-center justify-center from-lightBlue to-blue rounded-4xl py-2 cursor-pointer">
         {t("nextHourly.seeAll")}
       </div>
