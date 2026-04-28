@@ -8,8 +8,8 @@
   "search": {
     "placeholder": "Pretraži grad...",
     "loadingLocations": "Učitavanje lokacija...",
-    "latitudeShort": "lat",
-    "longitudeShort": "lon",
+    "latitudeShort": "g. duz",
+    "longitudeShort": "g. sir",
     "altitudeShort": "nadm. visina"
   },
   "currentForecast": {
