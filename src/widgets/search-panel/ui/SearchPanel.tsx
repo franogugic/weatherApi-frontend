@@ -1,11 +1,11 @@
-import { useLocation } from "@/features/location/model/location-context"
+import { useLocationStore } from "@/features/location/model/location-store"
 import { Search } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 export function SearchPanel() {
   const { t } = useTranslation()
-  const { isLoading, locations, selectedLocation, setSelectedLocation } = useLocation()
+  const { isLoading, locations, selectedLocation, setSelectedLocation } = useLocationStore()
   const [locationValue, setLocationValue] = useState(selectedLocation.name)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
 

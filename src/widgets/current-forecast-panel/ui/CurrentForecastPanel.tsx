@@ -5,8 +5,8 @@ import type {
 } from "@/entities/weather/model/types"
 import { WeatherStat } from "@/entities/weather/ui/WeatherStat"
 import { formatShortDate } from "@/shared/lib/format-date"
-import { useLocation } from "@/features/location/model/location-context"
 import { useTranslation } from "react-i18next"
+import { useLocationStore } from "@/features/location/model/location-store"
 
 type CurrentForecastPanelProps = {
   forecast: WeatherForecastItem
@@ -21,7 +21,8 @@ export function CurrentForecastPanel({
   const { t, i18n } = useTranslation()
   const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
   const formattedDate = formatShortDate(new Date(), locale)
-  const locationName =  useLocation().selectedLocation.name
+  const selectedLocation = useLocationStore((state) => state.selectedLocation)
+  const locationName = selectedLocation.name;
   return (
     <div className="xl:row-span-2 flex min-w-0 flex-col justify-between rounded-4xl bg-linear-to-b from-lightBlue to-blue p-6">
       <div className="text-[14px]">

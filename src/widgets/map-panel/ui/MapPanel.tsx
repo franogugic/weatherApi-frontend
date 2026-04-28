@@ -1,11 +1,11 @@
-import { useLocation } from "@/features/location/model/location-context"
+import { useLocationStore } from "@/features/location/model/location-store"
 import { MapView } from "@/shared/ui/map/MapView"
 
 type MapPanelProps = {
 }
 
 export function MapPanel({}: MapPanelProps) {
-  const { selectedLocation } = useLocation()
+  const { selectedLocation } = useLocationStore()
 
   return (
     <div className="relative h-full min-h-0 overflow-hidden rounded-4xl">

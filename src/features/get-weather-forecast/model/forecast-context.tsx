@@ -2,9 +2,9 @@ import type {
     WeatherForecastItem,
     WeatherMeta,
 } from "@/entities/weather/model/types"
-import { useLocation } from "@/features/location/model/location-context"
 import React, { createContext } from "react"
 import { useWeatherForecast } from "./useWeatherForecast"
+import { useLocationStore } from "@/features/location/model/location-store"
 
 type ForecastData = {
     forecast: WeatherForecastItem[]
@@ -19,7 +19,7 @@ export type ForecastContextType = ForecastData
 const ForecastContext = createContext<ForecastContextType | undefined>(undefined)
 
 export function ForecastProvider({ children }: React.PropsWithChildren) {
-    const { selectedLocation } = useLocation()
+    const { selectedLocation } = useLocationStore()
     const fetchedData = useWeatherForecast(selectedLocation.id)
 
     return (

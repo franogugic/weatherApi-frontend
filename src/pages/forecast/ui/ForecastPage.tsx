@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { CloudRain, MoveUp, Thermometer, Wind } from "lucide-react"
 import { useForecast } from "@/features/get-weather-forecast/model/forecast-context"
-import { useLocation } from "@/features/location/model/location-context"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 import { useTranslation } from "react-i18next"
+import { useLocationStore } from "@/features/location/model/location-store"
 
 function getDateKey(dateString: string) {
   return parseForecastDate(dateString).toLocaleDateString("en-CA")
@@ -28,7 +28,7 @@ function formatHourLabel(dateString: string, locale: string) {
 export function ForecastPage() {
   const { t, i18n } = useTranslation()
   const { forecast, meta, isLoading } = useForecast()
-  const { selectedLocation } = useLocation()
+  const { selectedLocation } = useLocationStore()
   const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
 
   // lista za sve datume koji forecast vraca
