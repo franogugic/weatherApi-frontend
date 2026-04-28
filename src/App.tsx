@@ -1,7 +1,5 @@
 import { ForecastProvider } from "@/features/get-weather-forecast/model/forecast-context"
 import { LocationProvider } from "@/features/location/model/location-context"
-import { ForecastDaysProvider } from "@/features/selected-forecast-days/model/days-context"
-import { TimezoneProvider } from "@/features/selected-timezone/model/timezone-context"
 import { AppLayout } from "./shared/ui/app-layout/AppLayout"
 import { ForecastPage } from "./pages/forecast/ui/ForecastPage"
 import { DashboardPage } from "./pages/dashboard/ui/DashboardPage"
@@ -14,8 +12,6 @@ function App() {
 
   return (
     <LocationProvider>
-      <ForecastDaysProvider>
-        <TimezoneProvider>
           <ForecastProvider>
             <AppLayout >
               <div className={isDashboardRoute ? "h-full" : "hidden"} aria-hidden={!isDashboardRoute}>
@@ -26,8 +22,6 @@ function App() {
               </div>
             </AppLayout>
           </ForecastProvider>
-        </TimezoneProvider>
-      </ForecastDaysProvider>
     </LocationProvider>
   )
 }

@@ -2,42 +2,38 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { CloudRain, MoveUp, Thermometer, Wind } from "lucide-react"
 import { useForecast } from "@/features/get-weather-forecast/model/forecast-context"
 import { useLocation } from "@/features/location/model/location-context"
-import { useTimezone } from "@/features/selected-timezone/model/timezone-context"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 
-function getDateKey(dateString: string, timeZone: string) {
-  return parseForecastDate(dateString).toLocaleDateString("en-CA", { timeZone })
+function getDateKey(dateString: string) {
+  return parseForecastDate(dateString).toLocaleDateString("en-CA")
 }
 
-function formatDateLabel(dateString: string, timeZone: string) {
+function formatDateLabel(dateString: string) {
   return parseForecastDate(dateString).toLocaleDateString("en-GB", {
     weekday: "long",
     day: "2-digit",
     month: "short",
-    timeZone,
   })
 }
 
-function formatHourLabel(dateString: string, timeZone: string) {
+function formatHourLabel(dateString: string) {
   return parseForecastDate(dateString).toLocaleTimeString("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
-    timeZone,
   })
 }
 
 export function ForecastPage() {
   const { forecast, meta, isLoading } = useForecast()
   const { selectedLocation } = useLocation()
-  const { selectedTimezone } = useTimezone()
 
   // lista za sve datume koji forecast vraca
   const dateOptions = useMemo(() => {
     const uniqueDates = new Map<string, string>()
 
     forecast.forEach((item) => {
-      const key = getDateKey(item.forecastTime, selectedTimezone)
+      const key = getDateKey(item.forecastTime)
 
       if (!uniqueDates.has(key)) {
         uniqueDates.set(key, item.forecastTime)
@@ -46,9 +42,9 @@ export function ForecastPage() {
 
     return Array.from(uniqueDates.entries()).map(([key, value]) => ({
       key,
-      label: formatDateLabel(value, selectedTimezone),
+      label: formatDateLabel(value),
     }))
-  }, [forecast, selectedTimezone])
+  }, [forecast])
 
   const [selectedDate, setSelectedDate] = useState<string>("")
 
@@ -89,9 +85,9 @@ export function ForecastPage() {
   const selectedDayForecast = useMemo(
     () =>
       forecast.filter(
-        (item) => getDateKey(item.forecastTime, selectedTimezone) === selectedDate,
+        (item) => getDateKey(item.forecastTime) === selectedDate,
       ),
-    [forecast, selectedDate, selectedTimezone],
+    [forecast, selectedDate],
   )
 
   const now = new Date()
@@ -231,7 +227,7 @@ export function ForecastPage() {
                   key={item.forecastTime}
                   className="grid grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] items-center border-b-[1px] border-white/20 px-3 py-2"
                 >
-                  <p>{formatHourLabel(item.forecastTime, selectedTimezone)}</p>
+                  <p>{formatHourLabel(item.forecastTime)}</p>
                   <img
                     src={`/${item.weatherSymbol}.svg`}
                     alt="weather icon"

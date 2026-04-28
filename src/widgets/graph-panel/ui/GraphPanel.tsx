@@ -1,9 +1,6 @@
-import { DEFAULT_FORECAST_DAYS, FORECAST_DAY_OPTIONS } from "@/features/selected-forecast-days/model/days"
-import { useForecastDays } from "@/features/selected-forecast-days/model/days-context"
-import { useEffect, useState } from "react"
+import { useMemo, useState } from "react"
 import type { WeatherForecastItem, WeatherMeta } from "@/entities/weather/model/types"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
-import { useTimezone } from "@/features/selected-timezone/model/timezone-context"
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -73,11 +70,11 @@ const metricConfig = {
   }
 >
 
-// Uzima podatke za danas i jos onoliko dana koliko stane u odabrani broj.
-function getChartItems(forecast: WeatherForecastItem[], selectedForecastDays: number) {
+// Uzima podatke za danas + odabrani broj buducih dana.
+function getChartItems(forecast: WeatherForecastItem[]) {
   const now = new Date()
   const endDate = new Date(now)
-  endDate.setDate(endDate.getDate() + Math.max(selectedForecastDays - 1, 0))
+  endDate.setDate(endDate.getDate() + 2)
   endDate.setHours(23, 59, 59, 999)
 
   return forecast.filter((item) => {
@@ -90,16 +87,11 @@ function getChartItems(forecast: WeatherForecastItem[], selectedForecastDays: nu
 //za sve iste datume ko prvi prikazuje TODAY a za ostale ime dana
 function getDayLabel(
   dateString: string,
-  timeZone: string,
-  firstDateString?: string,
-  labelLength: "short" | "long" = "long",
-) {
+  firstDateString?: string,) {
   const date = parseForecastDate(dateString)
   const firstDate = firstDateString ? parseForecastDate(firstDateString) : null
-  const currentDay = date.toLocaleDateString("en-CA", { timeZone })
-  const firstDay = firstDate
-    ? firstDate.toLocaleDateString("en-CA", { timeZone })
-    : null
+  const currentDay = date.toLocaleDateString("en-CA")
+  const firstDay = firstDate ? firstDate.toLocaleDateString("en-CA") : null
   const sameDay = firstDay && currentDay === firstDay
 
   if (sameDay) {
@@ -107,16 +99,13 @@ function getDayLabel(
   }
 
   return date.toLocaleDateString("en-GB", {
-    weekday: labelLength,
-    timeZone,
+    weekday: "long",
   })
 }
 
 // za sve sate jednog dana uzima srednji index i tu stavi label dana
 function getDayMidpointIndexes(
   labels: string[],
-  timeZone: string,
-  labelLength: "short" | "long" = "long",
 ) {
   //key je index srednjeg sata, value je labela dana
   const midpoints = new Map<number, string>()
@@ -126,7 +115,7 @@ function getDayMidpointIndexes(
 
   // za svaki datum napravi listu indexa s tim datumima
   labels.forEach((label, index) => {
-    const dayKey = parseForecastDate(label).toLocaleDateString("en-CA", { timeZone })
+    const dayKey = parseForecastDate(label).toLocaleDateString("en-CA")
     const indexes = groupedIndexes.get(dayKey) ?? []
     indexes.push(index)
     groupedIndexes.set(dayKey, indexes)
@@ -139,7 +128,7 @@ function getDayMidpointIndexes(
     const label = labels[midpointIndex]
 
     if (label) {
-      midpoints.set(midpointIndex, getDayLabel(label, timeZone, labels[0], labelLength))
+      midpoints.set(midpointIndex, getDayLabel(label, labels[0]))
     }
   })
 
@@ -171,7 +160,7 @@ function getVisibleDayMidpoints(dayMidpoints: Map<number, string>, maxVisibleLab
 }
 
 // pretvra string u datum
-function getFullTooltipLabel(dateString: string, timeZone: string) {
+function getFullTooltipLabel(dateString: string) {
   return parseForecastDate(dateString).toLocaleString("en-GB", {
     weekday: "short",
     day: "2-digit",
@@ -179,7 +168,6 @@ function getFullTooltipLabel(dateString: string, timeZone: string) {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
-    timeZone,
   })
 }
 
@@ -241,7 +229,6 @@ function externalTooltipHandler(
   labels: string[],
   metric: GraphMetric,
   unit: string,
-  timeZone: string,
 ) {
   const { chart, tooltip } = context
   const tooltipEl = getOrCreateTooltip(chart)
@@ -263,7 +250,7 @@ function externalTooltipHandler(
 
   tooltipEl.innerHTML = `
     <div style="font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.82); margin-bottom: 6px; white-space: nowrap;">
-      ${forecastTime ? getFullTooltipLabel(forecastTime, timeZone) : ""}
+      ${forecastTime ? getFullTooltipLabel(forecastTime) : ""}
     </div>
     <div style="font-size: 28px; font-weight: 700; line-height: 1; color: white; text-align: center;">
       ${value ? `${value}${unit}` : ""}
@@ -279,42 +266,18 @@ function externalTooltipHandler(
 // main metoda
 export function GraphPanel({ forecast, meta }: GraphPanelProps) {
   const [metric, setMetric] = useState<GraphMetric>("temperature")
-  const { selectedTimezone } = useTimezone()
-  const { selectedForecastDays } = useForecastDays()
-  const [graphDays, setGraphDays] = useState(DEFAULT_FORECAST_DAYS)
-
-  useEffect(() => {
-    const fallbackDays = Math.min(DEFAULT_FORECAST_DAYS, selectedForecastDays)
-
-    setGraphDays((current) => {
-      const isCurrentOptionAvailable = current > 0 && current <= selectedForecastDays
-
-      if (isCurrentOptionAvailable) {
-        return current
-      }
-
-      const largestAvailableOption = [...FORECAST_DAY_OPTIONS]
-        .reverse()
-        .find((option) => option.value <= selectedForecastDays)
-
-      return largestAvailableOption?.value ?? fallbackDays
-    })
-  }, [selectedForecastDays])
-
-  const graphDayOptions = FORECAST_DAY_OPTIONS.filter(
-    (option) => option.value <= selectedForecastDays,
-  )
-  const chartItems = getChartItems(forecast, graphDays)
-  if (chartItems.length === 0) {
-    return <div className="xl:col-span-2 bg-div rounded-4xl p-6" />
-  }
+  const chartItems = useMemo(() => getChartItems(forecast), [forecast])
 
   const config = metricConfig[metric]
   const unit = meta[config.metaKey]?.unitDisplayName ?? config.fallbackUnit
   const labels = chartItems.map((item) => item.forecastTime)
-  const values = chartItems.map((item) => config.getValue(item))
-  const labelLength = graphDays > 5 ? "short" : "long"
-  const dayMidpoints = getDayMidpointIndexes(labels, selectedTimezone, labelLength)
+  const values = chartItems.map(config.getValue)
+
+  if (chartItems.length === 0) {
+    return <div className="xl:col-span-2 rounded-4xl bg-div p-6" />
+  }
+
+  const dayMidpoints = getDayMidpointIndexes(labels)
   const visibleDayMidpoints = getVisibleDayMidpoints(dayMidpoints)
   const minValue = Math.min(...values)
   const maxValue = Math.max(...values)
@@ -325,26 +288,9 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
     <div className="xl:col-span-2 flex h-full min-h-0 min-w-0 flex-col overflow-visible rounded-4xl bg-div p-6">
       <div className="mb-3 flex shrink-0 flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3 w-full">
-          <div className="flex flex-wrap items-center gap-2 rounded-full bg-white/6 p-1">
-            {graphDayOptions.map((option) => {
-              const isActive = graphDays === option.value
-
-              return (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => setGraphDays(option.value)}
-                  className={`rounded-full px-3 py-1.5 text-sm transition ${
-                    isActive
-                      ? "bg-white text-black"
-                      : "text-subtext hover:text-white"
-                  }`}
-                >
-                  {option.value}d
-                </button>
-              )
-            })}
-          </div>
+          <p className="text-[26px]">
+            Overview
+          </p>
 
           <div className="flex flex-wrap items-center gap-2 rounded-full bg-white/6 p-1">
             {(Object.keys(metricConfig) as GraphMetric[]).map((option) => {
@@ -412,7 +358,7 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
               tooltip: {
                 enabled: false,
                 external: (context) =>
-                  externalTooltipHandler(context, labels, metric, unit, selectedTimezone),
+                  externalTooltipHandler(context, labels, metric, unit),
               },
             },
             scales: {
@@ -424,9 +370,7 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
                   color: "rgba(255, 255, 255, 0.55)",
                   maxRotation: 0,
                   autoSkip: false,
-                  callback: (_value, index) => {
-                    return visibleDayMidpoints.get(index) ?? ""
-                  },
+                  callback: (_value, index) => visibleDayMidpoints.get(index) ?? "",
                 },
                 border: {
                   display: false,

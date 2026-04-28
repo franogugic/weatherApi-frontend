@@ -6,7 +6,6 @@ import type {
 import { WeatherStat } from "@/entities/weather/ui/WeatherStat"
 import { formatShortDate } from "@/shared/lib/format-date"
 import { useLocation } from "@/features/location/model/location-context"
-import { useTimezone } from "@/features/selected-timezone/model/timezone-context"
 
 type CurrentForecastPanelProps = {
   forecast: WeatherForecastItem
@@ -18,8 +17,7 @@ export function CurrentForecastPanel({
   forecast,
   meta,
 }: CurrentForecastPanelProps) {
-  const { selectedTimezone } = useTimezone()
-  const formattedDate = formatShortDate(new Date(), selectedTimezone)
+  const formattedDate = formatShortDate(new Date())
   const locationName =  useLocation().selectedLocation.name
   return (
     <div className="xl:row-span-2 flex min-w-0 flex-col justify-between rounded-4xl bg-linear-to-b from-lightBlue to-blue p-6">

@@ -3,7 +3,6 @@ import type {
     WeatherMeta,
 } from "@/entities/weather/model/types"
 import { useLocation } from "@/features/location/model/location-context"
-import { useForecastDays } from "@/features/selected-forecast-days/model/days-context"
 import React, { createContext } from "react"
 import { useWeatherForecast } from "./useWeatherForecast"
 
@@ -21,8 +20,7 @@ const ForecastContext = createContext<ForecastContextType | undefined>(undefined
 
 export function ForecastProvider({ children }: React.PropsWithChildren) {
     const { selectedLocation } = useLocation()
-    const { selectedForecastDays } = useForecastDays()
-    const fetchedData = useWeatherForecast(selectedLocation.id, selectedForecastDays)
+    const fetchedData = useWeatherForecast(selectedLocation.id)
 
     return (
         <ForecastContext.Provider

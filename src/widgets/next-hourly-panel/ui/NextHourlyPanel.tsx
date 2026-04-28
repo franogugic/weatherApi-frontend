@@ -1,6 +1,5 @@
 import type { WeatherForecastItem, WeatherMeta } from "@/entities/weather/model/types"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
-import { useTimezone } from "@/features/selected-timezone/model/timezone-context"
 import { NavLink } from "react-router-dom";
 
 type NextHourlyPanelProps = {
@@ -10,7 +9,6 @@ type NextHourlyPanelProps = {
 }
 
 export function NextHourlysPanel( {forecast, meta}: NextHourlyPanelProps) {
-  const { selectedTimezone } = useTimezone()
   
   return (
   <div className="xl:row-span-2 flex h-full min-h-0 min-w-0 flex-col rounded-4xl bg-div p-6">
@@ -33,7 +31,7 @@ export function NextHourlysPanel( {forecast, meta}: NextHourlyPanelProps) {
     >
       {forecast.map((item, index) => (
         <div key={index} className="grid h-full grid-cols-3 items-center px-2">
-          <p className="font-light">{getHourFromForecastTime(item.forecastTime, selectedTimezone)}</p>
+          <p className="font-light">{getHourFromForecastTime(item.forecastTime)}</p>
           <img
             src={`/${item.weatherSymbol}.svg`}
             alt="weather icon"
@@ -54,10 +52,9 @@ export function NextHourlysPanel( {forecast, meta}: NextHourlyPanelProps) {
 }
 
 
-function getHourFromForecastTime(dateString: string, timeZone: string) {
+function getHourFromForecastTime(dateString: string) {
   return parseForecastDate(dateString).toLocaleTimeString("en-GB", {
     hour: "2-digit",
     hour12: false,
-    timeZone,
   })
 }
