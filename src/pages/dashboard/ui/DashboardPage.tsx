@@ -1,4 +1,4 @@
-import { useForecast } from "@/features/get-weather-forecast/model/forecast-context"
+import { useForecastStore } from "@/features/get-weather-forecast/model/forecast-store"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 import { CurrentForecastPanel } from "@/widgets/current-forecast-panel/ui/CurrentForecastPanel"
 import { GraphPanel } from "@/widgets/graph-panel/ui/GraphPanel"
@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next"
 
 export function DashboardPage() {
   const { t } = useTranslation()
-  const {forecast, meta, isLoading} = useForecast()
+  const {forecast, meta, isLoading} = useForecastStore()
 
   if (isLoading) {
     return (
