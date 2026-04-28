@@ -115,7 +115,7 @@ export function MapView({
                     y: -104,
                   })}
                 >
-                  <div className="flex min-w-[192px] max-w-[260px] flex-col items-center border border-white/15 bg-white/8 px-3 py-1.5 text-center shadow-lg backdrop-blur-xl">
+                  <div className="flex min-w-[172px] max-w-[260px] flex-col rounded-2xl items-center border border-white/15 bg-white/8 px-3 py-1.5 text-center shadow-lg backdrop-blur-xl">
                     <div className="flex items-center gap-1">
                       <img
                         src={`/${marker.weatherSymbol}.svg`}

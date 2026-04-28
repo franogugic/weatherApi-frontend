@@ -34,7 +34,7 @@ export function SettingsPanel() {
       <button
         type="button"
         onClick={() => setIsOpen((current) => !current)}
-        className="flex items-center gap-2 rounded-2xl bg-linear-to-b from-lightBlue to-blue px-4 py-2 text-white outline-none transition"
+        className="flex items-center gap-2 rounded-2xl bg-linear-to-b from-accent-secondary to-accent-primary px-4 py-2 text-white outline-none transition"
       >
         <span>{selectedLanguage.flag}</span>
         <span className="text-[14px] font-bold">{selectedLanguage.label}</span>
@@ -51,7 +51,7 @@ export function SettingsPanel() {
                 setIsOpen(false)
               }}
               className={`w-full rounded-3xl px-3 py-2 text-left transition ${
-                language === option.value ? "text-blue" : "text-subtext"
+                language === option.value ? "text-accent-primary" : "text-subtext"
               }`}
             >
               <div className="flex items-center gap-2">

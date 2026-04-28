@@ -117,7 +117,7 @@ export function SearchPanel() {
               <p
                 className={`text-[14px] font-semibold ${
                   loc.id === selectedLocation.id
-                    ? "text-blue "
+                    ? "text-accent-primary "
                     : "text-white"
                 }`}
               >

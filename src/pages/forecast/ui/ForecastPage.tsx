@@ -1,20 +1,26 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { CloudRain, MoveUp, Thermometer, Wind } from "lucide-react"
+import { capitalizeFirstLetter, CROATIA_TIME_ZONE } from "@/shared/lib/format-date"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 import { useTranslation } from "react-i18next"
 import { useLocationStore } from "@/features/location/model/location-store"
 import { useForecastStore } from "@/features/get-weather-forecast/model/forecast-store"
 
 function getDateKey(dateString: string) {
-  return parseForecastDate(dateString).toLocaleDateString("en-CA")
+  return parseForecastDate(dateString).toLocaleDateString("en-CA", {
+    timeZone: CROATIA_TIME_ZONE,
+  })
 }
 
 function formatDateLabel(dateString: string, locale: string) {
-  return parseForecastDate(dateString).toLocaleDateString(locale, {
-    weekday: "long",
-    day: "2-digit",
-    month: "short",
-  })
+  return capitalizeFirstLetter(
+    parseForecastDate(dateString).toLocaleDateString(locale, {
+      weekday: "long",
+      day: "2-digit",
+      month: "short",
+      timeZone: CROATIA_TIME_ZONE,
+    }),
+  )
 }
 
 function formatHourLabel(dateString: string, locale: string) {
@@ -22,6 +28,7 @@ function formatHourLabel(dateString: string, locale: string) {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
+    timeZone: CROATIA_TIME_ZONE,
   })
 }
 
@@ -62,28 +69,6 @@ export function ForecastPage() {
       setSelectedDate(dateOptions[0].key)
     }
   }, [dateOptions, selectedDate])
-
-  // dropdown
-  const [isDateDropdownOpen, setIsDateDropdownOpen] = useState(false)
-  const dateDropdownRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        dateDropdownRef.current &&
-        event.target instanceof Node &&
-        !dateDropdownRef.current.contains(event.target)
-      ) {
-        setIsDateDropdownOpen(false)
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside)
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
 
   const selectedDayForecast = useMemo(
     () =>
@@ -162,7 +147,7 @@ export function ForecastPage() {
             </p>
           </div>
           <div className="flex items-center justify-between">
-            <Wind size={40} className="fill-blue-300" />
+            <Wind size={40} className="fill-blue-200" />
             <p className="text-[28px] font-semibold">
               {currentForecast?.windSpeed}{" "}
               <span className="text-[20px] font-medium">
@@ -173,41 +158,21 @@ export function ForecastPage() {
         </div>
       </div>
 
-      <div ref={dateDropdownRef} className="relative mb-4 ml-auto h-fit w-fit self-start">
-        <button
-          type="button"
-          onClick={() => setIsDateDropdownOpen((current) => !current)}
-          className="flex gap-2 rounded-2xl bg-linear-to-b from-lightBlue to-blue px-4 py-2 text-white outline-none transition"
-        >
-          <span className="text-[14px] font-bold">
-            {dateOptions.find((option) => option.key === selectedDate)?.label ?? t("forecast.datePlaceholder")}
-          </span>
-        </button>
-
-        {isDateDropdownOpen ? (
-          <div className="absolute top-full right-0 z-20 mt-2 max-h-48 min-w-[320px] overflow-y-auto rounded-4xl border border-white/15 bg-white/8 p-4 shadow-lg backdrop-blur-xl">
-            {dateOptions.map((option, index) => (
-              <button
-                key={option.key}
-                type="button"
-                onClick={() => {
-                  setSelectedDate(option.key)
-                  setIsDateDropdownOpen(false)
-                }}
-                className={`w-full rounded-3xl px-3 py-2 text-left transition ${
-                  selectedDate === option.key
-                    ? "text-blue"
-                    : "text-subtext"
-                }`}
-              >
-                <span>{option.label}</span>
-                {index < dateOptions.length - 1 && (
-                  <div className="mt-3 border-b border-white/50" />
-                )}
-              </button>
-            ))}
-          </div>
-        ) : null}
+      <div className="mb-4 overflow-x-auto">
+        <div className="flex min-w-max items-center justify-center divide-x divide-white/20  px-4">
+          {dateOptions.map((option) => (
+            <button
+              key={option.key}
+              type="button" 
+              onClick={() => setSelectedDate(option.key)}
+              className={`cursor-pointer  px-8 py-2 text-sm font-semibold whitespace-nowrap  transition ${
+                selectedDate === option.key ? "text-accent-primary " : "text-white"
+              }`}
+            >
+               {option.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto rounded-3xl py-4">
@@ -267,11 +232,11 @@ export function ForecastPage() {
         </div>
       </div>
         <div className="flex flex-wrap items-center justify-between gap-3">
-                <button onClick={goToPreviousDay} disabled={!hasPreviousDay} className="disabled:opacity-0 underline cursor-pointer bg-linear-to-r from-lightBlue to-blue bg-clip-text text-transparent">
+                <button onClick={goToPreviousDay} disabled={!hasPreviousDay} className="disabled:opacity-0 underline cursor-pointer bg-linear-to-r from-accent-secondary to-accent-primary bg-clip-text text-transparent">
                     &larr; {t("forecast.previousDay")}
                 </button>
 
-                <button onClick={goToNextDay} disabled={!hasNextDay} className="disabled:opacity-0 underline cursor-pointer bg-linear-to-r from-blue to-lightBlue bg-clip-text text-transparent">
+                <button onClick={goToNextDay} disabled={!hasNextDay} className="disabled:opacity-0 underline cursor-pointer bg-linear-to-r from-accent-secondary to-accent-primary bg-clip-text text-transparent">
                     {t("forecast.nextDay")} &rarr;
                 </button>
         </div>

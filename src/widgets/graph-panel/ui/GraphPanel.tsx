@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react"
 import type { WeatherForecastItem, WeatherMeta } from "@/entities/weather/model/types"
+import { capitalizeFirstLetter, CROATIA_TIME_ZONE } from "@/shared/lib/format-date"
+import { getTemperatureTheme } from "@/shared/lib/get-temperature-theme"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 import {
   CategoryScale,
@@ -39,8 +41,8 @@ const metricConfig = {
     metaKey: "air_temperature",
     fallbackUnit: "°",
     minValue: undefined,
-    startColor: "#4974ef",
-    endColor: "#6fbcff",
+    startColor: "",
+    endColor: "",
     getValue: (item: WeatherForecastItem) => item.airTemperature,
   },
   precipitation: {
@@ -77,13 +79,28 @@ const metricConfig = {
 // Uzima podatke za danas + odabrani broj buducih dana.
 function getChartItems(forecast: WeatherForecastItem[]) {
   const now = new Date()
-  const endDate = new Date(now)
-  endDate.setDate(endDate.getDate() + days)
-  endDate.setHours(23, 59, 59, 999)
+  const visibleDayKeys: string[] = []
 
   return forecast.filter((item) => {
     const forecastDate = parseForecastDate(item.forecastTime)
-    return forecastDate >= now && forecastDate <= endDate
+
+    if (forecastDate < now) {
+      return false
+    }
+
+    const dayKey = forecastDate.toLocaleDateString("en-CA", {
+      timeZone: CROATIA_TIME_ZONE,
+    })
+
+    if (!visibleDayKeys.includes(dayKey)) {
+      if (visibleDayKeys.length > days) {
+        return false
+      }
+
+      visibleDayKeys.push(dayKey)
+    }
+
+    return true
   })
 }
 
@@ -96,17 +113,22 @@ function getDayLabel(
   firstDateString?: string,) {
   const date = parseForecastDate(dateString)
   const firstDate = firstDateString ? parseForecastDate(firstDateString) : null
-  const currentDay = date.toLocaleDateString("en-CA")
-  const firstDay = firstDate ? firstDate.toLocaleDateString("en-CA") : null
+  const currentDay = date.toLocaleDateString("en-CA", { timeZone: CROATIA_TIME_ZONE })
+  const firstDay = firstDate
+    ? firstDate.toLocaleDateString("en-CA", { timeZone: CROATIA_TIME_ZONE })
+    : null
   const sameDay = firstDay && currentDay === firstDay
 
   if (sameDay) {
     return todayLabel
   }
 
-  return date.toLocaleDateString(locale, {
-    weekday: "long",
-  })
+  return capitalizeFirstLetter(
+    date.toLocaleDateString(locale, {
+      weekday: "long",
+      timeZone: CROATIA_TIME_ZONE,
+    }),
+  )
 }
 
 // za sve sate jednog dana uzima srednji index i tu stavi label dana
@@ -123,7 +145,9 @@ function getDayMidpointIndexes(
 
   // za svaki datum napravi listu indexa s tim datumima
   labels.forEach((label, index) => {
-    const dayKey = parseForecastDate(label).toLocaleDateString("en-CA")
+    const dayKey = parseForecastDate(label).toLocaleDateString("en-CA", {
+      timeZone: CROATIA_TIME_ZONE,
+    })
     const indexes = groupedIndexes.get(dayKey) ?? []
     indexes.push(index)
     groupedIndexes.set(dayKey, indexes)
@@ -176,6 +200,7 @@ function getFullTooltipLabel(dateString: string, locale: string) {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
+    timeZone: CROATIA_TIME_ZONE,
   })
 }
 
@@ -278,8 +303,22 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
   const [metric, setMetric] = useState<GraphMetric>("temperature")
   const chartItems = useMemo(() => getChartItems(forecast), [forecast])
   const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
+  const now = new Date()
+  const currentForecast =
+    [...forecast]
+      .reverse()
+      .find((item) => parseForecastDate(item.forecastTime) <= now) ?? forecast[0]
+  const temperatureTheme = getTemperatureTheme(currentForecast?.airTemperature ?? 16)
+  const resolvedMetricConfig = {
+    ...metricConfig,
+    temperature: {
+      ...metricConfig.temperature,
+      startColor: temperatureTheme.primary,
+      endColor: temperatureTheme.secondary,
+    },
+  }
 
-  const config = metricConfig[metric]
+  const config = resolvedMetricConfig[metric]
   const unit = meta[config.metaKey]?.unitDisplayName ?? config.fallbackUnit
   const labels = chartItems.map((item) => item.forecastTime)
   const values = chartItems.map(config.getValue)
@@ -306,6 +345,7 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
           <div className="flex flex-wrap items-center gap-2 rounded-full bg-white/6 p-1">
             {(Object.keys(metricConfig) as GraphMetric[]).map((option) => {
               const isActive = metric === option
+              const optionConfig = resolvedMetricConfig[option]
               return (
                 <button
                   key={option}
@@ -314,7 +354,7 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
                   style={
                     isActive
                       ? {
-                          background: `linear-gradient(180deg, ${metricConfig[option].endColor} 0%, ${metricConfig[option].startColor} 100%)`,
+                          background: `linear-gradient(180deg, ${optionConfig.endColor} 0%, ${optionConfig.startColor} 100%)`,
                           color: "white",
                         }
                       : undefined
@@ -325,7 +365,7 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
                       : "text-subtext hover:text-white"
                   }`}
                 >
-                  {t(metricConfig[option].labelKey)}
+                  {t(optionConfig.labelKey)}
                 </button>
               )
             })}
