@@ -12,6 +12,7 @@ import {
   Tooltip,
 } from "chart.js"
 import { Line } from "react-chartjs-2"
+import { useTranslation } from "react-i18next"
 
 ChartJS.register(
   CategoryScale,
@@ -29,9 +30,12 @@ type GraphPanelProps = {
 
 type GraphMetric = "temperature" | "precipitation" | "wind"
 
+// broj dana za koje ce se graf priakzt znaci DANAS + DAYS
+const days = 2;
+
 const metricConfig = {
   temperature: {
-    label: "Temperature",
+    labelKey: "graph.temperature",
     metaKey: "air_temperature",
     fallbackUnit: "°",
     minValue: undefined,
@@ -40,7 +44,7 @@ const metricConfig = {
     getValue: (item: WeatherForecastItem) => item.airTemperature,
   },
   precipitation: {
-    label: "Precipitation",
+    labelKey: "graph.precipitation",
     metaKey: "precipitation_amount",
     fallbackUnit: "mm",
     minValue: 0,
@@ -49,7 +53,7 @@ const metricConfig = {
     getValue: (item: WeatherForecastItem) => item.precipitationAmount,
   },
   wind: {
-    label: "Wind",
+    labelKey: "graph.wind",
     metaKey: "wind_speed",
     fallbackUnit: "m/s",
     minValue: 0,
@@ -60,7 +64,7 @@ const metricConfig = {
 } satisfies Record<
   GraphMetric,
   {
-    label: string
+    labelKey: string
     metaKey: string
     fallbackUnit: string
     minValue?: number
@@ -74,7 +78,7 @@ const metricConfig = {
 function getChartItems(forecast: WeatherForecastItem[]) {
   const now = new Date()
   const endDate = new Date(now)
-  endDate.setDate(endDate.getDate() + 2)
+  endDate.setDate(endDate.getDate() + days)
   endDate.setHours(23, 59, 59, 999)
 
   return forecast.filter((item) => {
@@ -87,6 +91,8 @@ function getChartItems(forecast: WeatherForecastItem[]) {
 //za sve iste datume ko prvi prikazuje TODAY a za ostale ime dana
 function getDayLabel(
   dateString: string,
+  locale: string,
+  todayLabel: string,
   firstDateString?: string,) {
   const date = parseForecastDate(dateString)
   const firstDate = firstDateString ? parseForecastDate(firstDateString) : null
@@ -95,10 +101,10 @@ function getDayLabel(
   const sameDay = firstDay && currentDay === firstDay
 
   if (sameDay) {
-    return "Today"
+    return todayLabel
   }
 
-  return date.toLocaleDateString("en-GB", {
+  return date.toLocaleDateString(locale, {
     weekday: "long",
   })
 }
@@ -106,6 +112,8 @@ function getDayLabel(
 // za sve sate jednog dana uzima srednji index i tu stavi label dana
 function getDayMidpointIndexes(
   labels: string[],
+  locale: string,
+  todayLabel: string,
 ) {
   //key je index srednjeg sata, value je labela dana
   const midpoints = new Map<number, string>()
@@ -128,7 +136,7 @@ function getDayMidpointIndexes(
     const label = labels[midpointIndex]
 
     if (label) {
-      midpoints.set(midpointIndex, getDayLabel(label, labels[0]))
+      midpoints.set(midpointIndex, getDayLabel(label, locale, todayLabel, labels[0]))
     }
   })
 
@@ -160,8 +168,8 @@ function getVisibleDayMidpoints(dayMidpoints: Map<number, string>, maxVisibleLab
 }
 
 // pretvra string u datum
-function getFullTooltipLabel(dateString: string) {
-  return parseForecastDate(dateString).toLocaleString("en-GB", {
+function getFullTooltipLabel(dateString: string, locale: string) {
+  return parseForecastDate(dateString).toLocaleString(locale, {
     weekday: "short",
     day: "2-digit",
     month: "short",
@@ -229,6 +237,7 @@ function externalTooltipHandler(
   labels: string[],
   metric: GraphMetric,
   unit: string,
+  locale: string,
 ) {
   const { chart, tooltip } = context
   const tooltipEl = getOrCreateTooltip(chart)
@@ -250,7 +259,7 @@ function externalTooltipHandler(
 
   tooltipEl.innerHTML = `
     <div style="font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.82); margin-bottom: 6px; white-space: nowrap;">
-      ${forecastTime ? getFullTooltipLabel(forecastTime) : ""}
+      ${forecastTime ? getFullTooltipLabel(forecastTime, locale) : ""}
     </div>
     <div style="font-size: 28px; font-weight: 700; line-height: 1; color: white; text-align: center;">
       ${value ? `${value}${unit}` : ""}
@@ -265,8 +274,10 @@ function externalTooltipHandler(
 
 // main metoda
 export function GraphPanel({ forecast, meta }: GraphPanelProps) {
+  const { t, i18n } = useTranslation()
   const [metric, setMetric] = useState<GraphMetric>("temperature")
   const chartItems = useMemo(() => getChartItems(forecast), [forecast])
+  const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
 
   const config = metricConfig[metric]
   const unit = meta[config.metaKey]?.unitDisplayName ?? config.fallbackUnit
@@ -277,7 +288,7 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
     return <div className="xl:col-span-2 rounded-4xl bg-div p-6" />
   }
 
-  const dayMidpoints = getDayMidpointIndexes(labels)
+  const dayMidpoints = getDayMidpointIndexes(labels, locale, t("graph.today"))
   const visibleDayMidpoints = getVisibleDayMidpoints(dayMidpoints)
   const minValue = Math.min(...values)
   const maxValue = Math.max(...values)
@@ -289,7 +300,7 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
       <div className="mb-3 flex shrink-0 flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3 w-full">
           <p className="text-[26px]">
-            Overview
+            {t("graph.overview")}
           </p>
 
           <div className="flex flex-wrap items-center gap-2 rounded-full bg-white/6 p-1">
@@ -314,7 +325,7 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
                       : "text-subtext hover:text-white"
                   }`}
                 >
-                  {metricConfig[option].label}
+                  {t(metricConfig[option].labelKey)}
                 </button>
               )
             })}
@@ -327,7 +338,7 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
             labels,
             datasets: [
               {
-                label: config.label,
+                label: t(config.labelKey),
                 data: values,
                 borderColor: (context) =>
                   getMetricGradient(
@@ -358,7 +369,7 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
               tooltip: {
                 enabled: false,
                 external: (context) =>
-                  externalTooltipHandler(context, labels, metric, unit),
+                  externalTooltipHandler(context, labels, metric, unit, locale),
               },
             },
             scales: {

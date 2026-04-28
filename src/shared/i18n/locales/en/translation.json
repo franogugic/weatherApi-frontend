@@ -1,0 +1,57 @@
+{
+  "common": {
+    "today": "Today",
+    "date": "Date",
+    "loading": "Loading...",
+    "weatherIconAlt": "weather icon"
+  },
+  "search": {
+    "placeholder": "Search City...",
+    "loadingLocations": "Loading locations...",
+    "latitudeShort": "lat",
+    "longitudeShort": "lon",
+    "altitudeShort": "alt"
+  },
+  "currentForecast": {
+    "todayLabel": "Today, {{date}}",
+    "wind": "Wind",
+    "humidity": "Humidity",
+    "precipitation": "Precipitation"
+  },
+  "nextHourly": {
+    "title": "Next 12 Hours",
+    "seeMore": "See more",
+    "seeAll": "See all",
+    "time": "Time",
+    "weather": "Weather",
+    "temp": "Temp"
+  },
+  "forecast": {
+    "loading": "Loading forecast...",
+    "currentConditions": "Current conditions",
+    "datePlaceholder": "Date",
+    "time": "Time",
+    "weather": "Weather",
+    "temp": "Temp",
+    "pressure": "Pressure",
+    "clouds": "Clouds",
+    "humidity": "Humidity",
+    "precipitation": "Precipitation",
+    "wind": "Wind",
+    "previousDay": "Previous day",
+    "nextDay": "Next day"
+  },
+  "graph": {
+    "overview": "Overview",
+    "temperature": "Temperature",
+    "precipitation": "Precipitation",
+    "wind": "Wind",
+    "today": "Today"
+  },
+  "map": {
+    "loading": "Loading map..."
+  },
+  "settings": {
+    "title": "Settings"
+  }
+}

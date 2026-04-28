@@ -3,21 +3,22 @@ import { CloudRain, MoveUp, Thermometer, Wind } from "lucide-react"
 import { useForecast } from "@/features/get-weather-forecast/model/forecast-context"
 import { useLocation } from "@/features/location/model/location-context"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
+import { useTranslation } from "react-i18next"
 
 function getDateKey(dateString: string) {
   return parseForecastDate(dateString).toLocaleDateString("en-CA")
 }
 
-function formatDateLabel(dateString: string) {
-  return parseForecastDate(dateString).toLocaleDateString("en-GB", {
+function formatDateLabel(dateString: string, locale: string) {
+  return parseForecastDate(dateString).toLocaleDateString(locale, {
     weekday: "long",
     day: "2-digit",
     month: "short",
   })
 }
 
-function formatHourLabel(dateString: string) {
-  return parseForecastDate(dateString).toLocaleTimeString("en-GB", {
+function formatHourLabel(dateString: string, locale: string) {
+  return parseForecastDate(dateString).toLocaleTimeString(locale, {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -25,8 +26,10 @@ function formatHourLabel(dateString: string) {
 }
 
 export function ForecastPage() {
+  const { t, i18n } = useTranslation()
   const { forecast, meta, isLoading } = useForecast()
   const { selectedLocation } = useLocation()
+  const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
 
   // lista za sve datume koji forecast vraca
   const dateOptions = useMemo(() => {
@@ -42,9 +45,9 @@ export function ForecastPage() {
 
     return Array.from(uniqueDates.entries()).map(([key, value]) => ({
       key,
-      label: formatDateLabel(value),
+      label: formatDateLabel(value, locale),
     }))
-  }, [forecast])
+  }, [forecast, locale])
 
   const [selectedDate, setSelectedDate] = useState<string>("")
 
@@ -119,7 +122,7 @@ export function ForecastPage() {
           <h2 className="text-4xl">{selectedLocation.name}</h2>
         </div>
         <div className="flex flex-1 items-center justify-center text-white/55">
-          Loading forecast...
+          {t("forecast.loading")}
         </div>
       </div>
     )
@@ -133,11 +136,11 @@ export function ForecastPage() {
       </div>
 
       <div className="mb-8 flex flex-col items-center justify-center">
-        <p className="mb-2 text-[20px] font-extralight">Current conditions</p>
+        <p className="mb-2 text-[20px] font-extralight">{t("forecast.currentConditions")}</p>
         <div className="flex flex-wrap items-center justify-center gap-6">
           <img
             src={`/${currentForecast?.weatherSymbol}.svg`}
-            alt="weather icon"
+            alt={t("common.weatherIconAlt")}
             className="w-16"
           />
           <div className="flex items-center justify-between">
@@ -177,7 +180,7 @@ export function ForecastPage() {
           className="flex gap-2 rounded-2xl bg-linear-to-b from-lightBlue to-blue px-4 py-2 text-white outline-none transition"
         >
           <span className="text-[14px] font-bold">
-            {dateOptions.find((option) => option.key === selectedDate)?.label ?? "DATE"}
+            {dateOptions.find((option) => option.key === selectedDate)?.label ?? t("forecast.datePlaceholder")}
           </span>
         </button>
 
@@ -211,14 +214,14 @@ export function ForecastPage() {
         <div className="overflow-x-auto">
           <div className="min-w-[860px]">
             <div className="mb-3 grid grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] px-3 text-[12px] text-subtext">
-              <p>Time</p>
-              <p>Weather</p>
-              <p>Temp</p>
-              <p>Pressure</p>
-              <p>Clouds</p>
-              <p>Humidity</p>
-              <p>Precipitation</p>
-              <p>Wind</p>
+              <p>{t("forecast.time")}</p>
+              <p>{t("forecast.weather")}</p>
+              <p>{t("forecast.temp")}</p>
+              <p>{t("forecast.pressure")}</p>
+              <p>{t("forecast.clouds")}</p>
+              <p>{t("forecast.humidity")}</p>
+              <p>{t("forecast.precipitation")}</p>
+              <p>{t("forecast.wind")}</p>
             </div>
 
             <div className="space-y-2">
@@ -227,10 +230,10 @@ export function ForecastPage() {
                   key={item.forecastTime}
                   className="grid grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] items-center border-b-[1px] border-white/20 px-3 py-2"
                 >
-                  <p>{formatHourLabel(item.forecastTime)}</p>
+                  <p>{formatHourLabel(item.forecastTime, locale)}</p>
                   <img
                     src={`/${item.weatherSymbol}.svg`}
-                    alt="weather icon"
+                    alt={t("common.weatherIconAlt")}
                     className="w-10"
                   />
                   <p>
@@ -265,11 +268,11 @@ export function ForecastPage() {
       </div>
         <div className="flex flex-wrap items-center justify-between gap-3">
                 <button onClick={goToPreviousDay} disabled={!hasPreviousDay} className="disabled:opacity-0 underline cursor-pointer bg-linear-to-r from-lightBlue to-blue bg-clip-text text-transparent">
-                    &larr; Previous day 
+                    &larr; {t("forecast.previousDay")}
                 </button>
 
                 <button onClick={goToNextDay} disabled={!hasNextDay} className="disabled:opacity-0 underline cursor-pointer bg-linear-to-r from-blue to-lightBlue bg-clip-text text-transparent">
-                    Next day &rarr;
+                    {t("forecast.nextDay")} &rarr;
                 </button>
         </div>
     </div>

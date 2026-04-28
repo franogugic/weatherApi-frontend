@@ -6,8 +6,10 @@ import { MapPanel } from "@/widgets/map-panel/ui/MapPanel"
 import { NextHourlysPanel } from "@/widgets/next-hourly-panel/ui/NextHourlyPanel"
 import { SearchPanel } from "@/widgets/search-panel/ui/SearchPanel"
 import { SettingsPanel } from "@/widgets/settings-panel/ui/SettingsPanel"
+import { useTranslation } from "react-i18next"
 
 export function DashboardPage() {
+  const { t } = useTranslation()
   const {forecast, meta, isLoading} = useForecast()
 
   if (isLoading) {
@@ -16,9 +18,9 @@ export function DashboardPage() {
         <SearchPanel />
         <div className="hidden rounded-4xl bg-div xl:block" />
         <SettingsPanel />
-        <div className="row-span-2 rounded-4xl bg-div p-6 text-white/55">Loading forecast...</div>
+        <div className="row-span-2 rounded-4xl bg-div p-6 text-white/55">{t("forecast.loading")}</div>
         <div className="rounded-4xl bg-div" />
-        <div className="col-span-2 rounded-4xl bg-div p-6 text-white/55">Loading forecast...</div>
+        <div className="col-span-2 rounded-4xl bg-div p-6 text-white/55">{t("forecast.loading")}</div>
       </div>
     )
   }

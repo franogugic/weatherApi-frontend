@@ -1,0 +1,57 @@
+{
+  "common": {
+    "today": "Danas",
+    "date": "Datum",
+    "loading": "Učitavanje...",
+    "weatherIconAlt": "ikona vremena"
+  },
+  "search": {
+    "placeholder": "Pretraži grad...",
+    "loadingLocations": "Učitavanje lokacija...",
+    "latitudeShort": "lat",
+    "longitudeShort": "lon",
+    "altitudeShort": "nadm. visina"
+  },
+  "currentForecast": {
+    "todayLabel": "Danas, {{date}}",
+    "wind": "Vjetar",
+    "humidity": "Vlaga",
+    "precipitation": "Oborine"
+  },
+  "nextHourly": {
+    "title": "Sljedećih 12 sati",
+    "seeMore": "Prikaži više",
+    "seeAll": "Prikaži sve",
+    "time": "Vrijeme",
+    "weather": "Vrijeme",
+    "temp": "Temp"
+  },
+  "forecast": {
+    "loading": "Učitavanje prognoze...",
+    "currentConditions": "Trenutni uvjeti",
+    "datePlaceholder": "Datum",
+    "time": "Vrijeme",
+    "weather": "Vrijeme",
+    "temp": "Temp",
+    "pressure": "Tlak",
+    "clouds": "Oblaci",
+    "humidity": "Vlaga",
+    "precipitation": "Oborine",
+    "wind": "Vjetar",
+    "previousDay": "Prethodni dan",
+    "nextDay": "Sljedeći dan"
+  },
+  "graph": {
+    "overview": "Pregled",
+    "temperature": "Temperatura",
+    "precipitation": "Oborine",
+    "wind": "Vjetar",
+    "today": "Danas"
+  },
+  "map": {
+    "loading": "Učitavanje karte..."
+  },
+  "settings": {
+    "title": "Postavke"
+  }
+}

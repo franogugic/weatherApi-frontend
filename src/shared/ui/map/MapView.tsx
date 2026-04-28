@@ -1,4 +1,5 @@
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api"
+import { useTranslation } from "react-i18next"
 
 const mapContainerStyle = {
   width: "100%",
@@ -57,6 +58,7 @@ export function MapView({
   longitude,
   zoom = 3,
 }: MapViewProps) {
+  const { t } = useTranslation()
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
@@ -68,7 +70,7 @@ export function MapView({
   }
 
   if (!isLoaded) {
-    return <div className="flex h-full w-full items-center justify-center text-subtext">Loading map...</div>
+    return <div className="flex h-full w-full items-center justify-center text-subtext">{t("map.loading")}</div>
   }
 
   return (

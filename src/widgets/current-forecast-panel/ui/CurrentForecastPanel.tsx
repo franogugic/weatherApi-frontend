@@ -6,6 +6,7 @@ import type {
 import { WeatherStat } from "@/entities/weather/ui/WeatherStat"
 import { formatShortDate } from "@/shared/lib/format-date"
 import { useLocation } from "@/features/location/model/location-context"
+import { useTranslation } from "react-i18next"
 
 type CurrentForecastPanelProps = {
   forecast: WeatherForecastItem
@@ -17,12 +18,14 @@ export function CurrentForecastPanel({
   forecast,
   meta,
 }: CurrentForecastPanelProps) {
-  const formattedDate = formatShortDate(new Date())
+  const { t, i18n } = useTranslation()
+  const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
+  const formattedDate = formatShortDate(new Date(), locale)
   const locationName =  useLocation().selectedLocation.name
   return (
     <div className="xl:row-span-2 flex min-w-0 flex-col justify-between rounded-4xl bg-linear-to-b from-lightBlue to-blue p-6">
       <div className="text-[14px]">
-        <p>Today, {formattedDate}</p>
+        <p>{t("currentForecast.todayLabel", { date: formattedDate })}</p>
         <div className="flex flex-wrap items-center gap-1 text-[14px] font-bold">
           <MapPin className="w-6" />
           <p className="break-words">{locationName}</p>
@@ -40,7 +43,7 @@ export function CurrentForecastPanel({
         </div>
         <img
           src={`/${forecast.weatherSymbol}.svg`}
-          alt="weather icon"
+          alt={t("common.weatherIconAlt")}
           className="w-46 mx-auto -translate-y-8"
         />
       </div>
@@ -50,21 +53,21 @@ export function CurrentForecastPanel({
           icon={<Wind size={34} />}
           value={forecast.windSpeed}
           unit={meta.wind_speed?.unitDisplayName}
-          label="Wind"
+          label={t("currentForecast.wind")}
           showDivider
         />
         <WeatherStat
           icon={<Droplets size={34} />}
           value={forecast.humidity}
           unit={meta.relative_humidity?.unitDisplayName}
-          label="Humidity"
+          label={t("currentForecast.humidity")}
           showDivider
         />
         <WeatherStat
           icon={<CloudRain size={34} />}
           value={forecast.precipitationAmount}
           unit={meta.precipitation_amount?.unitDisplayName}
-          label="Precipitation"
+          label={t("currentForecast.precipitation")}
         />
       </div>
     </div>

@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 export function SettingsPanel() {
-  const dropdownRef = useRef<HTMLDivElement | null>(null)
+  const { t } = useTranslation()
 
   return (
     <div>
-      <p>settingsi</p>
+      <p>{t("settings.title")}</p>
     </div>
   )
 }

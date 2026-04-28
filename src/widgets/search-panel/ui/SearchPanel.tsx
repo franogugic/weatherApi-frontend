@@ -1,8 +1,10 @@
 import { useLocation } from "@/features/location/model/location-context"
 import { Search } from "lucide-react"
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 export function SearchPanel() {
+  const { t } = useTranslation()
   const { isLoading, locations, selectedLocation, setSelectedLocation } = useLocation()
   const [locationValue, setLocationValue] = useState(selectedLocation.name)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
@@ -55,7 +57,7 @@ export function SearchPanel() {
         <Search size={22} />
         <input
           type="text"
-          placeholder="Search City..."
+          placeholder={t("search.placeholder")}
           disabled={isLoading}
           value={locationValue}
           className="min-w-0 w-full bg-transparent border-none font-extralight focus:outline-none"
@@ -88,7 +90,7 @@ export function SearchPanel() {
       </div>
 
       {isLoading && (
-        <p className="mt-2 text-xs text-white/45">Loading locations...</p>
+        <p className="mt-2 text-xs text-white/45">{t("search.loadingLocations")}</p>
       )}
 
       {/*dropwdon reUltata lokacija*/}
@@ -117,7 +119,8 @@ export function SearchPanel() {
                 {loc.name}
               </p>
               <p className="mt-1 text-xs text-white/50">
-                lat {loc.latitude.toFixed(2)} | lon {loc.longitude.toFixed(2)} | alt {loc.altitude}
+                {t("search.latitudeShort")} {loc.latitude.toFixed(2)} | {t("search.longitudeShort")}{" "}
+                {loc.longitude.toFixed(2)} | {t("search.altitudeShort")} {loc.altitude}
               </p>
               {index < filteredLocations.length - 1 && (
                 <div className="mt-3 border-b border-white/50" />
