@@ -260,7 +260,8 @@ function getOrCreateTooltip(chart: ChartJS) {
 function externalTooltipHandler(
   context: any,
   labels: string[],
-  metric: GraphMetric,
+  startColor: string,
+  endColor: string,
   unit: string,
   locale: string,
 ) {
@@ -278,9 +279,8 @@ function externalTooltipHandler(
 
   const forecastTime = labels[tooltip.dataPoints?.[0]?.dataIndex ?? 0]
   const value = tooltip.dataPoints?.[0]?.formattedValue
-  const config = metricConfig[metric]
 
-  tooltipEl.style.background = `linear-gradient(180deg, ${config.endColor} 0%, ${config.startColor} 100%)`
+  tooltipEl.style.background = `linear-gradient(180deg, ${endColor} 0%, ${startColor} 100%)`
 
   tooltipEl.innerHTML = `
     <div style="font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.82); margin-bottom: 6px; white-space: nowrap;">
@@ -409,7 +409,14 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
               tooltip: {
                 enabled: false,
                 external: (context) =>
-                  externalTooltipHandler(context, labels, metric, unit, locale),
+                  externalTooltipHandler(
+                    context,
+                    labels,
+                    config.startColor,
+                    config.endColor,
+                    unit,
+                    locale,
+                  ),
               },
             },
             scales: {

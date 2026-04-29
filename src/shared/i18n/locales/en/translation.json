@@ -22,15 +22,16 @@
     "title": "Next 12 Hours",
     "seeMore": "See more",
     "seeAll": "See all",
-    "time": "Time",
+    "time": "Hours",
     "weather": "Weather",
     "temp": "Temp"
   },
   "forecast": {
     "loading": "Loading forecast...",
+    "noData": "No forecast data available for the selected location.",
     "currentConditions": "Current conditions",
     "datePlaceholder": "Date",
-    "time": "Time",
+    "time": "Hours",
     "weather": "Weather",
     "temp": "Temp",
     "pressure": "Pressure",
@@ -49,9 +50,41 @@
     "today": "Today"
   },
   "map": {
-    "loading": "Loading map..."
+    "title": "Map Page",
+    "availableLocations": "Available locations",
+    "latitude": "latitude",
+    "longitude": "longitude",
+    "altitude": "altitude",
+    "loading": "Loading map...",
+    "loadingLocations": "Loading locations...",
+    "noLocations": "No locations available."
   },
   "settings": {
     "title": "Settings"
+  },
+  "weatherSymbols": {
+    "showers": "showers",
+    "withThunder": "and thunder",
+    "withTimeOfDay": "{{description}} during {{timeOfDay}}",
+    "intensity": {
+      "light": "light",
+      "heavy": "heavy"
+    },
+    "timeOfDay": {
+      "day": "daytime",
+      "night": "night",
+      "polarTwilight": "polar twilight"
+    },
+    "kind": {
+      "clearSky": "clear sky",
+      "fair": "fair weather",
+      "partlyCloudy": "partly cloudy",
+      "cloudy": "cloudy",
+      "fog": "fog",
+      "rain": "rain",
+      "sleet": "sleet",
+      "snow": "snow",
+      "unknown": "weather"
+    }
   }
 }

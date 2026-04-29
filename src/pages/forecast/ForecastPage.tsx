@@ -5,6 +5,9 @@ import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 import { useTranslation } from "react-i18next"
 import { useLocationStore } from "@/features/location/location-store"
 import { useForecastStore } from "@/features/get-weather-forecast/forecast-store"
+import { WeatherSymbolIcon } from "@/entities/weather/ui/WeatherSymbolIcon"
+import { LoadingState } from "@/shared/ui/status/LoadingState"
+import { MessageState } from "@/shared/ui/status/MessageState"
 
 function getDateKey(dateString: string) {
   return parseForecastDate(dateString).toLocaleDateString("en-CA", {
@@ -103,12 +106,15 @@ export function ForecastPage() {
   if (isLoading) {
     return (
       <div className="flex h-full min-w-0 flex-1 flex-col rounded-4xl bg-div p-6">
-        <div className="mb-8">
-          <h2 className="text-4xl">{selectedLocation.name}</h2>
-        </div>
-        <div className="flex flex-1 items-center justify-center text-white/55">
-          {t("forecast.loading")}
-        </div>
+        <LoadingState message={t("forecast.loading")} />
+      </div>
+    )
+  }
+
+  if (!forecast.length || !currentForecast) {
+    return (
+      <div className="flex h-full min-w-0 flex-1 flex-col rounded-4xl bg-div p-6">
+        <MessageState message={t("forecast.noData")} />
       </div>
     )
   }
@@ -123,11 +129,9 @@ export function ForecastPage() {
       <div className="mb-8 flex flex-col items-center justify-center">
         <p className="mb-2 text-[20px] font-extralight">{t("forecast.currentConditions")}</p>
         <div className="flex flex-wrap items-center justify-center gap-6">
-          <img
-            src={`/${currentForecast?.weatherSymbol}.svg`}
-            alt={t("common.weatherIconAlt")}
-            className="w-16"
-          />
+          {currentForecast?.weatherSymbol ? (
+            <WeatherSymbolIcon symbol={currentForecast.weatherSymbol} className="w-16" />
+          ) : null}
           <div className="flex items-center justify-between">
             <Thermometer size={40} className="fill-red-400" />
             <p className="text-[28px] font-semibold">
@@ -196,11 +200,7 @@ export function ForecastPage() {
                   className="grid grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] items-center border-b-[1px] border-white/20 px-3 py-2"
                 >
                   <p>{formatHourLabel(item.forecastTime, locale)}</p>
-                  <img
-                    src={`/${item.weatherSymbol}.svg`}
-                    alt={t("common.weatherIconAlt")}
-                    className="w-10"
-                  />
+                  <WeatherSymbolIcon symbol={item.weatherSymbol} className="w-10" />
                   <p>
                     {item.airTemperature} {meta.air_temperature?.unitDisplayName}
                   </p>
