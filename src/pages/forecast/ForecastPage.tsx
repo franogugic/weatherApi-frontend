@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next"
 import { useLocationStore } from "@/features/location/location-store"
 import { useForecastStore } from "@/features/get-weather-forecast/forecast-store"
 import { WeatherSymbolIcon } from "@/entities/weather/ui/WeatherSymbolIcon"
+import { LoadingState } from "@/shared/ui/status/LoadingState"
+import { MessageState } from "@/shared/ui/status/MessageState"
 
 function getDateKey(dateString: string) {
   return parseForecastDate(dateString).toLocaleDateString("en-CA", {
@@ -104,12 +106,15 @@ export function ForecastPage() {
   if (isLoading) {
     return (
       <div className="flex h-full min-w-0 flex-1 flex-col rounded-4xl bg-div p-6">
-        <div className="mb-8">
-          <h2 className="text-4xl">{selectedLocation.name}</h2>
-        </div>
-        <div className="flex flex-1 items-center justify-center text-white/55">
-          {t("forecast.loading")}
-        </div>
+        <LoadingState message={t("forecast.loading")} />
+      </div>
+    )
+  }
+
+  if (!forecast.length || !currentForecast) {
+    return (
+      <div className="flex h-full min-w-0 flex-1 flex-col rounded-4xl bg-div p-6">
+        <MessageState message={t("forecast.noData")} />
       </div>
     )
   }

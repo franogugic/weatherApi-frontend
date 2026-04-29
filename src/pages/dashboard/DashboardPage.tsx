@@ -6,6 +6,8 @@ import { MapPanel } from "@/widgets/map-panel/MapPanel"
 import { NextHourlysPanel } from "@/widgets/next-hourly-panel/NextHourlyPanel"
 import { SearchPanel } from "@/widgets/search-panel/SearchPanel"
 import { SettingsPanel } from "@/widgets/settings-panel/SettingsPanel"
+import { LoadingState } from "@/shared/ui/status/LoadingState"
+import { MessageState } from "@/shared/ui/status/MessageState"
 import { useTranslation } from "react-i18next"
 
 export function DashboardPage() {
@@ -14,13 +16,8 @@ export function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="grid min-h-full min-w-0 grid-cols-1 gap-5 xl:h-full xl:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] xl:grid-rows-[auto_minmax(0,1fr)_minmax(0,1fr)] [@media(min-width:1280px)_and_(max-height:820px)]:h-auto [@media(min-width:1280px)_and_(max-height:820px)]:grid-cols-1 [@media(min-width:1280px)_and_(max-height:820px)]:grid-rows-none">
-        <SearchPanel />
-        <div className="hidden rounded-4xl bg-div xl:block" />
-        <SettingsPanel />
-        <div className="row-span-2 rounded-4xl bg-div p-6 text-white/55">{t("forecast.loading")}</div>
-        <div className="rounded-4xl bg-div" />
-        <div className="col-span-2 rounded-4xl bg-div p-6 text-white/55">{t("forecast.loading")}</div>
+      <div className="rounded-4xl bg-div p-6">
+        <LoadingState message={t("forecast.loading")} />
       </div>
     )
   }
@@ -38,8 +35,16 @@ export function DashboardPage() {
     .filter((item) => parseForecastDate(item.forecastTime) > now)
     .slice(0, 12)
 
+  if (!forecastItems.length || !currentForecast) {
+    return (
+      <div className="rounded-4xl bg-div p-6">
+        <MessageState message={t("forecast.noData")} />
+      </div>
+    )
+  }
+
   return (
-    <div className="grid min-h-full min-w-0 grid-cols-1 gap-5 xl:h-full xl:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] xl:grid-rows-[auto_minmax(0,1fr)_minmax(0,1fr)] [@media(min-width:1280px)_and_(max-height:820px)]:h-auto [@media(min-width:1280px)_and_(max-height:820px)]:grid-cols-1 [@media(min-width:1280px)_and_(max-height:820px)]:grid-rows-none">
+    <div className="grid min-h-full min-w-0 grid-cols-1 gap-5 lg:h-full lg:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] lg:grid-rows-[auto_minmax(0,1fr)_minmax(0,1fr)]">
       <SearchPanel />
       {currentForecast && meta ? (
         <CurrentForecastPanel forecast={currentForecast} meta={meta} />
@@ -48,7 +53,7 @@ export function DashboardPage() {
       {forecast[0] && meta ? (
         <NextHourlysPanel forecast={nextHourlyForecast} meta={meta} />
       ) : null}
-      <div className="hidden xl:block">
+      <div className="hidden lg:block">
         <MapPanel />
       </div>
       <GraphPanel forecast={forecast ?? []} meta={meta ?? {}} />

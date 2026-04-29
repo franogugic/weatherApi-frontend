@@ -22,15 +22,16 @@
     "title": "Sljedećih 12 sati",
     "seeMore": "Prikaži više",
     "seeAll": "Prikaži sve",
-    "time": "Vrijeme",
+    "time": "Sati",
     "weather": "Vrijeme",
     "temp": "Temp"
   },
   "forecast": {
     "loading": "Učitavanje prognoze...",
+    "noData": "Nema dostupnih podataka prognoze za odabranu lokaciju.",
     "currentConditions": "Trenutni uvjeti",
     "datePlaceholder": "Datum",
-    "time": "Vrijeme",
+    "time": "Sati",
     "weather": "Vrijeme",
     "temp": "Temp",
     "pressure": "Tlak",
@@ -49,9 +50,41 @@
     "today": "Danas"
   },
   "map": {
-    "loading": "Učitavanje karte..."
+    "title": "Karta",
+    "availableLocations": "Dostupne lokacije",
+    "latitude": "geografska širina",
+    "longitude": "geografska dužina",
+    "altitude": "nadmorska visina",
+    "loading": "Učitavanje karte...",
+    "loadingLocations": "Učitavanje lokacija...",
+    "noLocations": "Nema dostupnih lokacija."
   },
   "settings": {
     "title": "Postavke"
+  },
+  "weatherSymbols": {
+    "showers": "pljuskovi",
+    "withThunder": "i grmljavina",
+    "withTimeOfDay": "{{description}} tijekom {{timeOfDay}}",
+    "intensity": {
+      "light": "slaba",
+      "heavy": "jaka"
+    },
+    "timeOfDay": {
+      "day": "dana",
+      "night": "noći",
+      "polarTwilight": "polarne svjetlosti"
+    },
+    "kind": {
+      "clearSky": "vedro nebo",
+      "fair": "ugodno vrijeme",
+      "partlyCloudy": "djelomično oblačno",
+      "cloudy": "oblačno",
+      "fog": "magla",
+      "rain": "kiša",
+      "sleet": "susnježica",
+      "snow": "snijeg",
+      "unknown": "vrijeme"
+    }
   }
 }
