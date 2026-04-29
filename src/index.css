@@ -10,9 +10,14 @@ body {
   color: white;
 }
 
+:root {
+  --accent-primary: #4974ef;
+  --accent-secondary: #6fbcff;
+}
+
 @theme {
   --color-div: #303135;
   --color-subtext: rgba(255, 255, 255, 0.8);
-  --color-blue: #4974ef;
-  --color-lightBlue: #6fbcff;
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-secondary: var(--accent-secondary);
 }

@@ -1,14 +1,16 @@
-import { useForecast } from "@/features/get-weather-forecast/model/forecast-context"
+import { useForecastStore } from "@/features/get-weather-forecast/forecast-store"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
-import { CurrentForecastPanel } from "@/widgets/current-forecast-panel/ui/CurrentForecastPanel"
-import { GraphPanel } from "@/widgets/graph-panel/ui/GraphPanel"
-import { MapPanel } from "@/widgets/map-panel/ui/MapPanel"
-import { NextHourlysPanel } from "@/widgets/next-hourly-panel/ui/NextHourlyPanel"
-import { SearchPanel } from "@/widgets/search-panel/ui/SearchPanel"
-import { SettingsPanel } from "@/widgets/settings-panel/ui/SettingsPanel"
+import { CurrentForecastPanel } from "@/widgets/current-forecast-panel/CurrentForecastPanel"
+import { GraphPanel } from "@/widgets/graph-panel/GraphPanel"
+import { MapPanel } from "@/widgets/map-panel/MapPanel"
+import { NextHourlysPanel } from "@/widgets/next-hourly-panel/NextHourlyPanel"
+import { SearchPanel } from "@/widgets/search-panel/SearchPanel"
+import { SettingsPanel } from "@/widgets/settings-panel/SettingsPanel"
+import { useTranslation } from "react-i18next"
 
 export function DashboardPage() {
-  const {forecast, meta, isLoading} = useForecast()
+  const { t } = useTranslation()
+  const {forecast, meta, isLoading} = useForecastStore()
 
   if (isLoading) {
     return (
@@ -16,9 +18,9 @@ export function DashboardPage() {
         <SearchPanel />
         <div className="hidden rounded-4xl bg-div xl:block" />
         <SettingsPanel />
-        <div className="row-span-2 rounded-4xl bg-div p-6 text-white/55">Loading forecast...</div>
+        <div className="row-span-2 rounded-4xl bg-div p-6 text-white/55">{t("forecast.loading")}</div>
         <div className="rounded-4xl bg-div" />
-        <div className="col-span-2 rounded-4xl bg-div p-6 text-white/55">Loading forecast...</div>
+        <div className="col-span-2 rounded-4xl bg-div p-6 text-white/55">{t("forecast.loading")}</div>
       </div>
     )
   }
