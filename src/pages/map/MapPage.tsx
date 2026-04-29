@@ -1,4 +1,5 @@
 import type { WeatherForecastResponse } from "@/entities/weather/model/types"
+import { WeatherSymbolIcon } from "@/entities/weather/ui/WeatherSymbolIcon"
 import { useLocationStore } from "@/features/location/location-store"
 import { getLocationSlug } from "@/shared/lib/get-lcoation-slug"
 import { MapView, type MapMarker } from "@/shared/ui/map/MapView"
@@ -88,9 +89,8 @@ export function MapPage() {
                   </div>
                   <div>
                     {locationForecasts[location.id]?.weatherSymbol && (
-                      <img
-                        src={`/${locationForecasts[location.id].weatherSymbol}.svg`}
-                        alt={location.name}
+                      <WeatherSymbolIcon
+                        symbol={locationForecasts[location.id].weatherSymbol}
                         className="h-10 w-10 ml-auto"
                       />
                     )}

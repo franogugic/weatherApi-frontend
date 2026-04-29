@@ -1,4 +1,5 @@
 import { GoogleMap, Marker, OverlayView, useJsApiLoader } from "@react-google-maps/api"
+import { WeatherSymbolIcon } from "@/entities/weather/ui/WeatherSymbolIcon"
 import { Fragment } from "react"
 import { useTranslation } from "react-i18next"
 import type { Location } from "@/entities/location/types"
@@ -117,11 +118,7 @@ export function MapView({
                 >
                   <div className="flex min-w-[172px] max-w-[260px] flex-col rounded-2xl items-center border border-white/15 bg-white/8 px-3 py-1.5 text-center shadow-lg backdrop-blur-xl">
                     <div className="flex items-center gap-1">
-                      <img
-                        src={`/${marker.weatherSymbol}.svg`}
-                        alt={marker.name}
-                        className="h-10 w-10"
-                      />
+                      <WeatherSymbolIcon symbol={marker.weatherSymbol} className="h-10 w-10" />
                       {marker.temperatureText ? (
                         <p className="text-sm leading-none font-semibold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)]">
                           {marker.temperatureText}

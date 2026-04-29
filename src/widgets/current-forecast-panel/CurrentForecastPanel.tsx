@@ -3,6 +3,7 @@ import type {
   WeatherForecastItem,
   WeatherMeta,
 } from "@/entities/weather/model/types"
+import { WeatherSymbolIcon } from "@/entities/weather/ui/WeatherSymbolIcon"
 import { WeatherStat } from "@/entities/weather/ui/WeatherStat"
 import { formatShortDate } from "@/shared/lib/format-date"
 import { useTranslation } from "react-i18next"
@@ -42,9 +43,8 @@ export function CurrentForecastPanel({
             {meta.air_temperature?.unitDisplayName}
           </p>
         </div>
-        <img
-          src={`/${forecast.weatherSymbol}.svg`}
-          alt={t("common.weatherIconAlt")}
+        <WeatherSymbolIcon
+          symbol={forecast.weatherSymbol}
           className="w-46 mx-auto -translate-y-8"
         />
       </div>

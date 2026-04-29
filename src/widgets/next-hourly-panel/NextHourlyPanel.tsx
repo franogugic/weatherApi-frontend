@@ -1,4 +1,5 @@
 import type { WeatherForecastItem, WeatherMeta } from "@/entities/weather/model/types"
+import { WeatherSymbolIcon } from "@/entities/weather/ui/WeatherSymbolIcon"
 import { useLocationStore } from "@/features/location/location-store"
 import { CROATIA_TIME_ZONE } from "@/shared/lib/format-date"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
@@ -38,9 +39,8 @@ export function NextHourlysPanel( {forecast, meta}: NextHourlyPanelProps) {
       {forecast.map((item, index) => (
         <div key={index} className="grid h-full grid-cols-3 items-center px-2">
           <p className="font-light">{getHourFromForecastTime(item.forecastTime, locale)}</p>
-          <img
-            src={`/${item.weatherSymbol}.svg`}
-            alt={t("common.weatherIconAlt")}
+          <WeatherSymbolIcon
+            symbol={item.weatherSymbol}
             className="w-10 mx-auto"
           />
           <p className="font-light text-end">{item.airTemperature} {meta.air_temperature?.unitDisplayName}</p>
