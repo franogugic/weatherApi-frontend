@@ -1,5 +1,5 @@
 import type { WeatherForecastResponse } from "@/entities/weather/model/types"
-import { useLocationStore } from "@/features/location/model/location-store"
+import { useLocationStore } from "@/features/location/location-store"
 import { getLocationSlug } from "@/shared/lib/get-lcoation-slug"
 import { MapView, type MapMarker } from "@/shared/ui/map/MapView"
 import { useEffect, useState } from "react"
@@ -80,9 +80,23 @@ export function MapPage() {
             <li key={location.id} >
               <NavLink to={`/dashboard/${getLocationSlug(location)}`} className="block border-y border-white/20 p-4 transition-colors hover:bg-white/8">
                 <p className="mb-2 text-base font-semibold sm:text-[18px]">{location.name}</p>
-                <p className="text-[14px] font-semibold"><span className="text-subtext  font-light">latitude:</span> {location.latitude}</p>
-                <p className="text-[14px] font-semibold"><span className="text-subtext font-light">longitude:</span> {location.longitude}</p>
-                <p className="text-[14px] font-semibold"><span className="text-subtext font-light">altitude:</span> {location.altitude}</p>
+                <div className="flex items-center justify-between">
+                  <div className="text-[12px] font-semibold flex flex-col gap-1">
+                    <p><span className="text-subtext  font-light">latitude:</span> {location.latitude}</p>
+                    <p><span className="text-subtext font-light">longitude:</span> {location.longitude}</p>
+                    <p><span className="text-subtext font-light">altitude:</span> {location.altitude}</p>
+                  </div>
+                  <div>
+                    {locationForecasts[location.id]?.weatherSymbol && (
+                      <img
+                        src={`/${locationForecasts[location.id].weatherSymbol}.svg`}
+                        alt={location.name}
+                        className="h-10 w-10 ml-auto"
+                      />
+                    )}
+                    <p className="font-bold translate-y-[-8px]">{locationForecasts[location.id]?.temperatureText}</p>
+                  </div>
+                </div>
               </NavLink>
             </li>
           ))}

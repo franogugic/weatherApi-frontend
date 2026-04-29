@@ -1,4 +1,4 @@
-import { useLocationStore } from "@/features/location/model/location-store";
+import { useLocationStore } from "@/features/location/location-store";
 import { getLocationSlug } from "@/shared/lib/get-lcoation-slug";
 import { CloudSun, LayoutDashboard, Map, Sun } from "lucide-react";
 import { NavLink } from "react-router-dom";

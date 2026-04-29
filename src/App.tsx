@@ -1,4 +1,4 @@
-import { useLocationStore } from "@/features/location/model/location-store"
+import { useLocationStore } from "@/features/location/location-store"
 import { useEffect } from "react"
 import { Navigate, Outlet, Route, Routes, useParams } from "react-router-dom"
 import { parseForecastDate } from "./shared/lib/parse-forecast-date"
@@ -6,9 +6,9 @@ import {
   DEFAULT_TEMPERATURE_THEME,
   getTemperatureTheme,
 } from "./shared/lib/get-temperature-theme"
-import { useForecastStore } from "./features/get-weather-forecast/model/forecast-store"
-import { DashboardPage } from "./pages/dashboard/ui/DashboardPage"
-import { ForecastPage } from "./pages/forecast/ui/ForecastPage"
+import { useForecastStore } from "./features/get-weather-forecast/forecast-store"
+import { DashboardPage } from "./pages/dashboard/DashboardPage"
+import { ForecastPage } from "./pages/forecast/ForecastPage"
 import { MapPage } from "./pages/map/MapPage"
 import { AppLayout } from "./shared/ui/app-layout/AppLayout"
 

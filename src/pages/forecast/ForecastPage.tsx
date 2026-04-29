@@ -3,8 +3,8 @@ import { CloudRain, MoveUp, Thermometer, Wind } from "lucide-react"
 import { capitalizeFirstLetter, CROATIA_TIME_ZONE } from "@/shared/lib/format-date"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 import { useTranslation } from "react-i18next"
-import { useLocationStore } from "@/features/location/model/location-store"
-import { useForecastStore } from "@/features/get-weather-forecast/model/forecast-store"
+import { useLocationStore } from "@/features/location/location-store"
+import { useForecastStore } from "@/features/get-weather-forecast/forecast-store"
 
 function getDateKey(dateString: string) {
   return parseForecastDate(dateString).toLocaleDateString("en-CA", {

@@ -6,7 +6,7 @@ import type {
 import { WeatherStat } from "@/entities/weather/ui/WeatherStat"
 import { formatShortDate } from "@/shared/lib/format-date"
 import { useTranslation } from "react-i18next"
-import { useLocationStore } from "@/features/location/model/location-store"
+import { useLocationStore } from "@/features/location/location-store"
 
 type CurrentForecastPanelProps = {
   forecast: WeatherForecastItem

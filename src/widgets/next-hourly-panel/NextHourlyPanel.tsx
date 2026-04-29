@@ -1,5 +1,5 @@
 import type { WeatherForecastItem, WeatherMeta } from "@/entities/weather/model/types"
-import { useLocationStore } from "@/features/location/model/location-store"
+import { useLocationStore } from "@/features/location/location-store"
 import { CROATIA_TIME_ZONE } from "@/shared/lib/format-date"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 import { NavLink } from "react-router-dom";

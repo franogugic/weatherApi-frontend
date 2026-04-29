@@ -1,7 +1,7 @@
 import { GoogleMap, Marker, OverlayView, useJsApiLoader } from "@react-google-maps/api"
 import { Fragment } from "react"
 import { useTranslation } from "react-i18next"
-import type { Location } from "@/entities/location/model/types"
+import type { Location } from "@/entities/location/types"
 
 const mapContainerStyle = {
   width: "100%",

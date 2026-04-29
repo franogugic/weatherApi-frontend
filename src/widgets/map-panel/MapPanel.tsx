@@ -1,5 +1,5 @@
-import { useForecastStore } from "@/features/get-weather-forecast/model/forecast-store"
-import { useLocationStore } from "@/features/location/model/location-store"
+import { useForecastStore } from "@/features/get-weather-forecast/forecast-store"
+import { useLocationStore } from "@/features/location/location-store"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 import { MapView, type MapMarker } from "@/shared/ui/map/MapView"
 

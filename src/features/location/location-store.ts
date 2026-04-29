@@ -1,5 +1,5 @@
-import { DEFAULT_LOCATION } from "@/entities/location/model/constants/DEFAULT_LOCATION"
-import type { Location } from "@/entities/location/model/types"
+import { DEFAULT_LOCATION } from "@/entities/location/constants/DEFAULT_LOCATION"
+import type { Location } from "@/entities/location/types"
 import { create } from "zustand"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
