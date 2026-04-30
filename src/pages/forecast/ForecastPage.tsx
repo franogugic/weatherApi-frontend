@@ -7,9 +7,9 @@ import { getWeatherSymbolInfo } from "@/entities/weather/model/weather-symbols"
 import { useLocationStore } from "@/features/location/location-store"
 import { useForecastStore } from "@/features/get-weather-forecast/forecast-store"
 import { WeatherSymbolIcon } from "@/entities/weather/ui/WeatherSymbolIcon"
-import { LoadingState } from "@/shared/ui/status/LoadingState"
 import { MessageState } from "@/shared/ui/status/MessageState"
 import { getForecastDaily } from "@/shared/lib/get-forecast-daily"
+import { ForecastPageSkeleton } from "./ForecastPageSkeleton"
 
 function getDateKey(dateString: string) {
   return parseForecastDate(dateString).toLocaleDateString("en-CA", {
@@ -97,11 +97,7 @@ export function ForecastPage() {
   }
 
   if (isLoading) {
-    return (
-      <div className="flex h-full min-w-0 flex-1 flex-col rounded-4xl bg-div p-6">
-        <LoadingState message={t("forecast.loading")} />
-      </div>
-    )
+    return <ForecastPageSkeleton />
   }
 
   if (!forecast.length || !currentForecast) {

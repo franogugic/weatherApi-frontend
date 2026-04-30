@@ -26,13 +26,21 @@ function LocationDataLoader() {
     }
 
     void fetchForecast(locationId)
+  }, [id, fetchForecast])
+
+  useEffect(() => {
+    const locationId = Number(id)
+
+    if (!locationId) {
+      return
+    }
 
     const matchedLocation = locations.find((location) => location.id === locationId)
 
     if (matchedLocation) {
       setSelectedLocation(matchedLocation)
     }
-  }, [id, locations, setSelectedLocation, fetchForecast])
+  }, [id, locations, setSelectedLocation])
 
   return <Outlet />
 }

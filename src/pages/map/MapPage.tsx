@@ -1,9 +1,9 @@
 import { useLocationStore } from "@/features/location/location-store"
 import { MapView, type MapMarker } from "@/shared/ui/map/MapView"
-import { LoadingState } from "@/shared/ui/status/LoadingState"
 import { MessageState } from "@/shared/ui/status/MessageState"
 import { useTranslation } from "react-i18next"
 import { NavLink, useNavigate } from "react-router-dom"
+import { MapPageSkeleton } from "./MapPageSkeleton"
 
 export function MapPage() {
   const { t } = useTranslation()
@@ -21,11 +21,7 @@ export function MapPage() {
   }))
 
   if (isLoading) {
-    return (
-      <div className="rounded-4xl bg-div p-6">
-        <LoadingState message={t("map.loadingLocations")} />
-      </div>
-    )
+    return <MapPageSkeleton />
   }
 
   if (!locations.length) {
