@@ -71,8 +71,8 @@ function App() {
       <Routes>
         <Route path="/map" element={<MapPage />} />
         <Route element={<LocationDataLoader />}>
-          <Route path="/dashboard/:id/:locationSlug" element={<DashboardPage />} />
-          <Route path="/forecast/:id/:locationSlug" element={<ForecastPage />} />
+          <Route path="/:id" element={<DashboardPage />} />
+          <Route path="/forecast/:id" element={<ForecastPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/map" replace />} />
       </Routes>
