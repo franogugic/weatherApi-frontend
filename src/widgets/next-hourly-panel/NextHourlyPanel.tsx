@@ -18,7 +18,7 @@ export function NextHourlysPanel( {forecast, meta}: NextHourlyPanelProps) {
   const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
   
   return (
-  <div className="xl:row-span-2 flex h-full min-h-0 min-w-0 flex-col rounded-4xl bg-div p-6">
+  <div className="lg:row-span-2 flex h-full min-h-0 min-w-0 flex-col rounded-4xl bg-div p-6">
     <div className="mb-4 flex items-center justify-between">
       <p className="text-[22px] font-semibold">{t("nextHourly.title")}</p>
       <NavLink to={`/forecast/${selectedLocation.id}`} className="text-[14px] underline cursor-pointer bg-linear-to-t from-accent-secondary to-accent-primary bg-clip-text text-transparent">

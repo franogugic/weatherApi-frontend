@@ -25,7 +25,7 @@ export function CurrentForecastPanel({
   const selectedLocation = useLocationStore((state) => state.selectedLocation)
   const locationName = selectedLocation.name;
   return (
-    <div className="xl:row-span-2 flex min-w-0 flex-col justify-between rounded-4xl bg-linear-to-b from-accent-secondary to-accent-primary p-6">
+    <div className="lg:row-span-2 flex min-w-0 flex-col justify-between rounded-4xl bg-linear-to-b from-accent-secondary to-accent-primary p-6">
       <div className="text-[14px]">
         <p>{t("currentForecast.todayLabel", { date: formattedDate })}</p>
         <div className="flex flex-wrap items-center gap-1 text-[14px] font-bold">
@@ -49,7 +49,7 @@ export function CurrentForecastPanel({
         />
       </div>
 
-      <div className="mx-auto flex w-full flex-wrap gap-y-4 xl:flex-nowrap">
+      <div className="mx-auto flex w-full flex-wrap gap-y-4 lg:flex-nowrap">
         <WeatherStat
           icon={<Wind size={34} />}
           value={forecast.windSpeed}

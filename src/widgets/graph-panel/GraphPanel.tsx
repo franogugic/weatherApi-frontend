@@ -324,7 +324,7 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
   const values = chartItems.map(config.getValue)
 
   if (chartItems.length === 0) {
-    return <div className="xl:col-span-2 rounded-4xl bg-div p-6" />
+    return <div className="lg:col-span-2 rounded-4xl bg-div p-6" />
   }
 
   const dayMidpoints = getDayMidpointIndexes(labels, locale, t("graph.today"))
@@ -335,7 +335,7 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
   const maxY = Math.ceil(maxValue + 3)
 
   return (
-    <div className="xl:col-span-2 flex h-full min-h-0 min-w-0 flex-col overflow-visible rounded-4xl bg-div p-6">
+    <div className="lg:col-span-2 flex h-full min-h-0 min-w-0 flex-col overflow-visible rounded-4xl bg-div p-6">
       <div className="mb-3 flex shrink-0 flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3 w-full">
           <p className="text-[26px]">
