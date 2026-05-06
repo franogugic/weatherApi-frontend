@@ -181,7 +181,7 @@ export function ForecastPage() {
                   <div className="flex items-center gap-3 py-3">
                     <CloudRain size={18} className="text-[#4da3ff]" />
                     <div>
-                      <p className="font-medium">{daily.precipitation} {meta.precipitation_amount?.unitDisplayName}</p>
+                      <p className="font-medium">{daily.precipitation.toFixed(1)} {meta.precipitation_amount?.unitDisplayName}</p>
                       <p className="text-xs text-white/55">{t("forecast.precipitation")}</p>
                     </div>
                   </div>

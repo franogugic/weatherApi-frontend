@@ -11,6 +11,7 @@ import { DashboardPage } from "./pages/dashboard/DashboardPage"
 import { ForecastPage } from "./pages/forecast/ForecastPage"
 import { MapPage } from "./pages/map/MapPage"
 import { AppLayout } from "./shared/ui/app-layout/AppLayout"
+import { RegisterPage } from "./pages/register/RegisterPage"
 
 function LocationDataLoader() {
   const { id } = useParams()
@@ -82,6 +83,7 @@ function App() {
           <Route path="/:id" element={<DashboardPage />} />
           <Route path="/forecast/:id" element={<ForecastPage />} />
         </Route>
+        <Route path="/register" element={<RegisterPage/>}></Route>
         <Route path="*" element={<Navigate to="/map" replace />} />
       </Routes>
     </AppLayout>
