@@ -1,5 +1,5 @@
 import { useLocationStore } from "@/features/location/location-store";
-import { CloudSun, LayoutDashboard, Map, Sun } from "lucide-react";
+import { CloudSun, LayoutDashboard, Map, Settings, Sun } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 export function Sidebar() {
@@ -24,6 +24,11 @@ export function Sidebar() {
         <NavLink to="/map">
           {({ isActive }) => (
             <Map className={isActive ? "" : "text-white/50"} />
+          )}
+        </NavLink>
+        <NavLink to="/settings">
+          {({ isActive }) => (
+            <Settings className={isActive ? "" : "text-white/50"} />
           )}
         </NavLink>
       </ul>

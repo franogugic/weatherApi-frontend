@@ -15,6 +15,15 @@ import {
 } from "chart.js"
 import { Line } from "react-chartjs-2"
 import { useTranslation } from "react-i18next"
+import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store"
+import {
+  convertPrecipitation,
+  convertTemperature,
+  convertWindSpeed,
+  getPrecipitationUnitLabel,
+  getTemperatureUnitLabel,
+  getWindSpeedUnitLabel,
+} from "@/features/unit-preferences/format-units"
 
 ChartJS.register(
   CategoryScale,
@@ -298,9 +307,12 @@ function externalTooltipHandler(
 }
 
 // main metoda
-export function GraphPanel({ forecast, meta }: GraphPanelProps) {
+export function GraphPanel({ forecast }: GraphPanelProps) {
   const { t, i18n } = useTranslation()
   const [metric, setMetric] = useState<GraphMetric>("temperature")
+  const temperatureUnit = useUnitPreferenceStore((state) => state.temperatureUnit)
+  const windSpeedUnit = useUnitPreferenceStore((state) => state.windSpeedUnit)
+  const precipitationUnit = useUnitPreferenceStore((state) => state.precipitationUnit)
   const chartItems = useMemo(() => getChartItems(forecast), [forecast])
   const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
   const now = new Date()
@@ -319,9 +331,28 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
   }
 
   const config = resolvedMetricConfig[metric]
-  const unit = meta[config.metaKey]?.unitDisplayName ?? config.fallbackUnit
+  const unit =
+    metric === "temperature"
+      ? getTemperatureUnitLabel(temperatureUnit)
+      : metric === "wind"
+        ? getWindSpeedUnitLabel(windSpeedUnit)
+        : getPrecipitationUnitLabel(precipitationUnit)
   const labels = chartItems.map((item) => item.forecastTime)
-  const values = chartItems.map(config.getValue)
+  const values = chartItems.map((item) => {
+    if (metric === "temperature") {
+      return convertTemperature(item.airTemperature, temperatureUnit)
+    }
+
+    if (metric === "wind") {
+      return convertWindSpeed(item.windSpeed, windSpeedUnit)
+    }
+
+    if (metric === "precipitation") {
+      return convertPrecipitation(item.precipitationAmount, precipitationUnit)
+    }
+
+    return config.getValue(item)
+  })
 
   if (chartItems.length === 0) {
     return <div className="lg:col-span-2 rounded-4xl bg-div p-6" />

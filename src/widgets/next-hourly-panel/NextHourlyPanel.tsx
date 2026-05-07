@@ -5,6 +5,8 @@ import { CROATIA_TIME_ZONE } from "@/shared/lib/format-date"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next"
+import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store"
+import { formatTemperature } from "@/features/unit-preferences/format-units"
 
 type NextHourlyPanelProps = {
   forecast: WeatherForecastItem[],
@@ -12,9 +14,10 @@ type NextHourlyPanelProps = {
   
 }
 
-export function NextHourlysPanel( {forecast, meta}: NextHourlyPanelProps) {
+export function NextHourlysPanel( {forecast}: NextHourlyPanelProps) {
   const { t, i18n } = useTranslation()
   const selectedLocation = useLocationStore((state) => state.selectedLocation)
+  const temperatureUnit = useUnitPreferenceStore((state) => state.temperatureUnit)
   const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
   
   return (
@@ -43,7 +46,7 @@ export function NextHourlysPanel( {forecast, meta}: NextHourlyPanelProps) {
             symbol={item.weatherSymbol}
             className="w-10 mx-auto"
           />
-          <p className="font-light text-end">{item.airTemperature} {meta.air_temperature?.unitDisplayName}</p>
+          <p className="font-light text-end">{formatTemperature(item.airTemperature, temperatureUnit)}</p>
         </div>
       ))}
     </div>

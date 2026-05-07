@@ -4,19 +4,22 @@ import { MessageState } from "@/shared/ui/status/MessageState"
 import { useTranslation } from "react-i18next"
 import { NavLink, useNavigate } from "react-router-dom"
 import { MapPageSkeleton } from "./MapPageSkeleton"
+import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store"
+import { formatTemperature } from "@/features/unit-preferences/format-units"
 
 export function MapPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const locations = useLocationStore((state) => state.locations)
   const isLoading = useLocationStore((state) => state.isLoading)
+  const temperatureUnit = useUnitPreferenceStore((state) => state.temperatureUnit)
   const mapMarkers: MapMarker[] = locations.map((location) => ({
     ...location,
     weatherSymbol: location.currentWeather?.weatherSymbol ?? undefined,
     temperatureText:
       location.currentWeather?.airTemperature !== null &&
       location.currentWeather?.airTemperature !== undefined
-        ? `${location.currentWeather.airTemperature}°C`
+        ? formatTemperature(location.currentWeather.airTemperature, temperatureUnit)
         : undefined,
   }))
 

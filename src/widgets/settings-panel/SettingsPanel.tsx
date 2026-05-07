@@ -1,7 +1,4 @@
 import type { User } from "@/entities/user/types"
-import { LANGUAGE_OPTIONS } from "@/features/language/language-options"
-import { useLanguageStore } from "@/features/language/language-store"
-import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 
 type SettingsPanelProps = {
@@ -9,32 +6,6 @@ type SettingsPanelProps = {
 }
 
 export function SettingsPanel({ user }: SettingsPanelProps) {
-  const language = useLanguageStore((state) => state.language)
-  const setLanguage = useLanguageStore((state) => state.setLanguage)
-  const [isOpen, setIsOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        event.target instanceof Node &&
-        !dropdownRef.current.contains(event.target)
-      ) {
-        setIsOpen(false)
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside)
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
-
-  const selectedLanguage =
-    LANGUAGE_OPTIONS.find((option) => option.value === language) ?? LANGUAGE_OPTIONS[0]
-
   return (
     <div className="flex justify-end gap-4">
       {/*<div ref={dropdownRef} className="relative ml-auto h-fit w-fit self-start">
@@ -74,7 +45,7 @@ export function SettingsPanel({ user }: SettingsPanelProps) {
         ) : null}
       </div> */}
 
-      <div >
+      <div>
         {user ? (
           <div className="flex justify-center items-center gap-2">
             <p className="text-[16px] font-light pt-1 text-white">
