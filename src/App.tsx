@@ -12,6 +12,7 @@ import { ForecastPage } from "./pages/forecast/ForecastPage"
 import { MapPage } from "./pages/map/MapPage"
 import { AppLayout } from "./shared/ui/app-layout/AppLayout"
 import { RegisterPage } from "./pages/register/RegisterPage"
+import { LoginPage } from "./pages/login/LoginPage"
 
 function LocationDataLoader() {
   const { id } = useParams()
@@ -84,6 +85,7 @@ function App() {
           <Route path="/forecast/:id" element={<ForecastPage />} />
         </Route>
         <Route path="/register" element={<RegisterPage/>}></Route>
+        <Route path="/login" element={<LoginPage/>}></Route>
         <Route path="*" element={<Navigate to="/map" replace />} />
       </Routes>
     </AppLayout>

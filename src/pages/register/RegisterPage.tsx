@@ -1,8 +1,9 @@
-import type { FormEvent, InputHTMLAttributes } from "react"
-import { useId, useMemo, useState } from "react"
-import { Check, Lock, Mail, UserRound, type LucideIcon } from "lucide-react"
+import type { FormEvent } from "react"
+import { useMemo, useState } from "react"
+import { Check, Lock, Mail, UserRound } from "lucide-react"
 import { Link } from "react-router-dom"
 import { registerUser } from "@/features/auth/register-user"
+import { AuthInput } from "@/shared/ui/auth-input/AuthInput"
 
 export function RegisterPage(){
     const [firstName, setFirstName] = useState("")
@@ -72,8 +73,8 @@ export function RegisterPage(){
                 <h2 className="text-[14px] mt-1 mb-6 text-center font-extralight text-white/40">Join Weather App and save your favorite locations.</h2>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div className="flex gap-8">
-                        <CustomInput
-                            text="First name"
+                        <AuthInput
+                            label="First name"
                             name="firstName"
                             placeholder="First name"
                             icon={UserRound}
@@ -82,8 +83,8 @@ export function RegisterPage(){
                             onChange={(event) => setFirstName(event.target.value)}
                             required
                         />
-                        <CustomInput
-                            text="Last name"
+                        <AuthInput
+                            label="Last name"
                             name="lastName"
                             placeholder="Last name"
                             icon={UserRound}
@@ -93,8 +94,8 @@ export function RegisterPage(){
                             required
                         />
                     </div>
-                    <CustomInput
-                        text="Email"
+                    <AuthInput
+                        label="Email"
                         name="email"
                         placeholder="you@example.com"
                         icon={Mail}
@@ -104,8 +105,8 @@ export function RegisterPage(){
                         onChange={(event) => setEmail(event.target.value)}
                         required
                     />
-                    <CustomInput
-                        text="Password"
+                    <AuthInput
+                        label="Password"
                         name="password"
                         placeholder="Enter your password"
                         icon={Lock}
@@ -115,8 +116,8 @@ export function RegisterPage(){
                         onChange={(event) => setPassword(event.target.value)}
                         required
                     />
-                    <CustomInput
-                        text="Confirm password"
+                    <AuthInput
+                        label="Confirm password"
                         name="confirmPassword"
                         placeholder="Confirm your password"
                         icon={Lock}
@@ -195,31 +196,6 @@ function PasswordRequirements({ rules }: PasswordRequirementsProps){
                         <span>{requirement.label}</span>
                     </div>
                 ))}
-            </div>
-        </div>
-    )
-}
-
-type CustomInputProps = InputHTMLAttributes<HTMLInputElement> & {
-    text: string
-    icon: LucideIcon
-}
-
-function CustomInput({text, icon: Icon, className = "", id, ...inputProps}: CustomInputProps){
-    const generatedId = useId()
-    const inputId = id ?? generatedId
-
-    return (
-        <div className="flex flex-col">
-            <label htmlFor={inputId} className="text-[14px] font-light mb-1">{text}</label>
-            <div className="relative">
-                <Icon className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/70" />
-                <input 
-                    id={inputId}
-                    className={`auth-input text-[14px] w-full rounded-lg border-[1px] border-white/40 bg-[#25272C] py-2 pl-11 pr-4 text-white 
-                        outline-none placeholder:text-[14px] placeholder:text-white/40 focus:border-white/70 ${className}`}
-                    {...inputProps}
-                />
             </div>
         </div>
     )
