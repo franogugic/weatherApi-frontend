@@ -4,5 +4,5 @@ export type User = {
     lastName: string
     email: string
     role?: 1 | 2
-    createdAt: string
+    createdAt?: string
 }

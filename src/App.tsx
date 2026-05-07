@@ -19,21 +19,19 @@ function LocationDataLoader() {
   const locations = useLocationStore((state) => state.locations)
   const setSelectedLocation = useLocationStore((state) => state.setSelectedLocation)
   const fetchForecast = useForecastStore((state) => state.fetchForecast)
+  const locationId = Number(id)
+  const isLocationIdValid = Number.isInteger(locationId) && locationId > 0
 
   useEffect(() => {
-    const locationId = Number(id)
-
-    if (!locationId) {
+    if (!isLocationIdValid) {
       return
     }
 
     void fetchForecast(locationId)
-  }, [id, fetchForecast])
+  }, [fetchForecast, isLocationIdValid, locationId])
 
   useEffect(() => {
-    const locationId = Number(id)
-
-    if (!locationId) {
+    if (!isLocationIdValid) {
       return
     }
 
@@ -42,7 +40,11 @@ function LocationDataLoader() {
     if (matchedLocation) {
       setSelectedLocation(matchedLocation)
     }
-  }, [id, locations, setSelectedLocation])
+  }, [isLocationIdValid, locationId, locations, setSelectedLocation])
+
+  if (!isLocationIdValid) {
+    return <Navigate to="/map" replace />
+  }
 
   return <Outlet />
 }

@@ -1,4 +1,5 @@
 import type { User } from "@/entities/user/types"
+import { getAuthErrorMessage } from "./auth-error"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -19,7 +20,7 @@ export async function loginUser(request: LoginUserRequest): Promise<User> {
 
     if (!response.ok) {
         const errorResponse = await response.json().catch(() => null)
-        throw new Error(errorResponse?.message ?? "Login failed.")
+        throw new Error(getAuthErrorMessage(errorResponse, "Login failed."))
     }
 
     return await response.json() as User

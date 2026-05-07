@@ -56,11 +56,7 @@ export function RegisterPage(){
             setSuccessMessage("Account created successfully.")
         } catch (error) {
             console.error("Registration failed:", error)
-            setErrorMessage(
-                error instanceof Error
-                    ? error.stack ?? error.message
-                    : JSON.stringify(error)
-            )
+            setErrorMessage(error instanceof Error ? error.message : "Registration failed.")
         } finally {
             setIsSubmitting(false)
         }
@@ -129,10 +125,10 @@ export function RegisterPage(){
                     />
                     <PasswordRequirements rules={passwordRules} />
                     {errorMessage && (
-                        <p className="text-[13px] text-red-400">{errorMessage}</p>
+                        <p className="rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-[13px] text-red-300">{errorMessage}</p>
                     )}
                     {successMessage && (
-                        <p className="text-[13px] text-accent-secondary">{successMessage}</p>
+                        <p className="rounded-lg border border-accent-secondary/20 bg-accent-secondary/10 px-3 py-2 text-[13px] text-accent-secondary">{successMessage}</p>
                     )}
                     <button
                         type="submit"

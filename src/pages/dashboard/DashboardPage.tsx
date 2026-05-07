@@ -9,10 +9,39 @@ import { SettingsPanel } from "@/widgets/settings-panel/SettingsPanel"
 import { MessageState } from "@/shared/ui/status/MessageState"
 import { useTranslation } from "react-i18next"
 import { DashboardPageSkeleton } from "./DashboardPageSkeleton"
+import { getCurrentUser } from "@/features/auth/get-current-user"
+import { useEffect, useState } from "react"
+import type { User } from "@/entities/user/types"
 
 export function DashboardPage() {
   const { t } = useTranslation()
   const {forecast, meta, isLoading} = useForecastStore()
+  const [user, setUser] = useState<User | null>(null)
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadCurrentUser() {
+      try {
+        const currentUser = await getCurrentUser()
+
+        if (isMounted) {
+          setUser(currentUser)
+        }
+      } catch {
+        if (isMounted) {
+          setUser(null)
+        }
+      }
+    }
+
+    loadCurrentUser()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
 
   if (isLoading) {
     return <DashboardPageSkeleton />
@@ -45,7 +74,7 @@ export function DashboardPage() {
       {currentForecast && meta ? (
         <CurrentForecastPanel forecast={currentForecast} meta={meta} />
       ) : null}
-      <SettingsPanel />
+      <SettingsPanel user={user} />
       {forecast[0] && meta ? (
         <NextHourlysPanel forecast={nextHourlyForecast} meta={meta} />
       ) : null}

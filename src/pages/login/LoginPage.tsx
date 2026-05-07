@@ -15,7 +15,7 @@ export function LoginPage(){
         const normalizedEmail = email.trim()
         const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)
 
-        return isEmailValid && password
+        return isEmailValid && password.trim().length >= 8
     }, [email, password])
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>){
@@ -38,11 +38,7 @@ export function LoginPage(){
             setSuccessMessage("Logged in successfully.")
         } catch (error) {
             console.error("Login failed:", error)
-            setErrorMessage(
-                error instanceof Error
-                    ? error.stack ?? error.message
-                    : JSON.stringify(error)
-            )
+            setErrorMessage(error instanceof Error ? error.message : "Login failed.")
         } finally {
             setIsSubmitting(false)
         }
@@ -76,10 +72,10 @@ export function LoginPage(){
                         required
                     />
                     {errorMessage && (
-                        <p className="text-[13px] text-red-400">{errorMessage}</p>
+                        <p className="rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-[13px] text-red-300">{errorMessage}</p>
                     )}
                     {successMessage && (
-                        <p className="text-[13px] text-accent-secondary">{successMessage}</p>
+                        <p className="rounded-lg border border-accent-secondary/20 bg-accent-secondary/10 px-3 py-2 text-[13px] text-accent-secondary">{successMessage}</p>
                     )}
                     <Link
                         to="/login"

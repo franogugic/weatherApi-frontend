@@ -1,4 +1,5 @@
 import type { User } from "@/entities/user/types"
+import { getAuthErrorMessage } from "./auth-error"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -20,7 +21,7 @@ export async function registerUser(request: RegisterUserRequest): Promise<User> 
 
     if (!response.ok) {
         const errorResponse = await response.json().catch(() => null)
-        throw new Error(errorResponse?.message ?? "Registration failed.")
+        throw new Error(getAuthErrorMessage(errorResponse, "Registration failed."))
     }
 
     return await response.json() as User
