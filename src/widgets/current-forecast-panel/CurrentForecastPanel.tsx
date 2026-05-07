@@ -8,6 +8,13 @@ import { WeatherStat } from "@/entities/weather/ui/WeatherStat"
 import { formatShortDate } from "@/shared/lib/format-date"
 import { useTranslation } from "react-i18next"
 import { useLocationStore } from "@/features/location/location-store"
+import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store"
+import {
+  convertTemperature,
+  formatPrecipitation,
+  formatWindSpeed,
+  getTemperatureUnitLabel,
+} from "@/features/unit-preferences/format-units"
 
 type CurrentForecastPanelProps = {
   forecast: WeatherForecastItem
@@ -23,9 +30,14 @@ export function CurrentForecastPanel({
   const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
   const formattedDate = formatShortDate(new Date(), locale)
   const selectedLocation = useLocationStore((state) => state.selectedLocation)
+  const temperatureUnit = useUnitPreferenceStore((state) => state.temperatureUnit)
+  const windSpeedUnit = useUnitPreferenceStore((state) => state.windSpeedUnit)
+  const precipitationUnit = useUnitPreferenceStore((state) => state.precipitationUnit)
   const locationName = selectedLocation.name;
+  const displayedTemperature = convertTemperature(forecast.airTemperature, temperatureUnit)
+
   return (
-    <div className="xl:row-span-2 flex min-w-0 flex-col justify-between rounded-4xl bg-linear-to-b from-accent-secondary to-accent-primary p-6">
+    <div className="lg:row-span-2 flex min-w-0 flex-col justify-between rounded-4xl bg-linear-to-b from-accent-secondary to-accent-primary p-6">
       <div className="text-[14px]">
         <p>{t("currentForecast.todayLabel", { date: formattedDate })}</p>
         <div className="flex flex-wrap items-center gap-1 text-[14px] font-bold">
@@ -37,10 +49,10 @@ export function CurrentForecastPanel({
       <div className="mx-auto text-center">
         <div className="flex translate-y-2 flex-wrap items-end justify-center gap-1 text-5xl font-bold 2xl:text-6xl">
           <p className="text-6xl font-bold 2xl:text-7xl">
-            {forecast.airTemperature} 
+            {Math.round(displayedTemperature * 10) / 10}
           </p>
           <p className="text-3xl font-semibold 2xl:text-4xl">
-            {meta.air_temperature?.unitDisplayName}
+            {getTemperatureUnitLabel(temperatureUnit)}
           </p>
         </div>
         <WeatherSymbolIcon
@@ -49,11 +61,10 @@ export function CurrentForecastPanel({
         />
       </div>
 
-      <div className="mx-auto flex w-full flex-wrap gap-y-4 xl:flex-nowrap">
+      <div className="mx-auto flex w-full flex-wrap gap-y-4 lg:flex-nowrap">
         <WeatherStat
           icon={<Wind size={34} />}
-          value={forecast.windSpeed}
-          unit={meta.wind_speed?.unitDisplayName}
+          value={formatWindSpeed(forecast.windSpeed, windSpeedUnit)}
           label={t("currentForecast.wind")}
           showDivider
         />
@@ -66,8 +77,7 @@ export function CurrentForecastPanel({
         />
         <WeatherStat
           icon={<CloudRain size={34} />}
-          value={forecast.precipitationAmount}
-          unit={meta.precipitation_amount?.unitDisplayName}
+          value={formatPrecipitation(forecast.precipitationAmount, precipitationUnit)}
           label={t("currentForecast.precipitation")}
         />
       </div>

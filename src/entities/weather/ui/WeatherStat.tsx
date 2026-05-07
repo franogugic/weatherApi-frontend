@@ -2,7 +2,7 @@ import type { ReactNode } from "react"
 
 type WeatherStatProps = {
   icon: ReactNode
-  value: number
+  value: number | string
   unit?: string
   label: string
   showDivider?: boolean
@@ -22,7 +22,7 @@ export function WeatherStat({
       ) : null}
       <div className="mb-2">{icon}</div>
       <p className="whitespace-nowrap text-[14px] font-bold">
-        {value} {unit}
+        {value}{unit ? ` ${unit}` : ""}
       </p>
       <p className="text-subtext text-[12px] font-light">{label}</p>
     </div>

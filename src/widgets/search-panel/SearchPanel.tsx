@@ -1,5 +1,4 @@
 import { useLocationStore } from "@/features/location/location-store"
-import { getLocationSlug } from "@/shared/lib/get-lcoation-slug"
 import { Search } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -52,7 +51,7 @@ export function SearchPanel() {
     setSelectedLocation(location)
     setLocationValue(location.name)
     setHighlightedIndex(-1)
-    navigate(`/dashboard/${getLocationSlug(location)}`)
+    navigate(`/${location.id}`)
   }
 
   return (
@@ -110,7 +109,7 @@ export function SearchPanel() {
                 setSelectedLocation(loc)
                 setLocationValue(loc.name)
                 setHighlightedIndex(-1)
-                navigate(`/dashboard/${getLocationSlug(loc)}`)
+                navigate(`/${loc.id}`)
               }}
               onMouseEnter={() => setHighlightedIndex(index)}
             >

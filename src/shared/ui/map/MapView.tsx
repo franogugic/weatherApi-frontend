@@ -1,8 +1,7 @@
 import { GoogleMap, Marker, OverlayView, useJsApiLoader } from "@react-google-maps/api"
 import { WeatherSymbolIcon } from "@/entities/weather/ui/WeatherSymbolIcon"
-import { LoadingState } from "@/shared/ui/status/LoadingState"
+import { Skeleton } from "@/shared/ui/skeleton/Skeleton"
 import { Fragment } from "react"
-import { useTranslation } from "react-i18next"
 import type { Location } from "@/entities/location/types"
 
 const mapContainerStyle = {
@@ -71,7 +70,6 @@ export function MapView({
   markers,
   onMarkerClick,
 }: MapViewProps) {
-  const { t } = useTranslation()
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
@@ -90,7 +88,15 @@ export function MapView({
       }
 
   if (!isLoaded) {
-    return <LoadingState message={t("map.loading")} />
+    return (
+      <div className="relative h-full min-h-[220px] w-full overflow-hidden rounded-4xl bg-[#49484d]">
+        <Skeleton className="absolute left-[8%] top-[18%] h-3 w-[42%] rotate-[-10deg] rounded-full bg-white/8" />
+        <Skeleton className="absolute right-[10%] top-[34%] h-3 w-[36%] rotate-[14deg] rounded-full bg-white/8" />
+        <Skeleton className="absolute bottom-[24%] left-[20%] h-3 w-[52%] rotate-[6deg] rounded-full bg-white/8" />
+        <Skeleton className="absolute bottom-[38%] right-[18%] h-20 w-36 rounded-full bg-[#313236]/70" />
+        <Skeleton className="absolute left-[10%] top-[42%] h-24 w-48 rounded-full bg-[#313236]/70" />
+      </div>
+    )
   }
 
   return (

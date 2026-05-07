@@ -1,24 +1,30 @@
 import { useLocationStore } from "@/features/location/location-store"
-import { getLocationSlug } from "@/shared/lib/get-lcoation-slug"
 import { MapView, type MapMarker } from "@/shared/ui/map/MapView"
-import { LoadingState } from "@/shared/ui/status/LoadingState"
 import { MessageState } from "@/shared/ui/status/MessageState"
 import { useTranslation } from "react-i18next"
 import { NavLink, useNavigate } from "react-router-dom"
+import { MapPageSkeleton } from "./MapPageSkeleton"
+import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store"
+import { formatTemperature } from "@/features/unit-preferences/format-units"
 
 export function MapPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const locations = useLocationStore((state) => state.locations)
   const isLoading = useLocationStore((state) => state.isLoading)
-  const mapMarkers: MapMarker[] = locations
+  const temperatureUnit = useUnitPreferenceStore((state) => state.temperatureUnit)
+  const mapMarkers: MapMarker[] = locations.map((location) => ({
+    ...location,
+    weatherSymbol: location.currentWeather?.weatherSymbol ?? undefined,
+    temperatureText:
+      location.currentWeather?.airTemperature !== null &&
+      location.currentWeather?.airTemperature !== undefined
+        ? formatTemperature(location.currentWeather.airTemperature, temperatureUnit)
+        : undefined,
+  }))
 
   if (isLoading) {
-    return (
-      <div className="rounded-4xl bg-div p-6">
-        <LoadingState message={t("map.loadingLocations")} />
-      </div>
-    )
+    return <MapPageSkeleton />
   }
 
   if (!locations.length) {
@@ -37,7 +43,7 @@ export function MapPage() {
           <MapView
             markers={mapMarkers}
             zoom={7}
-            onMarkerClick={(marker) => navigate(`/dashboard/${getLocationSlug(marker)}`)}
+            onMarkerClick={(marker) => navigate(`/${marker.id}`)}
           />
         </div>
 
@@ -48,7 +54,7 @@ export function MapPage() {
           <ul className="min-h-0 flex-1 overflow-y-auto">
           {locations.map((location) => (
             <li key={location.id} >
-              <NavLink to={`/dashboard/${getLocationSlug(location)}`} className="block border-y border-white/20 p-4 transition-colors hover:bg-white/8">
+              <NavLink to={`/${location.id}`} className="block border-y border-white/20 p-4 transition-colors hover:bg-white/8">
                 <p className="mb-2 text-base font-semibold sm:text-[18px]">{location.name}</p>
                 <div className="flex items-center justify-between">
                   <div className="text-[12px] font-semibold flex flex-col gap-1">

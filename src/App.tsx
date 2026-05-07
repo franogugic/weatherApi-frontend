@@ -11,28 +11,41 @@ import { DashboardPage } from "./pages/dashboard/DashboardPage"
 import { ForecastPage } from "./pages/forecast/ForecastPage"
 import { MapPage } from "./pages/map/MapPage"
 import { AppLayout } from "./shared/ui/app-layout/AppLayout"
+import { RegisterPage } from "./pages/register/RegisterPage"
+import { LoginPage } from "./pages/login/LoginPage"
+import { SettingsPage } from "./pages/settings/SettingsPage"
 
 function LocationDataLoader() {
   const { id } = useParams()
   const locations = useLocationStore((state) => state.locations)
   const setSelectedLocation = useLocationStore((state) => state.setSelectedLocation)
   const fetchForecast = useForecastStore((state) => state.fetchForecast)
+  const locationId = Number(id)
+  const isLocationIdValid = Number.isInteger(locationId) && locationId > 0
 
   useEffect(() => {
-    const locationId = Number(id)
-
-    if (!locationId) {
+    if (!isLocationIdValid) {
       return
     }
 
     void fetchForecast(locationId)
+  }, [fetchForecast, isLocationIdValid, locationId])
+
+  useEffect(() => {
+    if (!isLocationIdValid) {
+      return
+    }
 
     const matchedLocation = locations.find((location) => location.id === locationId)
 
     if (matchedLocation) {
       setSelectedLocation(matchedLocation)
     }
-  }, [id, locations, setSelectedLocation, fetchForecast])
+  }, [isLocationIdValid, locationId, locations, setSelectedLocation])
+
+  if (!isLocationIdValid) {
+    return <Navigate to="/map" replace />
+  }
 
   return <Outlet />
 }
@@ -71,9 +84,12 @@ function App() {
       <Routes>
         <Route path="/map" element={<MapPage />} />
         <Route element={<LocationDataLoader />}>
-          <Route path="/dashboard/:id/:locationSlug" element={<DashboardPage />} />
-          <Route path="/forecast/:id/:locationSlug" element={<ForecastPage />} />
+          <Route path="/:id" element={<DashboardPage />} />
+          <Route path="/forecast/:id" element={<ForecastPage />} />
         </Route>
+        <Route path="/register" element={<RegisterPage/>}></Route>
+        <Route path="/login" element={<LoginPage/>}></Route>
+        <Route path="/settings" element={<SettingsPage />} />
         <Route path="*" element={<Navigate to="/map" replace />} />
       </Routes>
     </AppLayout>
