@@ -56,11 +56,11 @@ export function ForecastPage() {
   const { t, i18n } = useTranslation()
   const { forecast, meta, isLoading } = useForecastStore()
   const { selectedLocation } = useLocationStore()
-  const temperatureUnit = useUnitPreferenceStore((state) => state.temperatureUnit)
-  const windSpeedUnit = useUnitPreferenceStore((state) => state.windSpeedUnit)
-  const pressureUnit = useUnitPreferenceStore((state) => state.pressureUnit)
-  const cloudinessUnit = useUnitPreferenceStore((state) => state.cloudinessUnit)
-  const precipitationUnit = useUnitPreferenceStore((state) => state.precipitationUnit)
+  const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
+  const windSpeedUnit = useUnitPreferenceStore((state) => state.preferences.windSpeedUnit)
+  const pressureUnit = useUnitPreferenceStore((state) => state.preferences.pressureUnit)
+  const cloudinessUnit = useUnitPreferenceStore((state) => state.preferences.cloudinessUnit)
+  const precipitationUnit = useUnitPreferenceStore((state) => state.preferences.precipitationUnit)
   const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
 
   const dailyForecasts = useMemo(() => getForecastDaily(forecast), [forecast])

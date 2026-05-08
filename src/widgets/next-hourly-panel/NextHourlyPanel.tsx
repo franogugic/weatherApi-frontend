@@ -17,7 +17,7 @@ type NextHourlyPanelProps = {
 export function NextHourlysPanel( {forecast}: NextHourlyPanelProps) {
   const { t, i18n } = useTranslation()
   const selectedLocation = useLocationStore((state) => state.selectedLocation)
-  const temperatureUnit = useUnitPreferenceStore((state) => state.temperatureUnit)
+  const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
   const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
   
   return (

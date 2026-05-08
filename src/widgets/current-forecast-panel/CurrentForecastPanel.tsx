@@ -30,9 +30,9 @@ export function CurrentForecastPanel({
   const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
   const formattedDate = formatShortDate(new Date(), locale)
   const selectedLocation = useLocationStore((state) => state.selectedLocation)
-  const temperatureUnit = useUnitPreferenceStore((state) => state.temperatureUnit)
-  const windSpeedUnit = useUnitPreferenceStore((state) => state.windSpeedUnit)
-  const precipitationUnit = useUnitPreferenceStore((state) => state.precipitationUnit)
+  const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
+  const windSpeedUnit = useUnitPreferenceStore((state) => state.preferences.windSpeedUnit)
+  const precipitationUnit = useUnitPreferenceStore((state) => state.preferences.precipitationUnit)
   const locationName = selectedLocation.name;
   const displayedTemperature = convertTemperature(forecast.airTemperature, temperatureUnit)
 
