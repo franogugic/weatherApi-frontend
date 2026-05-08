@@ -17,10 +17,12 @@ import { SettingsPage } from "./pages/settings/SettingsPage"
 import { useAuthStore } from "./features/auth/auth-store"
 import { useUnitPreferenceStore } from "./features/unit-preferences/unit-preference-store"
 import { LAST_VIEWED_LOCATION_ID_KEY } from "./features/location/last-viewed-location"
+import { useFavoriteLocationStore } from "./features/favorite-locations/favorite-locations-store"
 
 function AuthSessionLoader() {
   const loadCurrentUser = useAuthStore((state) => state.loadCurrentUser)
   const loadPreferences = useUnitPreferenceStore((state) => state.loadPreferences)
+  const loadFavoriteLocations = useFavoriteLocationStore((state) => state.loadFavoriteLocations)
 
   useEffect(() => {
     async function loadSessionData() {
@@ -28,6 +30,7 @@ function AuthSessionLoader() {
 
       if (user) {
         await loadPreferences()
+        await loadFavoriteLocations()
       }
     }
 

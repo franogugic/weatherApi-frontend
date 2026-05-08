@@ -1,4 +1,6 @@
 import { useAuthStore } from "@/features/auth/auth-store"
+import { useFavoriteLocationStore } from "@/features/favorite-locations/favorite-locations-store"
+import { useLocationStore } from "@/features/location/location-store"
 import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store"
 import type {
   CloudinessUnit,
@@ -18,6 +20,15 @@ export function SettingsPage() {
   const preferences = useUnitPreferenceStore((state) => state.preferences)
   const isLoadingPreferences = useUnitPreferenceStore((state) => state.isLoadingPreferences)
   const updatePreferences = useUnitPreferenceStore((state) => state.updatePreferences)
+  const favoriteLocations = useFavoriteLocationStore((state) => state.favoriteLocations);
+  const addFavoriteLocation = useFavoriteLocationStore((state) => state.addFavoriteLocation);
+  const removeFavoriteLocation = useFavoriteLocationStore((state) => state.removeFavoriteLocation)
+
+  const locations = useLocationStore((state) => state.locations);
+  const possibleLocations = locations.filter(
+    (location) => !favoriteLocations.some((favorite) => favorite.id === location.id)
+  )
+  const [selectedNewFavoriteLocation,setSelectedNewFavoriteLocation] = useState(0);
   const [preferenceErrorMessage, setPreferenceErrorMessage] = useState("")
 
   async function handlePreferenceChange<K extends keyof UnitPreferences>(
@@ -145,6 +156,31 @@ export function SettingsPage() {
         <p className="text-xs text-subtext">
           {isLoadingPreferences ? "Loading saved preferences..." : "Preferences are saved to your account."}
         </p>
+        <div>
+          <p className="bg-yellow-900">Popis favorit lokacija</p>
+          <ul>
+            {favoriteLocations.map((loc) => 
+              (
+                <p onClick={() => removeFavoriteLocation(loc.id)} key={loc.id}>{loc.name}</p>
+              )
+            )}
+          </ul>
+          <p className="bg-green-900 mt-8">potencijalne lokacije <span className="font-bold underline">DAUN DER</span></p>
+          <form action=""
+            onSubmit={(event) => {
+              event.preventDefault()
+              addFavoriteLocation(selectedNewFavoriteLocation)
+            }}>
+            <ul>
+              {possibleLocations.map((loc) => 
+              (
+                <p key={loc.id} onClick={() => setSelectedNewFavoriteLocation(loc.id)}>{loc.name}</p>
+              )
+              )}
+            </ul>
+            <button className="bg-green-300 text-black">dodaj novu lokaciju u favorite</button>
+          </form>
+        </div>
       </div>
     </div>
   )
