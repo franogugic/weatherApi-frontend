@@ -13,6 +13,10 @@ export function MapPanel({}: MapPanelProps) {
   const { forecast } = useForecastStore()
   const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
 
+  if (!selectedLocation) {
+    return null
+  }
+
   const now = new Date()
   const currentForecast =
     [...forecast]

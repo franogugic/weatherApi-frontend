@@ -6,8 +6,14 @@ import { NavLink, useNavigate } from "react-router-dom"
 import { MapPageSkeleton } from "./MapPageSkeleton"
 import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store"
 import { formatTemperature } from "@/features/unit-preferences/format-units"
+import { MapPin } from "lucide-react"
+import { WeatherSymbolIcon } from "@/entities/weather/ui/WeatherSymbolIcon"
 
-export function MapPage() {
+type MapPageProps = {
+  showAuthActions?: boolean
+}
+
+export function MapPage({ showAuthActions = false }: MapPageProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const locations = useLocationStore((state) => state.locations)
@@ -37,7 +43,25 @@ export function MapPage() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <h1 className="mb-4 text-xl font-bold sm:text-2xl">{t("map.title")}</h1>
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <h1 className="text-xl font-bold sm:text-2xl">{t("map.title")}</h1>
+        {showAuthActions ? (
+          <div className="flex items-center gap-2">
+            <NavLink
+              to="/login"
+              className="rounded-2xl border border-white/10 px-4 py-2 text-[14px] font-semibold text-white/80 transition hover:border-white/20 hover:text-white"
+            >
+              Login
+            </NavLink>
+            <NavLink
+              to="/register"
+              className="rounded-2xl bg-linear-to-b from-accent-secondary to-accent-primary px-4 py-2 text-[14px] font-semibold text-white shadow-sm transition hover:brightness-110"
+            >
+              Register
+            </NavLink>
+          </div>
+        ) : null}
+      </div>
       <div className="flex min-h-0 flex-1 flex-col gap-4 xl:flex-row">
         <div className="min-h-[320px] overflow-hidden rounded-4xl md:min-h-[420px] xl:min-h-0 xl:flex-1">
           <MapView
@@ -55,12 +79,31 @@ export function MapPage() {
           {locations.map((location) => (
             <li key={location.id} >
               <NavLink to={`/${location.id}`} className="block border-y border-white/20 p-4 transition-colors hover:bg-white/8">
-                <p className="mb-2 text-base font-semibold sm:text-[18px]">{location.name}</p>
+                <div className="flex items-center justify-start mb-2 gap-2">
+                  <span><MapPin className="text-accent-primary"/></span>
+                  <p className="text-base font-semibold sm:text-[18px]">{location.name}</p>
+                </div>
                 <div className="flex items-center justify-between">
                   <div className="text-[12px] font-semibold flex flex-col gap-1">
                     <p><span className="text-subtext  font-light">{t("map.latitude")}:</span> {location.latitude}</p>
                     <p><span className="text-subtext font-light">{t("map.longitude")}:</span> {location.longitude}</p>
                     <p><span className="text-subtext font-light">{t("map.altitude")}:</span> {location.altitude}</p>
+                  </div>
+                  <div className="flex min-w-[64px] flex-col items-center gap-0 text-center">
+                    {location.currentWeather?.weatherSymbol ? (
+                      <WeatherSymbolIcon
+                        symbol={location.currentWeather.weatherSymbol}
+                        className="w-10"
+                      />
+                    ) : null}
+                    {location.currentWeather?.airTemperature !== null &&
+                    location.currentWeather?.airTemperature !== undefined ? (
+                      <p className="-mt-1 text-[18px] font-semibold leading-none text-white">
+                        {formatTemperature(location.currentWeather.airTemperature, temperatureUnit)}
+                      </p>
+                    ) : (
+                      <p className="text-[12px] text-subtext">--</p>
+                    )}
                   </div>
                 </div>
               </NavLink>

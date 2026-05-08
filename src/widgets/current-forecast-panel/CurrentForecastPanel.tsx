@@ -33,7 +33,7 @@ export function CurrentForecastPanel({
   const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
   const windSpeedUnit = useUnitPreferenceStore((state) => state.preferences.windSpeedUnit)
   const precipitationUnit = useUnitPreferenceStore((state) => state.preferences.precipitationUnit)
-  const locationName = selectedLocation.name;
+  const locationName = selectedLocation?.name ?? t("forecast.locationUnavailable")
   const displayedTemperature = convertTemperature(forecast.airTemperature, temperatureUnit)
 
   return (

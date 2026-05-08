@@ -29,6 +29,7 @@
   "forecast": {
     "loading": "Učitavanje prognoze...",
     "noData": "Nema dostupnih podataka prognoze za odabranu lokaciju.",
+    "locationUnavailable": "Nepoznata lokacija",
     "currentConditions": "Trenutni uvjeti",
     "datePlaceholder": "Datum",
     "time": "Sati",

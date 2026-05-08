@@ -7,12 +7,12 @@ import { useNavigate } from "react-router-dom"
 export function SearchPanel() {
   const { t } = useTranslation()
   const { isLoading, locations, selectedLocation, setSelectedLocation } = useLocationStore()
-  const [locationValue, setLocationValue] = useState(selectedLocation.name)
+  const [locationValue, setLocationValue] = useState(selectedLocation?.name ?? "")
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
   const navigate = useNavigate();
 
   useEffect(() => {
-    setLocationValue(selectedLocation.name)
+    setLocationValue(selectedLocation?.name ?? "")
     setHighlightedIndex(-1)
   }, [selectedLocation])
 
@@ -23,7 +23,7 @@ export function SearchPanel() {
   const shouldShowDropdown =
     locationValue.trim().length > 0 &&
     filteredLocations.length > 0 &&
-    locationValue !== selectedLocation.name
+    locationValue !== (selectedLocation?.name ?? "")
 
   useEffect(() => {
     if (!shouldShowDropdown) {
@@ -115,7 +115,7 @@ export function SearchPanel() {
             >
               <p
                 className={`text-[14px] font-semibold ${
-                  loc.id === selectedLocation.id
+                  loc.id === selectedLocation?.id
                     ? "text-accent-primary "
                     : "text-white"
                 }`}
