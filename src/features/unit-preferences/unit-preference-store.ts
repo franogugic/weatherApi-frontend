@@ -15,14 +15,12 @@ const DEFAULT_UNIT_PREFERENCES: UnitPreferences = {
 function applyPreferences(preferences: UnitPreferences) {
   return {
     preferences,
-    ...preferences,
     hasLoadedPreferences: true,
   }
 }
 
 export const useUnitPreferenceStore = create<UnitPreferenceStore>((set, get) => ({
   preferences: DEFAULT_UNIT_PREFERENCES,
-  ...DEFAULT_UNIT_PREFERENCES,
   isLoadingPreferences: false,
   hasLoadedPreferences: false,
   setPreference: (key, value) =>
@@ -31,54 +29,12 @@ export const useUnitPreferenceStore = create<UnitPreferenceStore>((set, get) => 
         ...state.preferences,
         [key]: value,
       },
-      [key]: value,
     })),
   setPreferences: (preferences) =>
     set({
       preferences,
-      ...preferences,
       hasLoadedPreferences: true,
     }),
-  setTemperatureUnit: (temperatureUnit) =>
-    set((state) => ({
-      preferences: {
-        ...state.preferences,
-        temperatureUnit,
-      },
-      temperatureUnit,
-    })),
-  setWindSpeedUnit: (windSpeedUnit) =>
-    set((state) => ({
-      preferences: {
-        ...state.preferences,
-        windSpeedUnit,
-      },
-      windSpeedUnit,
-    })),
-  setPressureUnit: (pressureUnit) =>
-    set((state) => ({
-      preferences: {
-        ...state.preferences,
-        pressureUnit,
-      },
-      pressureUnit,
-    })),
-  setCloudinessUnit: (cloudinessUnit) =>
-    set((state) => ({
-      preferences: {
-        ...state.preferences,
-        cloudinessUnit,
-      },
-      cloudinessUnit,
-    })),
-  setPrecipitationUnit: (precipitationUnit) =>
-    set((state) => ({
-      preferences: {
-        ...state.preferences,
-        precipitationUnit,
-      },
-      precipitationUnit,
-    })),
   loadPreferences: async () => {
     set({ isLoadingPreferences: true })
 

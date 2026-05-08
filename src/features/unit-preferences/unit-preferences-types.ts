@@ -14,11 +14,6 @@ export type UnitPreferences = {
 
 export type UnitPreferenceStore = {
   preferences: UnitPreferences
-  temperatureUnit: TemperatureUnit
-  windSpeedUnit: WindSpeedUnit
-  pressureUnit: PressureUnit
-  cloudinessUnit: CloudinessUnit
-  precipitationUnit: PrecipitationUnit
   isLoadingPreferences: boolean
   hasLoadedPreferences: boolean
   setPreference: <K extends keyof UnitPreferences>(
@@ -26,11 +21,6 @@ export type UnitPreferenceStore = {
     value: UnitPreferences[K]
   ) => void
   setPreferences: (preferences: UnitPreferences) => void
-  setTemperatureUnit: (temperatureUnit: TemperatureUnit) => void
-  setWindSpeedUnit: (windSpeedUnit: WindSpeedUnit) => void
-  setPressureUnit: (pressureUnit: PressureUnit) => void
-  setCloudinessUnit: (cloudinessUnit: CloudinessUnit) => void
-  setPrecipitationUnit: (precipitationUnit: PrecipitationUnit) => void
   loadPreferences: () => Promise<UnitPreferences | null>
   updatePreferences: (preferences: UnitPreferences) => Promise<UnitPreferences>
 }

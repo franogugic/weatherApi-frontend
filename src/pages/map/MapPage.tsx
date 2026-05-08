@@ -12,7 +12,7 @@ export function MapPage() {
   const navigate = useNavigate()
   const locations = useLocationStore((state) => state.locations)
   const isLoading = useLocationStore((state) => state.isLoading)
-  const temperatureUnit = useUnitPreferenceStore((state) => state.temperatureUnit)
+  const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
   const mapMarkers: MapMarker[] = locations.map((location) => ({
     ...location,
     weatherSymbol: location.currentWeather?.weatherSymbol ?? undefined,

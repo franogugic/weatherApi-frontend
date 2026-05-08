@@ -310,9 +310,9 @@ function externalTooltipHandler(
 export function GraphPanel({ forecast }: GraphPanelProps) {
   const { t, i18n } = useTranslation()
   const [metric, setMetric] = useState<GraphMetric>("temperature")
-  const temperatureUnit = useUnitPreferenceStore((state) => state.temperatureUnit)
-  const windSpeedUnit = useUnitPreferenceStore((state) => state.windSpeedUnit)
-  const precipitationUnit = useUnitPreferenceStore((state) => state.precipitationUnit)
+  const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
+  const windSpeedUnit = useUnitPreferenceStore((state) => state.preferences.windSpeedUnit)
+  const precipitationUnit = useUnitPreferenceStore((state) => state.preferences.precipitationUnit)
   const chartItems = useMemo(() => getChartItems(forecast), [forecast])
   const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
   const now = new Date()
