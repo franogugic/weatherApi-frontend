@@ -1,10 +1,13 @@
-import { loginUser } from "@/features/auth/login-user"
+import { useAuthStore } from "@/features/auth/auth-store"
+import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store"
 import { AuthInput } from "@/shared/ui/auth-input/AuthInput"
 import { Lock, Mail } from "lucide-react"
 import { useMemo, useState, type FormEvent } from "react"
 import { Link } from "react-router-dom"
 
 export function LoginPage(){
+    const login = useAuthStore((state) => state.login)
+    const loadPreferences = useUnitPreferenceStore((state) => state.loadPreferences)
     const [email, setEmail] = useState("root@root.com")
     const [password, setPassword] = useState("Root1234")
     const [errorMessage, setErrorMessage] = useState("")
@@ -30,10 +33,11 @@ export function LoginPage(){
         setSuccessMessage("")
         
         try {
-            await loginUser({
+            await login({
                 email: email.trim(),
                 password,
             })
+            await loadPreferences()
 
             setSuccessMessage("Logged in successfully.")
         } catch (error) {

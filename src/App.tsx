@@ -14,6 +14,27 @@ import { AppLayout } from "./shared/ui/app-layout/AppLayout"
 import { RegisterPage } from "./pages/register/RegisterPage"
 import { LoginPage } from "./pages/login/LoginPage"
 import { SettingsPage } from "./pages/settings/SettingsPage"
+import { useAuthStore } from "./features/auth/auth-store"
+import { useUnitPreferenceStore } from "./features/unit-preferences/unit-preference-store"
+
+function AuthSessionLoader() {
+  const loadCurrentUser = useAuthStore((state) => state.loadCurrentUser)
+  const loadPreferences = useUnitPreferenceStore((state) => state.loadPreferences)
+
+  useEffect(() => {
+    async function loadSessionData() {
+      const user = await loadCurrentUser()
+
+      if (user) {
+        await loadPreferences()
+      }
+    }
+
+    void loadSessionData()
+  }, [loadCurrentUser, loadPreferences])
+
+  return null
+}
 
 function LocationDataLoader() {
   const { id } = useParams()
@@ -80,6 +101,7 @@ function App() {
 
   return (
     <AppLayout>
+      <AuthSessionLoader />
       <TemperatureThemeSync />
       <Routes>
         <Route path="/map" element={<MapPage />} />

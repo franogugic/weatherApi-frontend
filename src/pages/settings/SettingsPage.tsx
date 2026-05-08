@@ -1,59 +1,43 @@
-import type { User } from "@/entities/user/types"
-import { getCurrentUser } from "@/features/auth/get-current-user"
+import { useAuthStore } from "@/features/auth/auth-store"
 import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store"
 import type {
   CloudinessUnit,
   PrecipitationUnit,
   PressureUnit,
   TemperatureUnit,
+  UnitPreferences,
   WindSpeedUnit,
 } from "@/features/unit-preferences/unit-preferences-types"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Link } from "react-router-dom"
 
 export function SettingsPage() {
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoadingUser, setIsLoadingUser] = useState(true)
-  const temperatureUnit = useUnitPreferenceStore((state) => state.temperatureUnit)
-  const windSpeedUnit = useUnitPreferenceStore((state) => state.windSpeedUnit)
-  const pressureUnit = useUnitPreferenceStore((state) => state.pressureUnit)
-  const cloudinessUnit = useUnitPreferenceStore((state) => state.cloudinessUnit)
-  const precipitationUnit = useUnitPreferenceStore((state) => state.precipitationUnit)
-  const setTemperatureUnit = useUnitPreferenceStore((state) => state.setTemperatureUnit)
-  const setWindSpeedUnit = useUnitPreferenceStore((state) => state.setWindSpeedUnit)
-  const setPressureUnit = useUnitPreferenceStore((state) => state.setPressureUnit)
-  const setCloudinessUnit = useUnitPreferenceStore((state) => state.setCloudinessUnit)
-  const setPrecipitationUnit = useUnitPreferenceStore((state) => state.setPrecipitationUnit)
+  const user = useAuthStore((state) => state.user)
+  const isLoadingUser = useAuthStore((state) => state.isLoadingUser)
+  const hasLoadedCurrentUser = useAuthStore((state) => state.hasLoadedCurrentUser)
+  const preferences = useUnitPreferenceStore((state) => state.preferences)
+  const isLoadingPreferences = useUnitPreferenceStore((state) => state.isLoadingPreferences)
+  const updatePreferences = useUnitPreferenceStore((state) => state.updatePreferences)
+  const [preferenceErrorMessage, setPreferenceErrorMessage] = useState("")
 
-  useEffect(() => {
-    let isMounted = true
+  async function handlePreferenceChange<K extends keyof UnitPreferences>(
+    key: K,
+    value: UnitPreferences[K],
+  ) {
+    setPreferenceErrorMessage("")
 
-    async function loadCurrentUser() {
-      try {
-        const currentUser = await getCurrentUser()
-
-        if (isMounted) {
-          setUser(currentUser)
-        }
-      } catch {
-        if (isMounted) {
-          setUser(null)
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoadingUser(false)
-        }
-      }
+    try {
+      await updatePreferences({
+        ...preferences,
+        [key]: value,
+      })
+    } catch (error) {
+      console.error("Preference update failed:", error)
+      setPreferenceErrorMessage(error instanceof Error ? error.message : "Could not update preferences.")
     }
+  }
 
-    loadCurrentUser()
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
-
-  if (isLoadingUser) {
+  if (isLoadingUser || !hasLoadedCurrentUser) {
     return (
       <div className="rounded-4xl bg-div p-6">
         <p className="text-subtext">Loading settings...</p>
@@ -100,8 +84,8 @@ export function SettingsPage() {
       <div className="max-w-md space-y-5">
         <UnitSelect
           label="Temperature"
-          value={temperatureUnit}
-          onChange={(value) => setTemperatureUnit(value as TemperatureUnit)}
+          value={preferences.temperatureUnit}
+          onChange={(value) => void handlePreferenceChange("temperatureUnit", value as TemperatureUnit)}
           options={[
             { value: "celsius", label: "Celsius (°C)" },
             { value: "fahrenheit", label: "Fahrenheit (°F)" },
@@ -111,8 +95,8 @@ export function SettingsPage() {
 
         <UnitSelect
           label="Wind speed"
-          value={windSpeedUnit}
-          onChange={(value) => setWindSpeedUnit(value as WindSpeedUnit)}
+          value={preferences.windSpeedUnit}
+          onChange={(value) => void handlePreferenceChange("windSpeedUnit", value as WindSpeedUnit)}
           options={[
             { value: "metersPerSecond", label: "Meters per second (m/s)" },
             { value: "kilometersPerHour", label: "Kilometers per hour (km/h)" },
@@ -123,8 +107,8 @@ export function SettingsPage() {
 
         <UnitSelect
           label="Air pressure"
-          value={pressureUnit}
-          onChange={(value) => setPressureUnit(value as PressureUnit)}
+          value={preferences.pressureUnit}
+          onChange={(value) => void handlePreferenceChange("pressureUnit", value as PressureUnit)}
           options={[
             { value: "hectopascal", label: "Hectopascal (hPa)" },
             { value: "pascal", label: "Pascal (Pa)" },
@@ -134,8 +118,8 @@ export function SettingsPage() {
 
         <UnitSelect
           label="Cloudiness"
-          value={cloudinessUnit}
-          onChange={(value) => setCloudinessUnit(value as CloudinessUnit)}
+          value={preferences.cloudinessUnit}
+          onChange={(value) => void handlePreferenceChange("cloudinessUnit", value as CloudinessUnit)}
           options={[
             { value: "percent", label: "Percent (%)" },
             { value: "okta", label: "Okta" },
@@ -144,16 +128,22 @@ export function SettingsPage() {
 
         <UnitSelect
           label="Precipitation"
-          value={precipitationUnit}
-          onChange={(value) => setPrecipitationUnit(value as PrecipitationUnit)}
+          value={preferences.precipitationUnit}
+          onChange={(value) => void handlePreferenceChange("precipitationUnit", value as PrecipitationUnit)}
           options={[
             { value: "millimeter", label: "Millimeter (mm)" },
             { value: "literPerSquareMeter", label: "Liter per square meter (l/m²)" },
           ]}
         />
 
+        {preferenceErrorMessage ? (
+          <p className="rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-[13px] text-red-300">
+            {preferenceErrorMessage}
+          </p>
+        ) : null}
+
         <p className="text-xs text-subtext">
-          These preferences are temporary for now and reset after refresh.
+          {isLoadingPreferences ? "Loading saved preferences..." : "Preferences are saved to your account."}
         </p>
       </div>
     </div>

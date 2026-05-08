@@ -1,4 +1,5 @@
 import { useForecastStore } from "@/features/get-weather-forecast/forecast-store"
+import { useAuthStore } from "@/features/auth/auth-store"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 import { CurrentForecastPanel } from "@/widgets/current-forecast-panel/CurrentForecastPanel"
 import { GraphPanel } from "@/widgets/graph-panel/GraphPanel"
@@ -9,38 +10,11 @@ import { SettingsPanel } from "@/widgets/settings-panel/SettingsPanel"
 import { MessageState } from "@/shared/ui/status/MessageState"
 import { useTranslation } from "react-i18next"
 import { DashboardPageSkeleton } from "./DashboardPageSkeleton"
-import { getCurrentUser } from "@/features/auth/get-current-user"
-import { useEffect, useState } from "react"
-import type { User } from "@/entities/user/types"
 
 export function DashboardPage() {
   const { t } = useTranslation()
   const {forecast, meta, isLoading} = useForecastStore()
-  const [user, setUser] = useState<User | null>(null)
-
-  useEffect(() => {
-    let isMounted = true
-
-    async function loadCurrentUser() {
-      try {
-        const currentUser = await getCurrentUser()
-
-        if (isMounted) {
-          setUser(currentUser)
-        }
-      } catch {
-        if (isMounted) {
-          setUser(null)
-        }
-      }
-    }
-
-    loadCurrentUser()
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
+  const user = useAuthStore((state) => state.user)
 
 
   if (isLoading) {

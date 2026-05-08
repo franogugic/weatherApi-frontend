@@ -2,10 +2,11 @@ import type { FormEvent } from "react"
 import { useMemo, useState } from "react"
 import { Check, Lock, Mail, UserRound } from "lucide-react"
 import { Link } from "react-router-dom"
-import { registerUser } from "@/features/auth/register-user"
+import { useAuthStore } from "@/features/auth/auth-store"
 import { AuthInput } from "@/shared/ui/auth-input/AuthInput"
 
 export function RegisterPage(){
+    const register = useAuthStore((state) => state.register)
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [email, setEmail] = useState("")
@@ -46,7 +47,7 @@ export function RegisterPage(){
         setSuccessMessage("")
 
         try {
-            await registerUser({
+            await register({
                 firstName: firstName.trim(),
                 lastName: lastName.trim(),
                 email: email.trim(),
