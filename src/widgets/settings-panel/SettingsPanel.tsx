@@ -49,7 +49,7 @@ export function SettingsPanel({ user }: SettingsPanelProps) {
         {user ? (
           <div className="flex justify-center items-center gap-2">
             <p className="text-[16px] font-light pt-1 text-white">
-              <span className="text-[22px] font-extralight">{user.firstName} {user.lastName}</span>
+              <span className="text-[20px] font-extralight">{user.firstName} {user.lastName}</span>
             </p>
             <div className="rounded-full bg-linear-to-br from-accent-secondary cursor-pointer to-accent-primary w-12 h-12 text-white flex items-center justify-center">
               <p className="font-black text-[26px]">{user.firstName[0]}</p>
