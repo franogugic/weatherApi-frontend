@@ -124,7 +124,9 @@ export function ForecastPage() {
   return (
     <div className="flex h-full min-w-0 flex-1 flex-col overflow-y-auto rounded-4xl bg-div p-6">
       <div className="mb-8">
-        <h2 className="mb-8 break-words text-3xl font-semibold tracking-tight sm:text-4xl">{selectedLocation.name}</h2>
+        <h2 className="mb-8 break-words text-3xl font-semibold tracking-tight sm:text-4xl">
+          {selectedLocation?.name ?? t("forecast.locationUnavailable")}
+        </h2>
         <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-4">
           {dailyForecasts.map((daily) => {
             const isActive = selectedDate === daily.date

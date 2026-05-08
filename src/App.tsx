@@ -16,6 +16,7 @@ import { LoginPage } from "./pages/login/LoginPage"
 import { SettingsPage } from "./pages/settings/SettingsPage"
 import { useAuthStore } from "./features/auth/auth-store"
 import { useUnitPreferenceStore } from "./features/unit-preferences/unit-preference-store"
+import { LAST_VIEWED_LOCATION_ID_KEY } from "./features/location/last-viewed-location"
 
 function AuthSessionLoader() {
   const loadCurrentUser = useAuthStore((state) => state.loadCurrentUser)
@@ -41,19 +42,23 @@ function LocationDataLoader() {
   const locations = useLocationStore((state) => state.locations)
   const setSelectedLocation = useLocationStore((state) => state.setSelectedLocation)
   const fetchForecast = useForecastStore((state) => state.fetchForecast)
+  const clearForecast = useForecastStore((state) => state.clearForecast)
   const locationId = Number(id)
   const isLocationIdValid = Number.isInteger(locationId) && locationId > 0
 
   useEffect(() => {
     if (!isLocationIdValid) {
+      clearForecast()
       return
     }
 
+    localStorage.setItem(LAST_VIEWED_LOCATION_ID_KEY, String(locationId))
     void fetchForecast(locationId)
-  }, [fetchForecast, isLocationIdValid, locationId])
+  }, [clearForecast, fetchForecast, isLocationIdValid, locationId])
 
   useEffect(() => {
     if (!isLocationIdValid) {
+      setSelectedLocation(null)
       return
     }
 
@@ -61,7 +66,14 @@ function LocationDataLoader() {
 
     if (matchedLocation) {
       setSelectedLocation(matchedLocation)
+      return
     }
+
+    if (!locations.length) {
+      return
+    }
+
+    setSelectedLocation(null)
   }, [isLocationIdValid, locationId, locations, setSelectedLocation])
 
   if (!isLocationIdValid) {
@@ -69,6 +81,23 @@ function LocationDataLoader() {
   }
 
   return <Outlet />
+}
+
+function RootPage() {
+  const user = useAuthStore((state) => state.user)
+  const hasLoadedCurrentUser = useAuthStore((state) => state.hasLoadedCurrentUser)
+
+  if (!hasLoadedCurrentUser) {
+    return null
+  }
+
+  const lastViewedLocationId = localStorage.getItem(LAST_VIEWED_LOCATION_ID_KEY)
+
+  if (user && lastViewedLocationId) {
+    return <Navigate to={`/${lastViewedLocationId}`} replace />
+  }
+
+  return <MapPage showAuthActions />
 }
 
 function TemperatureThemeSync() {
@@ -104,6 +133,7 @@ function App() {
       <AuthSessionLoader />
       <TemperatureThemeSync />
       <Routes>
+        <Route path="/" element={<RootPage />} />
         <Route path="/map" element={<MapPage />} />
         <Route element={<LocationDataLoader />}>
           <Route path="/:id" element={<DashboardPage />} />

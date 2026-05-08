@@ -29,6 +29,7 @@
   "forecast": {
     "loading": "Loading forecast...",
     "noData": "No forecast data available for the selected location.",
+    "locationUnavailable": "Unknown location",
     "currentConditions": "Current conditions",
     "datePlaceholder": "Date",
     "time": "Hours",

@@ -1,12 +1,13 @@
 import type { FormEvent } from "react"
 import { useMemo, useState } from "react"
 import { Check, Lock, Mail, UserRound } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useAuthStore } from "@/features/auth/auth-store"
 import { AuthInput } from "@/shared/ui/auth-input/AuthInput"
 
 export function RegisterPage(){
     const register = useAuthStore((state) => state.register)
+    const navigate = useNavigate()
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [email, setEmail] = useState("")
@@ -55,6 +56,7 @@ export function RegisterPage(){
             })
 
             setSuccessMessage("Account created successfully.")
+            navigate("/login")
         } catch (error) {
             console.error("Registration failed:", error)
             setErrorMessage(error instanceof Error ? error.message : "Registration failed.")

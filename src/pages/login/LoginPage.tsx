@@ -1,13 +1,15 @@
 import { useAuthStore } from "@/features/auth/auth-store"
 import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store"
+import { LAST_VIEWED_LOCATION_ID_KEY } from "@/features/location/last-viewed-location"
 import { AuthInput } from "@/shared/ui/auth-input/AuthInput"
 import { Lock, Mail } from "lucide-react"
 import { useMemo, useState, type FormEvent } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 export function LoginPage(){
     const login = useAuthStore((state) => state.login)
     const loadPreferences = useUnitPreferenceStore((state) => state.loadPreferences)
+    const navigate = useNavigate()
     const [email, setEmail] = useState("root@root.com")
     const [password, setPassword] = useState("Root1234")
     const [errorMessage, setErrorMessage] = useState("")
@@ -40,6 +42,8 @@ export function LoginPage(){
             await loadPreferences()
 
             setSuccessMessage("Logged in successfully.")
+            const lastViewedLocationId = localStorage.getItem(LAST_VIEWED_LOCATION_ID_KEY)
+            navigate(lastViewedLocationId ? `/${lastViewedLocationId}` : "/map")
         } catch (error) {
             console.error("Login failed:", error)
             setErrorMessage(error instanceof Error ? error.message : "Login failed.")
