@@ -3,10 +3,8 @@ import { GraphPanel } from "@/widgets/graph-panel/GraphPanel"
 import { MapPanel } from "@/widgets/map-panel/MapPanel"
 import { NextHourlysPanel } from "@/widgets/next-hourly-panel/NextHourlyPanel"
 import { ColorPanel } from "./ColorPanel"
-import type {
-  DashboardWidgetDefinition,
-  DashboardWidgetId,
-} from "./dashboard-widget-types"
+import type { DashboardWidgetId } from "@/features/dashboard-layout/dashboard-layout-types"
+import type { DashboardWidgetDefinition } from "./dashboard-widget-types"
 
 // lista svih potencijalnih widgeta za drag & drop na hommeu
 export const dashboardWidgetRegistry = {

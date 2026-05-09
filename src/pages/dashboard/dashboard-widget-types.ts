@@ -4,16 +4,7 @@ import type {
   WeatherMeta,
 } from "@/entities/weather/model/types"
 import type { User } from "@/entities/user/types"
-
-export type DashboardWidgetId =
-  | "currentForecast"
-  | "nextHourly"
-  | "map"
-  | "graph"
-  | "colorPanelOne"
-  | "colorPanelTwo"
-  | "colorPanelThree"
-  | "colorPanelFour"
+import type { DashboardWidgetId } from "@/features/dashboard-layout/dashboard-layout-types"
 
 export type DashboardWidgetRenderProps = {
   currentForecast: WeatherForecastItem
