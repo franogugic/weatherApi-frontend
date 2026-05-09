@@ -35,7 +35,7 @@ function AuthSessionLoader() {
     }
 
     void loadSessionData()
-  }, [loadCurrentUser, loadPreferences])
+  }, [loadCurrentUser, loadFavoriteLocations, loadPreferences])
 
   return null
 }

@@ -1,3 +1,5 @@
+import { useAuthStore } from "@/features/auth/auth-store"
+import { useFavoriteLocationStore } from "@/features/favorite-locations/favorite-locations-store"
 import { useLocationStore } from "@/features/location/location-store"
 import { MapView, type MapMarker } from "@/shared/ui/map/MapView"
 import { MessageState } from "@/shared/ui/status/MessageState"
@@ -6,8 +8,9 @@ import { NavLink, useNavigate } from "react-router-dom"
 import { MapPageSkeleton } from "./MapPageSkeleton"
 import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store"
 import { formatTemperature } from "@/features/unit-preferences/format-units"
-import { MapPin } from "lucide-react"
-import { WeatherSymbolIcon } from "@/entities/weather/ui/WeatherSymbolIcon"
+import { AvailableLocationsPanel } from "./AvailableLocationsPanel"
+import { FavoriteLocationsPanel } from "./FavoriteLocationsPanel"
+import { useEffect } from "react"
 
 type MapPageProps = {
   showAuthActions?: boolean
@@ -16,9 +19,19 @@ type MapPageProps = {
 export function MapPage({ showAuthActions = false }: MapPageProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const user = useAuthStore((state) => state.user)
   const locations = useLocationStore((state) => state.locations)
   const isLoading = useLocationStore((state) => state.isLoading)
+  const favoriteLocations = useFavoriteLocationStore((state) => state.favoriteLocations)
+  const isLoadingFavorites = useFavoriteLocationStore((state) => state.isLoadingFavorites)
+  const hasLoadedFavorites = useFavoriteLocationStore((state) => state.hasLoadedFavorites)
+  const loadFavoriteLocations = useFavoriteLocationStore((state) => state.loadFavoriteLocations)
   const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
+  const isSignedIn = Boolean(user)
+  const favoriteLocationCards = favoriteLocations.map(
+    (favoriteLocation) =>
+      locations.find((location) => location.id === favoriteLocation.id) ?? favoriteLocation,
+  )
   const mapMarkers: MapMarker[] = locations.map((location) => ({
     ...location,
     weatherSymbol: location.currentWeather?.weatherSymbol ?? undefined,
@@ -28,6 +41,14 @@ export function MapPage({ showAuthActions = false }: MapPageProps) {
         ? formatTemperature(location.currentWeather.airTemperature, temperatureUnit)
         : undefined,
   }))
+
+  useEffect(() => {
+    if (!isSignedIn || hasLoadedFavorites) {
+      return
+    }
+
+    void loadFavoriteLocations()
+  }, [hasLoadedFavorites, isSignedIn, loadFavoriteLocations])
 
   if (isLoading) {
     return <MapPageSkeleton />
@@ -62,7 +83,7 @@ export function MapPage({ showAuthActions = false }: MapPageProps) {
           </div>
         ) : null}
       </div>
-      <div className="flex min-h-0 flex-1 flex-col gap-4 xl:flex-row">
+      <div className={`flex min-h-0 flex-1 flex-col gap-4 ${isSignedIn ? "" : "xl:flex-row"}`}>
         <div className="min-h-[320px] overflow-hidden rounded-4xl md:min-h-[420px] xl:min-h-0 xl:flex-1">
           <MapView
             markers={mapMarkers}
@@ -71,46 +92,18 @@ export function MapPage({ showAuthActions = false }: MapPageProps) {
           />
         </div>
 
-        <div className="flex max-h-[360px] min-h-0 flex-col rounded-4xl bg-div p-4 sm:max-h-[420px] sm:p-6 xl:h-full xl:max-h-none xl:w-[320px] xl:shrink-0">
-          <p className="mb-4 bg-linear-to-b from-accent-secondary to-accent-primary bg-clip-text text-center text-xl text-transparent sm:mb-6 sm:text-[26px]">
-            {t("map.availableLocations")}
-          </p>
-          <ul className="min-h-0 flex-1 overflow-y-auto">
-          {locations.map((location) => (
-            <li key={location.id} >
-              <NavLink to={`/${location.id}`} className="block border-y border-white/20 p-4 transition-colors hover:bg-white/8">
-                <div className="flex items-center justify-start mb-2 gap-2">
-                  <span><MapPin className="text-accent-primary"/></span>
-                  <p className="text-base font-semibold sm:text-[18px]">{location.name}</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="text-[12px] font-semibold flex flex-col gap-1">
-                    <p><span className="text-subtext  font-light">{t("map.latitude")}:</span> {location.latitude}</p>
-                    <p><span className="text-subtext font-light">{t("map.longitude")}:</span> {location.longitude}</p>
-                    <p><span className="text-subtext font-light">{t("map.altitude")}:</span> {location.altitude}</p>
-                  </div>
-                  <div className="flex min-w-[64px] flex-col items-center gap-0 text-center">
-                    {location.currentWeather?.weatherSymbol ? (
-                      <WeatherSymbolIcon
-                        symbol={location.currentWeather.weatherSymbol}
-                        className="w-10"
-                      />
-                    ) : null}
-                    {location.currentWeather?.airTemperature !== null &&
-                    location.currentWeather?.airTemperature !== undefined ? (
-                      <p className="-mt-1 text-[18px] font-semibold leading-none text-white">
-                        {formatTemperature(location.currentWeather.airTemperature, temperatureUnit)}
-                      </p>
-                    ) : (
-                      <p className="text-[12px] text-subtext">--</p>
-                    )}
-                  </div>
-                </div>
-              </NavLink>
-            </li>
-          ))}
-          </ul>
-      </div>
+        {isSignedIn ? (
+          <FavoriteLocationsPanel
+            locations={favoriteLocationCards}
+            temperatureUnit={temperatureUnit}
+            isLoading={isLoadingFavorites}
+          />
+        ) : (
+          <AvailableLocationsPanel
+            locations={locations}
+            temperatureUnit={temperatureUnit}
+          />
+        )}
       </div>
     </div>
   )
