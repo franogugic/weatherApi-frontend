@@ -1,15 +1,12 @@
 import { useForecastStore } from "@/features/get-weather-forecast/forecast-store"
 import { useAuthStore } from "@/features/auth/auth-store"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
-import { CurrentForecastPanel } from "@/widgets/current-forecast-panel/CurrentForecastPanel"
-import { GraphPanel } from "@/widgets/graph-panel/GraphPanel"
-import { MapPanel } from "@/widgets/map-panel/MapPanel"
-import { NextHourlysPanel } from "@/widgets/next-hourly-panel/NextHourlyPanel"
 import { SearchPanel } from "@/widgets/search-panel/SearchPanel"
 import { SettingsPanel } from "@/widgets/settings-panel/SettingsPanel"
 import { MessageState } from "@/shared/ui/status/MessageState"
 import { useTranslation } from "react-i18next"
 import { DashboardPageSkeleton } from "./DashboardPageSkeleton"
+import { DashboardWidgetGrid } from "./DashboardWidgetGrid"
 
 export function DashboardPage() {
   const { t } = useTranslation()
@@ -45,17 +42,16 @@ export function DashboardPage() {
   return (
     <div className="grid min-h-full min-w-0 grid-cols-1 gap-5 lg:h-full lg:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] lg:grid-rows-[auto_minmax(0,1fr)_minmax(0,1fr)]">
       <SearchPanel />
-      {currentForecast && meta ? (
-        <CurrentForecastPanel forecast={currentForecast} meta={meta} />
+      {meta ? (
+        <DashboardWidgetGrid
+          currentForecast={currentForecast}
+          forecast={forecastItems}
+          nextHourlyForecast={nextHourlyForecast}
+          meta={meta}
+          user={user}
+          afterFirstWidget={<SettingsPanel user={user} />}
+        />
       ) : null}
-      <SettingsPanel user={user} />
-      {forecast[0] && meta ? (
-        <NextHourlysPanel forecast={nextHourlyForecast} meta={meta} />
-      ) : null}
-      <div className="hidden lg:block">
-        <MapPanel />
-      </div>
-      <GraphPanel forecast={forecast ?? []} meta={meta ?? {}} />
     </div>
   )
 }

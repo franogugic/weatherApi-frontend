@@ -28,10 +28,12 @@ export const DEFAULT_DASHBOARD_LAYOUT: DashboardLayoutItem[] = [
   { i: "graph", x: 8, y: 3, w: 4, h: 3 },
 ]
 
+//provjera ida
 function isDashboardWidgetId(value: string): value is DashboardWidgetId {
   return value in DEFAULT_WIDGET_LAYOUTS
 }
 
+// projvera objekta iz local storagra
 function isDashboardLayoutItem(value: unknown): value is DashboardLayoutItem {
   if (!value || typeof value !== "object") {
     return false
@@ -73,6 +75,7 @@ function saveLayoutToStorage(layout: DashboardLayoutItem[]) {
   localStorage.setItem(DASHBOARD_LAYOUT_STORAGE_KEY, JSON.stringify(layout))
 }
 
+// racuna gdje psotavit widget kojeg doda user
 function getNextWidgetPosition(layout: DashboardLayoutItem[]) {
   return layout.reduce((maxY, item) => Math.max(maxY, item.y + item.h), 0)
 }
