@@ -4,8 +4,8 @@ export type TemperatureTheme = {
 }
 
 export const DEFAULT_TEMPERATURE_THEME: TemperatureTheme = {
-  primary: "#4974ef",
-  secondary: "#6fbcff",
+  primary: "#F59E0B",
+  secondary: "#FACC15",
 }
 
 export function getTemperatureTheme(temperature: number): TemperatureTheme {
