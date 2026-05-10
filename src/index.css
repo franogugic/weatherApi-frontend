@@ -31,3 +31,30 @@ body {
   box-shadow: 0 0 0 1000px #25272c inset;
   transition: background-color 9999s ease-in-out 0s;
 }
+
+.dashboard-edit-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+  border-radius: 2rem;
+  padding: 1px;
+  background:
+    linear-gradient(90deg, var(--accent-secondary) 50%, transparent 0) 0 0 / 14px 1px repeat-x,
+    linear-gradient(90deg, var(--accent-secondary) 50%, transparent 0) 0 100% / 14px 1px repeat-x,
+    linear-gradient(0deg, var(--accent-secondary) 50%, transparent 0) 0 0 / 1px 14px repeat-y,
+    linear-gradient(0deg, var(--accent-secondary) 50%, transparent 0) 100% 0 / 1px 14px repeat-y;
+  opacity: 0.7;
+  animation: dashboard-edit-border 0.85s linear infinite;
+}
+
+@keyframes dashboard-edit-border {
+  to {
+    background-position:
+      14px 0,
+      -14px 100%,
+      0 -14px,
+      100% 14px;
+  }
+}
