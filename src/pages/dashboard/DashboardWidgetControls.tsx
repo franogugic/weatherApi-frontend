@@ -10,7 +10,7 @@ import type {
   DashboardCellId,
   DashboardWidgetId,
 } from "@/features/dashboard-layout/dashboard-layout-types"
-import { Eye, EyeOff, RotateCcw } from "lucide-react"
+import { Check, Eye, EyeOff, Pencil, RotateCcw, X } from "lucide-react"
 import { useState } from "react"
 import { dashboardWidgets } from "./dashboard-widget-registry"
 
@@ -148,10 +148,15 @@ function getAvailableMergeOptions(
 
 export function DashboardWidgetControls() {
   const [isVisible, setIsVisible] = useState(true)
-  const blocks = useDashboardLayoutStore((state) => state.blocks)
-  const setBlockWidget = useDashboardLayoutStore((state) => state.setBlockWidget)
-  const setBlockCells = useDashboardLayoutStore((state) => state.setBlockCells)
-  const resetBlocks = useDashboardLayoutStore((state) => state.resetBlocks)
+  const isEditingDashboard = useDashboardLayoutStore((state) => state.isEditingDashboard)
+  const blocks = useDashboardLayoutStore((state) => state.draftBlocks)
+  const hasUnsavedChanges = useDashboardLayoutStore((state) => state.hasUnsavedChanges)
+  const startDashboardEditing = useDashboardLayoutStore((state) => state.startDashboardEditing)
+  const setBlockWidget = useDashboardLayoutStore((state) => state.setDraftBlockWidget)
+  const setBlockCells = useDashboardLayoutStore((state) => state.setDraftBlockCells)
+  const saveDraftBlocks = useDashboardLayoutStore((state) => state.saveDraftBlocks)
+  const discardDraftBlocks = useDashboardLayoutStore((state) => state.discardDraftBlocks)
+  const resetBlocks = useDashboardLayoutStore((state) => state.resetDraftBlocks)
   const claimedCellIds = getClaimedDashboardCellIds(blocks)
   const activeWidgetIds = new Set(
     blocks
@@ -162,6 +167,23 @@ export function DashboardWidgetControls() {
       .map((block) => block.widgetId)
       .filter((widgetId): widgetId is DashboardWidgetId => widgetId !== null),
   )
+
+  if (!isEditingDashboard) {
+    return (
+      <button
+        type="button"
+        onClick={() => {
+          startDashboardEditing()
+          setIsVisible(true)
+        }}
+        className="fixed right-6 bottom-6 z-40 flex items-center gap-2 rounded-full border border-white/10 bg-[#20252c]/90 px-4 py-3 text-[13px] font-semibold text-white/80 shadow-[0_14px_32px_rgba(0,0,0,0.32)] backdrop-blur-xl transition hover:text-white"
+        aria-label="Edit dashboard layout"
+      >
+        <Pencil size={16} />
+        Edit layout
+      </button>
+    )
+  }
 
   if (!isVisible) {
     return (
@@ -203,6 +225,27 @@ export function DashboardWidgetControls() {
             <RotateCcw size={15} />
           </button>
         </div>
+      </div>
+
+      <div className="mb-4 grid grid-cols-2 gap-2">
+        <button
+          type="button"
+          onClick={discardDraftBlocks}
+          disabled={!hasUnsavedChanges}
+          className="flex items-center justify-center gap-2 rounded-2xl bg-white/7 px-3 py-2 text-[12px] font-medium text-white/70 transition hover:bg-white/12 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          <X size={14} />
+          Cancel
+        </button>
+        <button
+          type="button"
+          onClick={saveDraftBlocks}
+          disabled={!hasUnsavedChanges}
+          className="flex items-center justify-center gap-2 rounded-2xl bg-linear-to-br from-accent-secondary to-accent-primary px-3 py-2 text-[12px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-45"
+        >
+          <Check size={14} />
+          Save
+        </button>
       </div>
 
       <div className="max-h-[62vh] space-y-3 overflow-y-auto pr-1">

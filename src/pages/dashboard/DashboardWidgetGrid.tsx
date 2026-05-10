@@ -40,7 +40,9 @@ function getBlockGridStyle(cellIds: DashboardCellId[]): CSSProperties {
 }
 
 export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
-  const blocks = useDashboardLayoutStore((state) => state.blocks)
+  const blocks = useDashboardLayoutStore((state) =>
+    state.isEditingDashboard ? state.draftBlocks : state.blocks,
+  )
   const claimedCellIds = getClaimedDashboardCellIds(blocks)
 
   return (

@@ -40,6 +40,17 @@ export const DEFAULT_DASHBOARD_BLOCKS: DashboardBlock[] = [
   { id: "cellF", title: "Cell F", widgetId: null, cellIds: ["F"] },
 ]
 
+function cloneBlocks(blocks: DashboardBlock[]) {
+  return blocks.map((block) => ({
+    ...block,
+    cellIds: [...block.cellIds],
+  }))
+}
+
+function areBlocksEqual(firstBlocks: DashboardBlock[], secondBlocks: DashboardBlock[]) {
+  return JSON.stringify(firstBlocks) === JSON.stringify(secondBlocks)
+}
+
 function isDashboardWidgetId(value: string): value is DashboardWidgetId {
   return value in DASHBOARD_WIDGET_IDS
 }
@@ -77,12 +88,12 @@ export function getClaimedDashboardCellIds(blocks: DashboardBlock[]) {
   blocks
     .filter((block) => block.widgetId !== null)
     .forEach((block) => {
-    block.cellIds.slice(1).forEach((cellId) => {
-      if (blockStartCells.has(cellId)) {
-        claimedCells.add(cellId)
-      }
+      block.cellIds.slice(1).forEach((cellId) => {
+        if (blockStartCells.has(cellId)) {
+          claimedCells.add(cellId)
+        }
+      })
     })
-  })
 
   return claimedCells
 }
@@ -172,10 +183,24 @@ function saveBlocksToStorage(blocks: DashboardBlock[]) {
   localStorage.setItem(DASHBOARD_LAYOUT_STORAGE_KEY, JSON.stringify(blocks))
 }
 
+const initialDashboardBlocks = loadBlocksFromStorage()
+
 export const useDashboardLayoutStore = create<DashboardLayoutStore>((set, get) => ({
-  blocks: loadBlocksFromStorage(),
-  setBlockWidget: (blockId, widgetId) => {
-    const updatedBlocks = get().blocks.map((block) => ({
+  blocks: initialDashboardBlocks,
+  draftBlocks: cloneBlocks(initialDashboardBlocks),
+  isEditingDashboard: false,
+  hasUnsavedChanges: false,
+  startDashboardEditing: () => {
+    const blocks = get().blocks
+
+    set({
+      draftBlocks: cloneBlocks(blocks),
+      isEditingDashboard: true,
+      hasUnsavedChanges: false,
+    })
+  },
+  setDraftBlockWidget: (blockId, widgetId) => {
+    const updatedDraftBlocks = get().draftBlocks.map((block) => ({
       ...block,
       widgetId:
         block.id === blockId
@@ -185,28 +210,62 @@ export const useDashboardLayoutStore = create<DashboardLayoutStore>((set, get) =
             : block.widgetId,
     }))
 
-    saveBlocksToStorage(updatedBlocks)
-    set({ blocks: updatedBlocks })
+    set({
+      draftBlocks: updatedDraftBlocks,
+      hasUnsavedChanges: !areBlocksEqual(get().blocks, updatedDraftBlocks),
+    })
   },
-  setBlockCells: (blockId, cellIds) => {
+  setDraftBlockCells: (blockId, cellIds) => {
     if (!areCellsConnected(cellIds)) {
       return
     }
 
-    const updatedBlocks = get().blocks.map((block) => ({
+    const updatedDraftBlocks = get().draftBlocks.map((block) => ({
       ...block,
       cellIds: block.id === blockId ? cellIds : block.cellIds,
     }))
 
-    if (hasCellConflicts(updatedBlocks)) {
+    if (hasCellConflicts(updatedDraftBlocks)) {
       return
     }
 
-    saveBlocksToStorage(updatedBlocks)
-    set({ blocks: updatedBlocks })
+    set({
+      draftBlocks: updatedDraftBlocks,
+      hasUnsavedChanges: !areBlocksEqual(get().blocks, updatedDraftBlocks),
+    })
   },
-  resetBlocks: () => {
-    saveBlocksToStorage(DEFAULT_DASHBOARD_BLOCKS)
-    set({ blocks: DEFAULT_DASHBOARD_BLOCKS })
+  saveDraftBlocks: () => {
+    const draftBlocks = get().draftBlocks
+
+    if (hasCellConflicts(draftBlocks)) {
+      return
+    }
+
+    const savedBlocks = cloneBlocks(draftBlocks)
+
+    saveBlocksToStorage(savedBlocks)
+    set({
+      blocks: savedBlocks,
+      draftBlocks: cloneBlocks(savedBlocks),
+      isEditingDashboard: false,
+      hasUnsavedChanges: false,
+    })
+  },
+  discardDraftBlocks: () => {
+    const blocks = get().blocks
+
+    set({
+      draftBlocks: cloneBlocks(blocks),
+      isEditingDashboard: false,
+      hasUnsavedChanges: false,
+    })
+  },
+  resetDraftBlocks: () => {
+    const defaultBlocks = cloneBlocks(DEFAULT_DASHBOARD_BLOCKS)
+
+    set({
+      draftBlocks: defaultBlocks,
+      hasUnsavedChanges: !areBlocksEqual(get().blocks, defaultBlocks),
+    })
   },
 }))

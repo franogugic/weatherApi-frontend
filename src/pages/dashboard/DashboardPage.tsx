@@ -8,12 +8,19 @@ import { useTranslation } from "react-i18next"
 import { DashboardPageSkeleton } from "./DashboardPageSkeleton"
 import { DashboardWidgetGrid } from "./DashboardWidgetGrid"
 import { DashboardWidgetControls } from "./DashboardWidgetControls"
+import { useDashboardLayoutStore } from "@/features/dashboard-layout/dashboard-layout-store"
+import { useEffect } from "react"
 
 export function DashboardPage() {
   const { t } = useTranslation()
   const {forecast, meta, isLoading} = useForecastStore()
   const user = useAuthStore((state) => state.user)
 
+  useEffect(() => {
+    return () => {
+      useDashboardLayoutStore.getState().discardDraftBlocks()
+    }
+  }, [])
 
   if (isLoading) {
     return <DashboardPageSkeleton />

@@ -29,7 +29,13 @@ export type DashboardBlockSize = "single" | "horizontal" | "vertical"
 
 export type DashboardLayoutStore = {
   blocks: DashboardBlock[]
-  setBlockWidget: (blockId: DashboardBlockId, widgetId: DashboardWidgetId | null) => void
-  setBlockCells: (blockId: DashboardBlockId, cellIds: DashboardCellId[]) => void
-  resetBlocks: () => void
+  draftBlocks: DashboardBlock[]
+  isEditingDashboard: boolean
+  hasUnsavedChanges: boolean
+  startDashboardEditing: () => void
+  setDraftBlockWidget: (blockId: DashboardBlockId, widgetId: DashboardWidgetId | null) => void
+  setDraftBlockCells: (blockId: DashboardBlockId, cellIds: DashboardCellId[]) => void
+  saveDraftBlocks: () => void
+  discardDraftBlocks: () => void
+  resetDraftBlocks: () => void
 }
