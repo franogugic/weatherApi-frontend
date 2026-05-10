@@ -8,18 +8,28 @@ export type DashboardWidgetId =
   | "colorPanelThree"
   | "colorPanelFour"
 
-export type DashboardLayoutItem = {
-  i: DashboardWidgetId
-  x: number
-  y: number
-  w: number
-  h: number
+export type DashboardCellId = "A" | "B" | "C" | "D" | "E" | "F"
+
+export type DashboardBlockId =
+  | "cellA"
+  | "cellB"
+  | "cellC"
+  | "cellD"
+  | "cellE"
+  | "cellF"
+
+export type DashboardBlock = {
+  id: DashboardBlockId
+  title: string
+  widgetId: DashboardWidgetId | null
+  cellIds: DashboardCellId[]
 }
 
+export type DashboardBlockSize = "single" | "horizontal" | "vertical"
+
 export type DashboardLayoutStore = {
-  layout: DashboardLayoutItem[]
-  setLayout: (layout: DashboardLayoutItem[]) => void
-  addWidget: (widgetId: DashboardWidgetId) => void
-  removeWidget: (widgetId: DashboardWidgetId) => void
-  resetLayout: () => void
+  blocks: DashboardBlock[]
+  setBlockWidget: (blockId: DashboardBlockId, widgetId: DashboardWidgetId | null) => void
+  setBlockCells: (blockId: DashboardBlockId, cellIds: DashboardCellId[]) => void
+  resetBlocks: () => void
 }

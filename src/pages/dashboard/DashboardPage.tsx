@@ -7,6 +7,7 @@ import { MessageState } from "@/shared/ui/status/MessageState"
 import { useTranslation } from "react-i18next"
 import { DashboardPageSkeleton } from "./DashboardPageSkeleton"
 import { DashboardWidgetGrid } from "./DashboardWidgetGrid"
+import { DashboardWidgetControls } from "./DashboardWidgetControls"
 
 export function DashboardPage() {
   const { t } = useTranslation()
@@ -40,18 +41,24 @@ export function DashboardPage() {
   }
 
   return (
-    <div className="grid min-h-full min-w-0 grid-cols-1 gap-5 lg:h-full lg:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] lg:grid-rows-[auto_minmax(0,1fr)_minmax(0,1fr)]">
-      <SearchPanel />
+    <div className="flex h-full min-h-0 min-w-0 flex-col gap-5 overflow-hidden">
+      <div className="grid shrink-0 grid-cols-1 gap-5 lg:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)]">
+        <SearchPanel />
+        <div className="hidden lg:block" />
+        <SettingsPanel user={user} />
+      </div>
       {meta ? (
-        <DashboardWidgetGrid
-          currentForecast={currentForecast}
-          forecast={forecastItems}
-          nextHourlyForecast={nextHourlyForecast}
-          meta={meta}
-          user={user}
-          afterFirstWidget={<SettingsPanel user={user} />}
-        />
+        <div className="grid min-h-0 min-w-0 flex-1 overflow-hidden grid-cols-1 gap-5 lg:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] lg:grid-rows-[repeat(2,minmax(0,1fr))]">
+          <DashboardWidgetGrid
+            currentForecast={currentForecast}
+            forecast={forecastItems}
+            nextHourlyForecast={nextHourlyForecast}
+            meta={meta}
+            user={user}
+          />
+        </div>
       ) : null}
+      <DashboardWidgetControls />
     </div>
   )
 }

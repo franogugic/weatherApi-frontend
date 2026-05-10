@@ -1,120 +1,212 @@
 import { create } from "zustand"
 import type {
-  DashboardLayoutItem,
+  DashboardBlock,
+  DashboardBlockId,
+  DashboardCellId,
   DashboardLayoutStore,
   DashboardWidgetId,
 } from "./dashboard-layout-types"
 
-const DASHBOARD_LAYOUT_STORAGE_KEY = "weather-dashboard-layout"
+const DASHBOARD_LAYOUT_STORAGE_KEY = "weather-dashboard-six-box-layout-v2"
 
-const DEFAULT_WIDGET_LAYOUTS: Record<
-  DashboardWidgetId,
-  Omit<DashboardLayoutItem, "i" | "x" | "y">
-> = {
-  currentForecast: { w: 4, h: 6 },
-  nextHourly: { w: 4, h: 6 },
-  map: { w: 4, h: 3 },
-  graph: { w: 8, h: 3 },
-  colorPanelOne: { w: 4, h: 3 },
-  colorPanelTwo: { w: 4, h: 3 },
-  colorPanelThree: { w: 4, h: 3 },
-  colorPanelFour: { w: 4, h: 3 },
+const DASHBOARD_WIDGET_IDS: Record<DashboardWidgetId, true> = {
+  currentForecast: true,
+  nextHourly: true,
+  map: true,
+  graph: true,
+  colorPanelOne: true,
+  colorPanelTwo: true,
+  colorPanelThree: true,
+  colorPanelFour: true,
 }
 
-export const DEFAULT_DASHBOARD_LAYOUT: DashboardLayoutItem[] = [
-  { i: "currentForecast", x: 0, y: 0, w: 4, h: 6 },
-  { i: "nextHourly", x: 4, y: 0, w: 4, h: 6 },
-  { i: "map", x: 8, y: 0, w: 4, h: 3 },
-  { i: "graph", x: 8, y: 3, w: 4, h: 3 },
+export const DASHBOARD_CELL_ORDER: DashboardCellId[] = ["A", "B", "C", "D", "E", "F"]
+
+export const DASHBOARD_CELL_NEIGHBORS: Record<DashboardCellId, DashboardCellId[]> = {
+  A: ["B", "D"],
+  B: ["A", "C", "E"],
+  C: ["B", "F"],
+  D: ["A", "E"],
+  E: ["D", "F", "B"],
+  F: ["E", "C"],
+}
+
+export const DEFAULT_DASHBOARD_BLOCKS: DashboardBlock[] = [
+  { id: "cellA", title: "Cell A", widgetId: "nextHourly", cellIds: ["A", "D"] },
+  { id: "cellB", title: "Cell B", widgetId: "currentForecast", cellIds: ["B"] },
+  { id: "cellC", title: "Cell C", widgetId: "map", cellIds: ["C"] },
+  { id: "cellD", title: "Cell D", widgetId: null, cellIds: ["D"] },
+  { id: "cellE", title: "Cell E", widgetId: "graph", cellIds: ["E", "F"] },
+  { id: "cellF", title: "Cell F", widgetId: null, cellIds: ["F"] },
 ]
 
-//provjera ida
 function isDashboardWidgetId(value: string): value is DashboardWidgetId {
-  return value in DEFAULT_WIDGET_LAYOUTS
+  return value in DASHBOARD_WIDGET_IDS
 }
 
-// projvera objekta iz local storagra
-function isDashboardLayoutItem(value: unknown): value is DashboardLayoutItem {
+function isDashboardCellId(value: string): value is DashboardCellId {
+  return DASHBOARD_CELL_ORDER.includes(value as DashboardCellId)
+}
+
+function isDashboardBlockId(value: string): value is DashboardBlockId {
+  return DEFAULT_DASHBOARD_BLOCKS.some((block) => block.id === value)
+}
+
+export function areCellsConnected(cellIds: DashboardCellId[]) {
+  if (cellIds.length === 1) {
+    return true
+  }
+
+  if (cellIds.length !== 2) {
+    return false
+  }
+
+  const [firstCell, secondCell] = cellIds
+
+  return Boolean(firstCell && secondCell && DASHBOARD_CELL_NEIGHBORS[firstCell].includes(secondCell))
+}
+
+export function getClaimedDashboardCellIds(blocks: DashboardBlock[]) {
+  const blockStartCells = new Set(
+    blocks
+      .map((block) => block.cellIds[0])
+      .filter((cellId): cellId is DashboardCellId => cellId !== undefined),
+  )
+  const claimedCells = new Set<DashboardCellId>()
+
+  blocks
+    .filter((block) => block.widgetId !== null)
+    .forEach((block) => {
+    block.cellIds.slice(1).forEach((cellId) => {
+      if (blockStartCells.has(cellId)) {
+        claimedCells.add(cellId)
+      }
+    })
+  })
+
+  return claimedCells
+}
+
+function hasCellConflicts(blocks: DashboardBlock[]) {
+  const usedCells = new Set<DashboardCellId>()
+  const claimedCells = getClaimedDashboardCellIds(blocks)
+
+  return blocks.some((block) => {
+    const blockStartCell = block.cellIds[0]
+
+    if (blockStartCell && claimedCells.has(blockStartCell)) {
+      return false
+    }
+
+    if (block.widgetId === null) {
+      return false
+    }
+
+    return block.cellIds.some((cellId) => {
+      if (usedCells.has(cellId)) {
+        return true
+      }
+
+      usedCells.add(cellId)
+      return false
+    })
+  })
+}
+
+function isDashboardBlock(value: unknown): value is DashboardBlock {
   if (!value || typeof value !== "object") {
     return false
   }
 
-  const item = value as Partial<DashboardLayoutItem>
+  const block = value as Partial<DashboardBlock>
 
   return (
-    typeof item.i === "string" &&
-    isDashboardWidgetId(item.i) &&
-    typeof item.x === "number" &&
-    typeof item.y === "number" &&
-    typeof item.w === "number" &&
-    typeof item.h === "number"
+    typeof block.id === "string" &&
+    isDashboardBlockId(block.id) &&
+    typeof block.title === "string" &&
+    (block.widgetId === null ||
+      (typeof block.widgetId === "string" && isDashboardWidgetId(block.widgetId))) &&
+    Array.isArray(block.cellIds) &&
+    block.cellIds.every((cellId) => typeof cellId === "string" && isDashboardCellId(cellId)) &&
+    areCellsConnected(block.cellIds)
   )
 }
 
-function loadLayoutFromStorage() {
-  const savedLayout = localStorage.getItem(DASHBOARD_LAYOUT_STORAGE_KEY)
+function mergeWithDefaultBlocks(savedBlocks: DashboardBlock[]) {
+  return DEFAULT_DASHBOARD_BLOCKS.map((defaultBlock) => {
+    const savedBlock = savedBlocks.find((block) => block.id === defaultBlock.id)
 
-  if (!savedLayout) {
-    return DEFAULT_DASHBOARD_LAYOUT
+    return savedBlock
+      ? {
+          ...defaultBlock,
+          widgetId: savedBlock.widgetId,
+          cellIds: savedBlock.cellIds,
+        }
+      : defaultBlock
+  })
+}
+
+function loadBlocksFromStorage() {
+  const savedBlocks = localStorage.getItem(DASHBOARD_LAYOUT_STORAGE_KEY)
+
+  if (!savedBlocks) {
+    return DEFAULT_DASHBOARD_BLOCKS
   }
 
   try {
-    const parsedLayout = JSON.parse(savedLayout) as unknown
+    const parsedBlocks = JSON.parse(savedBlocks) as unknown
 
-    if (!Array.isArray(parsedLayout) || !parsedLayout.every(isDashboardLayoutItem)) {
-      return DEFAULT_DASHBOARD_LAYOUT
+    if (!Array.isArray(parsedBlocks) || !parsedBlocks.every(isDashboardBlock)) {
+      return DEFAULT_DASHBOARD_BLOCKS
     }
 
-    return parsedLayout
+    const blocks = mergeWithDefaultBlocks(parsedBlocks)
+
+    return hasCellConflicts(blocks) ? DEFAULT_DASHBOARD_BLOCKS : blocks
   } catch {
-    return DEFAULT_DASHBOARD_LAYOUT
+    return DEFAULT_DASHBOARD_BLOCKS
   }
 }
 
-function saveLayoutToStorage(layout: DashboardLayoutItem[]) {
-  localStorage.setItem(DASHBOARD_LAYOUT_STORAGE_KEY, JSON.stringify(layout))
-}
-
-// racuna gdje psotavit widget kojeg doda user
-function getNextWidgetPosition(layout: DashboardLayoutItem[]) {
-  return layout.reduce((maxY, item) => Math.max(maxY, item.y + item.h), 0)
+function saveBlocksToStorage(blocks: DashboardBlock[]) {
+  localStorage.setItem(DASHBOARD_LAYOUT_STORAGE_KEY, JSON.stringify(blocks))
 }
 
 export const useDashboardLayoutStore = create<DashboardLayoutStore>((set, get) => ({
-  layout: loadLayoutFromStorage(),
-  setLayout: (layout) => {
-    saveLayoutToStorage(layout)
-    set({ layout })
-  },
-  addWidget: (widgetId) => {
-    const layout = get().layout
+  blocks: loadBlocksFromStorage(),
+  setBlockWidget: (blockId, widgetId) => {
+    const updatedBlocks = get().blocks.map((block) => ({
+      ...block,
+      widgetId:
+        block.id === blockId
+          ? widgetId
+          : block.widgetId === widgetId && widgetId !== null
+            ? null
+            : block.widgetId,
+    }))
 
-    if (layout.some((item) => item.i === widgetId)) {
+    saveBlocksToStorage(updatedBlocks)
+    set({ blocks: updatedBlocks })
+  },
+  setBlockCells: (blockId, cellIds) => {
+    if (!areCellsConnected(cellIds)) {
       return
     }
 
-    const widgetLayout = DEFAULT_WIDGET_LAYOUTS[widgetId]
-    const updatedLayout: DashboardLayoutItem[] = [
-      ...layout,
-      {
-        i: widgetId,
-        x: 0,
-        y: getNextWidgetPosition(layout),
-        ...widgetLayout,
-      },
-    ]
+    const updatedBlocks = get().blocks.map((block) => ({
+      ...block,
+      cellIds: block.id === blockId ? cellIds : block.cellIds,
+    }))
 
-    saveLayoutToStorage(updatedLayout)
-    set({ layout: updatedLayout })
-  },
-  removeWidget: (widgetId) => {
-    const updatedLayout = get().layout.filter((item) => item.i !== widgetId)
+    if (hasCellConflicts(updatedBlocks)) {
+      return
+    }
 
-    saveLayoutToStorage(updatedLayout)
-    set({ layout: updatedLayout })
+    saveBlocksToStorage(updatedBlocks)
+    set({ blocks: updatedBlocks })
   },
-  resetLayout: () => {
-    saveLayoutToStorage(DEFAULT_DASHBOARD_LAYOUT)
-    set({ layout: DEFAULT_DASHBOARD_LAYOUT })
+  resetBlocks: () => {
+    saveBlocksToStorage(DEFAULT_DASHBOARD_BLOCKS)
+    set({ blocks: DEFAULT_DASHBOARD_BLOCKS })
   },
 }))
