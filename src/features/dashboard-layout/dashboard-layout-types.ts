@@ -32,10 +32,15 @@ export type DashboardLayoutStore = {
   draftBlocks: DashboardBlock[]
   isEditingDashboard: boolean
   hasUnsavedChanges: boolean
+  hasEmptyVisibleBlocks: boolean
   startDashboardEditing: () => void
   setDraftBlockWidget: (blockId: DashboardBlockId, widgetId: DashboardWidgetId | null) => void
   setDraftBlockCells: (blockId: DashboardBlockId, cellIds: DashboardCellId[]) => void
   moveDraftBlockWidget: (sourceBlockId: DashboardBlockId, targetBlockId: DashboardBlockId) => void
+  expandDraftBlockToEmptyBlock: (
+    sourceBlockId: DashboardBlockId,
+    targetBlockId: DashboardBlockId,
+  ) => void
   saveDraftBlocks: () => void
   discardDraftBlocks: () => void
   resetDraftBlocks: () => void

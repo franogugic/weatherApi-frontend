@@ -1,4 +1,6 @@
 import {
+  DASHBOARD_CELL_NEIGHBORS,
+  DASHBOARD_CELL_ORDER,
   getClaimedDashboardCellIds,
   useDashboardLayoutStore,
 } from "@/features/dashboard-layout/dashboard-layout-store"
@@ -11,7 +13,8 @@ import { dashboardWidgetRegistry } from "./dashboard-widget-registry"
 import type { DashboardWidgetRenderProps } from "./dashboard-widget-types"
 import type { CSSProperties, DragEvent } from "react"
 import { useState } from "react"
-import { Trash2 } from "lucide-react"
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Trash2 } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 
 type DashboardWidgetGridProps = DashboardWidgetRenderProps
 
@@ -24,6 +27,10 @@ type DashboardDragPayload =
       type: "widget"
       widgetId: DashboardWidgetId
     }
+  | {
+      type: "expand"
+      blockId: DashboardBlockId
+    }
 
 const DASHBOARD_DRAG_DATA_TYPE = "application/x-dashboard-widget"
 
@@ -34,6 +41,16 @@ const cellPosition: Record<DashboardCellId, { column: number; row: number }> = {
   D: { column: 1, row: 2 },
   E: { column: 2, row: 2 },
   F: { column: 3, row: 2 },
+}
+
+type ExpandDirection = "up" | "right" | "down" | "left"
+
+type ExpansionOption = {
+  blockId: DashboardBlockId
+  direction: ExpandDirection
+  Icon: LucideIcon
+  className: string
+  label: string
 }
 
 function EmptyDashboardBlock() {
@@ -67,6 +84,95 @@ function parseDashboardDragPayload(event: DragEvent<HTMLDivElement>) {
   }
 }
 
+function getExpandDirection(sourceCellId: DashboardCellId, targetCellId: DashboardCellId) {
+  const sourceIndex = DASHBOARD_CELL_ORDER.indexOf(sourceCellId)
+  const targetIndex = DASHBOARD_CELL_ORDER.indexOf(targetCellId)
+  const offset = targetIndex - sourceIndex
+
+  if (offset === -3) {
+    return "up"
+  }
+
+  if (offset === 3) {
+    return "down"
+  }
+
+  if (offset === -1) {
+    return "left"
+  }
+
+  return "right"
+}
+
+const expandHandleConfig: Record<
+  ExpandDirection,
+  {
+    Icon: LucideIcon
+    className: string
+    label: string
+  }
+> = {
+  up: {
+    Icon: ArrowUp,
+    className: "top-3 left-1/2 -translate-x-1/2",
+    label: "Expand up",
+  },
+  right: {
+    Icon: ArrowRight,
+    className: "top-1/2 right-3 -translate-y-1/2",
+    label: "Expand right",
+  },
+  down: {
+    Icon: ArrowDown,
+    className: "bottom-3 left-1/2 -translate-x-1/2",
+    label: "Expand down",
+  },
+  left: {
+    Icon: ArrowLeft,
+    className: "top-1/2 left-3 -translate-y-1/2",
+    label: "Expand left",
+  },
+}
+
+function getExpansionOptions(
+  blockId: DashboardBlockId,
+  sourceCellId: DashboardCellId,
+  blocks: ReturnType<typeof useDashboardLayoutStore.getState>["draftBlocks"],
+  claimedCellIds: Set<DashboardCellId>,
+) {
+  return blocks
+    .filter((block) => block.widgetId === null && block.cellIds.length === 1)
+    .filter((block) => {
+      const targetCellId = block.cellIds[0]
+
+      return targetCellId && !claimedCellIds.has(targetCellId)
+    })
+    .filter((block) => {
+      const targetCellId = block.cellIds[0]
+
+      return targetCellId ? DASHBOARD_CELL_NEIGHBORS[sourceCellId].includes(targetCellId) : false
+    })
+    .map((block): ExpansionOption | null => {
+      const targetCellId = block.cellIds[0]
+
+      if (!targetCellId) {
+        return null
+      }
+
+      const direction = getExpandDirection(sourceCellId, targetCellId)
+      const config = expandHandleConfig[direction]
+
+      return {
+        blockId: block.id,
+        direction,
+        Icon: config.Icon,
+        className: config.className,
+        label: config.label,
+      }
+    })
+    .filter((option): option is ExpansionOption => option !== null && option.blockId !== blockId)
+}
+
 export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
   const blocks = useDashboardLayoutStore((state) =>
     state.isEditingDashboard ? state.draftBlocks : state.blocks,
@@ -74,6 +180,9 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
   const isEditingDashboard = useDashboardLayoutStore((state) => state.isEditingDashboard)
   const setDraftBlockWidget = useDashboardLayoutStore((state) => state.setDraftBlockWidget)
   const moveDraftBlockWidget = useDashboardLayoutStore((state) => state.moveDraftBlockWidget)
+  const expandDraftBlockToEmptyBlock = useDashboardLayoutStore(
+    (state) => state.expandDraftBlockToEmptyBlock,
+  )
   const [draggedBlockId, setDraggedBlockId] = useState<DashboardBlockId | null>(null)
   const [dropTargetBlockId, setDropTargetBlockId] = useState<DashboardBlockId | null>(null)
   const claimedCellIds = getClaimedDashboardCellIds(blocks)
@@ -90,6 +199,10 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
         const renderedWidget = block.widgetId
           ? dashboardWidgetRegistry[block.widgetId].render(props)
           : <EmptyDashboardBlock />
+        const expansionOptions =
+          isEditingDashboard && block.widgetId !== null && block.cellIds.length === 1 && startCellId
+            ? getExpansionOptions(block.id, startCellId, blocks, claimedCellIds)
+            : []
 
         return (
           <div
@@ -140,6 +253,10 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
                 moveDraftBlockWidget(payload.blockId, block.id)
               }
 
+              if (payload?.type === "expand") {
+                expandDraftBlockToEmptyBlock(payload.blockId, block.id)
+              }
+
               setDraggedBlockId(null)
               setDropTargetBlockId(null)
             }}
@@ -170,6 +287,35 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
                 <Trash2 size={15} />
               </button>
             )}
+            {expansionOptions.map((option) => {
+              const Icon = option.Icon
+
+              return (
+                <button
+                  key={`${block.id}-${option.blockId}-${option.direction}`}
+                  type="button"
+                  draggable
+                  onDragStart={(event) => {
+                    event.stopPropagation()
+                    event.dataTransfer.effectAllowed = "move"
+                    event.dataTransfer.setData(
+                      DASHBOARD_DRAG_DATA_TYPE,
+                      JSON.stringify({ type: "expand", blockId: block.id }),
+                    )
+                    event.dataTransfer.setData("text/plain", block.id)
+                    setDraggedBlockId(block.id)
+                  }}
+                  onClick={(event) => {
+                    event.stopPropagation()
+                  }}
+                  className={`absolute z-30 flex h-8 w-8 cursor-grab items-center justify-center rounded-full border border-accent-primary/35 bg-[#20252c]/90 text-accent-secondary shadow-[0_10px_24px_rgba(0,0,0,0.32)] backdrop-blur-md transition hover:scale-105 hover:border-accent-secondary/70 hover:text-white active:cursor-grabbing ${option.className}`}
+                  aria-label={option.label}
+                  title={`${option.label}: drag into the empty block`}
+                >
+                  <Icon size={15} />
+                </button>
+              )
+            })}
             <div className="h-full">{renderedWidget}</div>
           </div>
         )

@@ -4,6 +4,7 @@ import { Check, Pencil, RotateCcw, X } from "lucide-react"
 export function DashboardWidgetControls() {
   const isEditingDashboard = useDashboardLayoutStore((state) => state.isEditingDashboard)
   const hasUnsavedChanges = useDashboardLayoutStore((state) => state.hasUnsavedChanges)
+  const hasEmptyVisibleBlocks = useDashboardLayoutStore((state) => state.hasEmptyVisibleBlocks)
   const startDashboardEditing = useDashboardLayoutStore((state) => state.startDashboardEditing)
   const saveDraftBlocks = useDashboardLayoutStore((state) => state.saveDraftBlocks)
   const discardDraftBlocks = useDashboardLayoutStore((state) => state.discardDraftBlocks)
@@ -41,15 +42,22 @@ export function DashboardWidgetControls() {
         <X size={15} />
         Cancel
       </button>
-      <button
-        type="button"
-        onClick={saveDraftBlocks}
-        disabled={!hasUnsavedChanges}
-        className="flex items-center gap-2 rounded-full bg-linear-to-br from-accent-secondary to-accent-primary px-4 py-3 text-[12px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-45"
-      >
-        <Check size={15} />
-        Save
-      </button>
+      <div className="group/save relative">
+        {hasEmptyVisibleBlocks && (
+          <div className="pointer-events-none absolute right-0 bottom-[calc(100%+10px)] w-[220px] rounded-2xl border border-white/10 bg-[#20252c]/95 px-4 py-3 text-center text-[12px] font-medium text-white/80 opacity-0 shadow-[0_14px_30px_rgba(0,0,0,0.35)] backdrop-blur-xl transition group-hover/save:opacity-100">
+            You can&apos;t save while there are empty blocks.
+          </div>
+        )}
+        <button
+          type="button"
+          onClick={saveDraftBlocks}
+          disabled={!hasUnsavedChanges || hasEmptyVisibleBlocks}
+          className="flex items-center gap-2 rounded-full bg-linear-to-br from-accent-secondary to-accent-primary px-4 py-3 text-[12px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-45"
+        >
+          <Check size={15} />
+          Save
+        </button>
+      </div>
     </div>
   )
 }
