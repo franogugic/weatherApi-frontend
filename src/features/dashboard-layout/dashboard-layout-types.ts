@@ -35,6 +35,7 @@ export type DashboardLayoutStore = {
   startDashboardEditing: () => void
   setDraftBlockWidget: (blockId: DashboardBlockId, widgetId: DashboardWidgetId | null) => void
   setDraftBlockCells: (blockId: DashboardBlockId, cellIds: DashboardCellId[]) => void
+  moveDraftBlockWidget: (sourceBlockId: DashboardBlockId, targetBlockId: DashboardBlockId) => void
   saveDraftBlocks: () => void
   discardDraftBlocks: () => void
   resetDraftBlocks: () => void

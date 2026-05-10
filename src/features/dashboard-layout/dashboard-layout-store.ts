@@ -234,6 +234,42 @@ export const useDashboardLayoutStore = create<DashboardLayoutStore>((set, get) =
       hasUnsavedChanges: !areBlocksEqual(get().blocks, updatedDraftBlocks),
     })
   },
+  moveDraftBlockWidget: (sourceBlockId, targetBlockId) => {
+    if (sourceBlockId === targetBlockId) {
+      return
+    }
+
+    const draftBlocks = get().draftBlocks
+    const sourceBlock = draftBlocks.find((block) => block.id === sourceBlockId)
+    const targetBlock = draftBlocks.find((block) => block.id === targetBlockId)
+
+    if (!sourceBlock || !targetBlock || sourceBlock.widgetId === null) {
+      return
+    }
+
+    const updatedDraftBlocks = draftBlocks.map((block) => {
+      if (block.id === sourceBlockId) {
+        return {
+          ...block,
+          widgetId: targetBlock.widgetId,
+        }
+      }
+
+      if (block.id === targetBlockId) {
+        return {
+          ...block,
+          widgetId: sourceBlock.widgetId,
+        }
+      }
+
+      return block
+    })
+
+    set({
+      draftBlocks: updatedDraftBlocks,
+      hasUnsavedChanges: !areBlocksEqual(get().blocks, updatedDraftBlocks),
+    })
+  },
   saveDraftBlocks: () => {
     const draftBlocks = get().draftBlocks
 

@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next"
 import { DashboardPageSkeleton } from "./DashboardPageSkeleton"
 import { DashboardWidgetGrid } from "./DashboardWidgetGrid"
 import { DashboardWidgetControls } from "./DashboardWidgetControls"
+import { DashboardWidgetPalette } from "./DashboardWidgetPalette"
 import { useDashboardLayoutStore } from "@/features/dashboard-layout/dashboard-layout-store"
 import { useEffect } from "react"
 
@@ -15,6 +16,7 @@ export function DashboardPage() {
   const { t } = useTranslation()
   const {forecast, meta, isLoading} = useForecastStore()
   const user = useAuthStore((state) => state.user)
+  const isEditingDashboard = useDashboardLayoutStore((state) => state.isEditingDashboard)
 
   useEffect(() => {
     return () => {
@@ -54,8 +56,13 @@ export function DashboardPage() {
         <div className="hidden lg:block" />
         <SettingsPanel user={user} />
       </div>
+      <DashboardWidgetPalette />
       {meta ? (
-        <div className="grid min-h-0 min-w-0 flex-1 overflow-hidden grid-cols-1 gap-5 lg:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] lg:grid-rows-[repeat(2,minmax(0,1fr))]">
+        <div
+          className={`relative grid min-h-0 min-w-0 flex-1 overflow-hidden grid-cols-1 gap-5 lg:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] lg:grid-rows-[repeat(2,minmax(0,1fr))] ${
+            isEditingDashboard ? "dashboard-edit-frame" : ""
+          }`}
+        >
           <DashboardWidgetGrid
             currentForecast={currentForecast}
             forecast={forecastItems}
