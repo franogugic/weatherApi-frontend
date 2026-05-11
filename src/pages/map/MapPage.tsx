@@ -23,6 +23,8 @@ export function MapPage({ showAuthActions = false }: MapPageProps) {
   const locations = useLocationStore((state) => state.locations)
   const isLoading = useLocationStore((state) => state.isLoading)
   const favoriteLocations = useFavoriteLocationStore((state) => state.favoriteLocations)
+      console.log(favoriteLocations);
+
   const isLoadingFavorites = useFavoriteLocationStore((state) => state.isLoadingFavorites)
   const hasLoadedFavorites = useFavoriteLocationStore((state) => state.hasLoadedFavorites)
   const loadFavoriteLocations = useFavoriteLocationStore((state) => state.loadFavoriteLocations)

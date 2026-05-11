@@ -14,10 +14,9 @@ const DASHBOARD_WIDGET_IDS: Record<DashboardWidgetId, true> = {
   nextHourly: true,
   map: true,
   graph: true,
-  colorPanelOne: true,
-  colorPanelTwo: true,
-  colorPanelThree: true,
-  colorPanelFour: true,
+  dailyForecast: true,
+  favoriteLocations: true,
+  settings: true,
 }
 
 export const DASHBOARD_CELL_ORDER: DashboardCellId[] = ["A", "B", "C", "D", "E", "F"]

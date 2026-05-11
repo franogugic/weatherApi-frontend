@@ -196,6 +196,7 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
           return null
         }
 
+        {console.log(block.widgetId)}
         const renderedWidget = block.widgetId
           ? dashboardWidgetRegistry[block.widgetId].render(props)
           : <EmptyDashboardBlock />
@@ -260,9 +261,11 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
               setDraggedBlockId(null)
               setDropTargetBlockId(null)
             }}
-            className={`group relative h-full min-h-0 min-w-0 overflow-hidden transition ${
+            className={`group relative h-full min-h-0 min-w-0 transition ${
               block.widgetId === "map" ? "hidden lg:block" : ""
-            } ${isEditingDashboard ? "dashboard-edit-frame cursor-grab active:cursor-grabbing" : ""} ${
+            } ${block.widgetId === "graph" ? "overflow-visible" : "overflow-hidden"} ${
+              isEditingDashboard ? "dashboard-edit-frame cursor-grab active:cursor-grabbing" : ""
+            } ${
               draggedBlockId === block.id ? "scale-[0.985] opacity-55" : ""
             } ${
               dropTargetBlockId === block.id

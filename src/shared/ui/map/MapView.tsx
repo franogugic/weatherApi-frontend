@@ -126,8 +126,8 @@ export function MapView({
                   })}
                 >
                   <div
-                    className={`flex min-w-[172px] max-w-[260px] flex-col rounded-2xl items-center border border-white/15 bg-white/8 px-3 py-1.5 text-center shadow-lg backdrop-blur-xl ${
-                      onMarkerClick ? "cursor-pointer transition hover:bg-white/12" : ""
+                    className={`flex min-w-[172px] max-w-[260px] flex-col rounded-2xl items-center border border-white/10 bg-[#20252c]/85 px-3 py-1.5 text-center shadow-lg backdrop-blur-xl ${
+                      onMarkerClick ? "cursor-pointer transition hover:bg-[#20252c]/95" : ""
                     }`}
                     onClick={() => onMarkerClick?.(marker)}
                   >

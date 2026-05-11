@@ -11,10 +11,9 @@ const widgetIcons: Record<DashboardWidgetId, LucideIcon> = {
   nextHourly: Clock,
   map: Map,
   graph: Activity,
-  colorPanelOne: Square,
-  colorPanelTwo: Square,
-  colorPanelThree: Square,
-  colorPanelFour: Square,
+  dailyForecast: Square,
+  favoriteLocations: Square,
+  settings: Square,
 }
 
 export function DashboardWidgetPalette() {

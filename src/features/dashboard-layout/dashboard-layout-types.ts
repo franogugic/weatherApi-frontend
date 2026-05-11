@@ -3,10 +3,9 @@ export type DashboardWidgetId =
   | "nextHourly"
   | "map"
   | "graph"
-  | "colorPanelOne"
-  | "colorPanelTwo"
-  | "colorPanelThree"
-  | "colorPanelFour"
+  | "dailyForecast"
+  | "favoriteLocations"
+  | "settings"
 
 export type DashboardCellId = "A" | "B" | "C" | "D" | "E" | "F"
 
