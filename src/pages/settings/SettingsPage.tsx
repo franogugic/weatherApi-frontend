@@ -1,51 +1,96 @@
-import { useAuthStore } from "@/features/auth/auth-store"
-import { useFavoriteLocationStore } from "@/features/favorite-locations/favorite-locations-store"
-import { useLocationStore } from "@/features/location/location-store"
-import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store"
-import type {
-  CloudinessUnit,
-  PrecipitationUnit,
-  PressureUnit,
-  TemperatureUnit,
-  UnitPreferences,
-  WindSpeedUnit,
-} from "@/features/unit-preferences/unit-preferences-types"
-import { useState } from "react"
-import { Link } from "react-router-dom"
+import { useAuthStore } from "@/features/auth/auth-store";
+import { useDashboardLayoutStore } from "@/features/dashboard-layout/dashboard-layout-store";
+import { useFavoriteLocationStore } from "@/features/favorite-locations/favorite-locations-store";
+import { LANGUAGE_OPTIONS } from "@/features/language/language-options";
+import { useLanguageStore } from "@/features/language/language-store";
+import { LAST_VIEWED_LOCATION_ID_KEY } from "@/features/location/last-viewed-location";
+import { useLocationStore } from "@/features/location/location-store";
+import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store";
+
+import type { UnitPreferences } from "@/features/unit-preferences/unit-preferences-types";
+import { AppDropdown } from "@/shared/ui/dropdown/AppDropdown";
+import { LinearText } from "@/shared/ui/linear-text/LinearText";
+import { SettingsFavoriteLocationsBlock } from "@/shared/ui/settings/SettingsFavoriteLocationsBlock";
+import { SettingsLanguageBlock } from "@/shared/ui/settings/SettingsLanguageBlock";
+import { SettingsPersonalInfoBlock } from "@/shared/ui/settings/SettingsPersonalInfoBlock";
+import { SettingsUnitsBlock } from "@/shared/ui/settings/SettingUnitsBlock";
+
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Pencil } from "lucide-react";
 
 export function SettingsPage() {
-  const user = useAuthStore((state) => state.user)
-  const isLoadingUser = useAuthStore((state) => state.isLoadingUser)
-  const hasLoadedCurrentUser = useAuthStore((state) => state.hasLoadedCurrentUser)
-  const preferences = useUnitPreferenceStore((state) => state.preferences)
-  const isLoadingPreferences = useUnitPreferenceStore((state) => state.isLoadingPreferences)
-  const updatePreferences = useUnitPreferenceStore((state) => state.updatePreferences)
-  const favoriteLocations = useFavoriteLocationStore((state) => state.favoriteLocations);
-  const addFavoriteLocation = useFavoriteLocationStore((state) => state.addFavoriteLocation);
-  const removeFavoriteLocation = useFavoriteLocationStore((state) => state.removeFavoriteLocation)
+  const navigate = useNavigate();
+  const user = useAuthStore((state) => state.user);
+  const isLoadingUser = useAuthStore((state) => state.isLoadingUser);
+  const startDashboardEditing = useDashboardLayoutStore(
+    (state) => state.startDashboardEditing,
+  );
+  const language = useLanguageStore((state) => state.language);
+  const setLanguage = useLanguageStore((state) => state.setLanguage);
 
+  const favoriteLocations = useFavoriteLocationStore(
+    (state) => state.favoriteLocations,
+  );
+  const removeFavoriteLocation = useFavoriteLocationStore(
+    (state) => state.removeFavoriteLocation,
+  );
+  const addFavoriteLocation = useFavoriteLocationStore(
+    (state) => state.addFavoriteLocation,
+  );
   const locations = useLocationStore((state) => state.locations);
+
+  const selectedLanguage =
+    LANGUAGE_OPTIONS.find((option) => option.value === language) ??
+    LANGUAGE_OPTIONS[0];
+
   const possibleLocations = locations.filter(
-    (location) => !favoriteLocations.some((favorite) => favorite.id === location.id)
-  )
-  const [selectedNewFavoriteLocation,setSelectedNewFavoriteLocation] = useState(0);
-  const [preferenceErrorMessage, setPreferenceErrorMessage] = useState("")
+    (location) =>
+      !favoriteLocations.some((favorite) => favorite.id === location.id),
+  );
+
+  const hasLoadedCurrentUser = useAuthStore(
+    (state) => state.hasLoadedCurrentUser,
+  );
+
+  const preferences = useUnitPreferenceStore((state) => state.preferences);
+
+  const updatePreferences = useUnitPreferenceStore(
+    (state) => state.updatePreferences,
+  );
+
+  const [preferenceErrorMessage, setPreferenceErrorMessage] = useState("");
 
   async function handlePreferenceChange<K extends keyof UnitPreferences>(
     key: K,
     value: UnitPreferences[K],
   ) {
-    setPreferenceErrorMessage("")
+    setPreferenceErrorMessage("");
 
     try {
       await updatePreferences({
         ...preferences,
         [key]: value,
-      })
+      });
     } catch (error) {
-      console.error("Preference update failed:", error)
-      setPreferenceErrorMessage(error instanceof Error ? error.message : "Could not update preferences.")
+      console.error(error);
+
+      setPreferenceErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Could not update preferences.",
+      );
     }
+  }
+
+  function handleEditHomeLayout() {
+    startDashboardEditing();
+
+    const lastViewedLocationId = localStorage.getItem(
+      LAST_VIEWED_LOCATION_ID_KEY,
+    );
+
+    navigate(lastViewedLocationId ? `/${lastViewedLocationId}` : "/");
   }
 
   if (isLoadingUser || !hasLoadedCurrentUser) {
@@ -53,7 +98,7 @@ export function SettingsPage() {
       <div className="rounded-4xl bg-div p-6">
         <p className="text-subtext">Loading settings...</p>
       </div>
-    )
+    );
   }
 
   if (!user) {
@@ -61,9 +106,11 @@ export function SettingsPage() {
       <div className="flex h-full min-h-0 items-center justify-center rounded-4xl bg-div p-6">
         <div className="max-w-md text-center">
           <h1 className="mb-2 text-3xl font-semibold">Settings</h1>
+
           <p className="mb-6 text-sm text-subtext">
             Login to customize measurement units.
           </p>
+
           <div className="flex justify-center gap-3">
             <Link
               to="/login"
@@ -71,6 +118,7 @@ export function SettingsPage() {
             >
               Login
             </Link>
+
             <Link
               to="/register"
               className="rounded-2xl bg-linear-to-b from-accent-secondary to-accent-primary px-5 py-2 text-sm font-semibold text-white transition hover:brightness-110"
@@ -80,137 +128,90 @@ export function SettingsPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="rounded-4xl bg-div p-6">
-      <div className="mb-8">
-        <p className="text-sm text-subtext">Signed in as</p>
-        <h1 className="text-3xl font-semibold">
-          {user.firstName} {user.lastName}
-        </h1>
+    <main className="flex h-full min-h-0 flex-col overflow-hidden rounded-4xl bg-div p-6 text-white">
+      <div className="mb-4 flex h-10 items-center justify-between">
+        <h1 className="text-2xl font-bold">Settings</h1>
       </div>
 
-      <div className="max-w-md space-y-5">
-        <UnitSelect
-          label="Temperature"
-          value={preferences.temperatureUnit}
-          onChange={(value) => void handlePreferenceChange("temperatureUnit", value as TemperatureUnit)}
-          options={[
-            { value: "celsius", label: "Celsius (°C)" },
-            { value: "fahrenheit", label: "Fahrenheit (°F)" },
-            { value: "kelvin", label: "Kelvin (K)" },
-          ]}
-        />
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-2 lg:grid-rows-[100px_150px_minmax(0,1fr)_150px_60px]">
+        <div className="col-span-2 flex items-center justify-between gap-4 rounded-4xl border-white/10 bg-[#2b2f36]/70 px-8 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75">
+          <div>
+            <p className="flex text-[40px] font-semibold">
+              Welcome back,&nbsp;
+              <LinearText text={user.firstName} />!
+            </p>
+            <p className="text-[12px] text-white/60">
+              Customize your experience and make the app truly yours.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleEditHomeLayout}
+            className="flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-[#20252c]/90 px-4 py-3 text-[13px] font-semibold text-white/80 shadow-[0_14px_32px_rgba(0,0,0,0.32)] backdrop-blur-xl transition hover:text-white"
+            aria-label="Edit home layout"
+          >
+            <Pencil size={16} />
+            Edit layout
+          </button>
+        </div>
 
-        <UnitSelect
-          label="Wind speed"
-          value={preferences.windSpeedUnit}
-          onChange={(value) => void handlePreferenceChange("windSpeedUnit", value as WindSpeedUnit)}
-          options={[
-            { value: "metersPerSecond", label: "Meters per second (m/s)" },
-            { value: "kilometersPerHour", label: "Kilometers per hour (km/h)" },
-            { value: "milesPerHour", label: "Miles per hour (mph)" },
-            { value: "knots", label: "Knots (kt)" },
-          ]}
-        />
+        <div className="rounded-4xl border-white/10 bg-[#2b2f36]/70 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 p-4">
+          <SettingsPersonalInfoBlock />
+        </div>
 
-        <UnitSelect
-          label="Air pressure"
-          value={preferences.pressureUnit}
-          onChange={(value) => void handlePreferenceChange("pressureUnit", value as PressureUnit)}
-          options={[
-            { value: "hectopascal", label: "Hectopascal (hPa)" },
-            { value: "pascal", label: "Pascal (Pa)" },
-            { value: "millibar", label: "Millibar (mbar)" },
-          ]}
-        />
+        <div className="row-span-2 w-full min-w-0 rounded-4xl border-white/10 bg-[#2b2f36]/70 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 p-4">
+          <SettingsUnitsBlock
+            preferences={preferences}
+            handlePreferenceChange={handlePreferenceChange}
+            preferenceErrorMessage={preferenceErrorMessage}
+          />
+        </div>
 
-        <UnitSelect
-          label="Cloudiness"
-          value={preferences.cloudinessUnit}
-          onChange={(value) => void handlePreferenceChange("cloudinessUnit", value as CloudinessUnit)}
-          options={[
-            { value: "percent", label: "Percent (%)" },
-            { value: "okta", label: "Okta" },
-          ]}
-        />
+        <div className="row-span-2 rounded-4xl border-white/10 bg-[#2b2f36]/70 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 p-4 min-w-0">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <LinearText
+              text="Favorite locations"
+              className="text-[20px] font-semibold"
+            />
+            <AppDropdown
+              value=""
+              placeholder="Add location"
+              options={possibleLocations.map((location) => ({
+                value: String(location.id),
+                label: location.name,
+                description: `${location.latitude.toFixed(2)} lat | ${location.longitude.toFixed(2)} lon`,
+              }))}
+              emptyMessage="No more locations to add."
+              onChange={(value) => {
+                void addFavoriteLocation(Number(value));
+              }}
+              className="w-44"
+              buttonClassName="rounded-2xl px-3 py-1.5 text-[13px]"
+              menuClassName="w-72"
+              placement="auto"
+            />
+          </div>
 
-        <UnitSelect
-          label="Precipitation"
-          value={preferences.precipitationUnit}
-          onChange={(value) => void handlePreferenceChange("precipitationUnit", value as PrecipitationUnit)}
-          options={[
-            { value: "millimeter", label: "Millimeter (mm)" },
-            { value: "literPerSquareMeter", label: "Liter per square meter (l/m²)" },
-          ]}
-        />
+          <SettingsFavoriteLocationsBlock
+            favoriteLocations={favoriteLocations}
+            removeFavoriteLocation={removeFavoriteLocation}
+          />
+        </div>
 
-        {preferenceErrorMessage ? (
-          <p className="rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-[13px] text-red-300">
-            {preferenceErrorMessage}
-          </p>
-        ) : null}
-
-        <p className="text-xs text-subtext">
-          {isLoadingPreferences ? "Loading saved preferences..." : "Preferences are saved to your account."}
-        </p>
-        <div>
-          <p className="bg-yellow-900">Popis favorit lokacija</p>
-          <ul>
-            {favoriteLocations.map((loc) => 
-              (
-                <p onClick={() => removeFavoriteLocation(loc.id)} key={loc.id}>{loc.name}</p>
-              )
-            )}
-          </ul>
-          <p className="bg-green-900 mt-8">potencijalne lokacije <span className="font-bold underline">DAUN DER</span></p>
-          <form action=""
-            onSubmit={(event) => {
-              event.preventDefault()
-              addFavoriteLocation(selectedNewFavoriteLocation)
-            }}>
-            <ul>
-              {possibleLocations.map((loc) => 
-              (
-                <p key={loc.id} onClick={() => setSelectedNewFavoriteLocation(loc.id)}>{loc.name}</p>
-              )
-              )}
-            </ul>
-            <button className="bg-green-300 text-black">dodaj novu lokaciju u favorite</button>
-          </form>
+        <div className="rounded-4xl border-white/10 bg-[#2b2f36]/70 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 p-4 min-w-0">
+          <SettingsLanguageBlock
+            selectedLanguage={selectedLanguage}
+            dropdownPlacement="top"
+            onSelectLanguage={(value) => {
+              setLanguage(value);
+            }}
+          />
         </div>
       </div>
-    </div>
-  )
-}
-
-type UnitSelectProps = {
-  label: string
-  value: string
-  onChange: (value: string) => void
-  options: Array<{
-    value: string
-    label: string
-  }>
-}
-
-function UnitSelect({ label, value, onChange, options }: UnitSelectProps) {
-  return (
-    <label className="block">
-      <span className="mb-2 block text-sm font-semibold text-white">{label}</span>
-      <select
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="w-full rounded-2xl border border-white/10 bg-[#25272C] px-4 py-3 text-sm text-white outline-none transition focus:border-accent-primary"
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </label>
-  )
+    </main>
+  );
 }

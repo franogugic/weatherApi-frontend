@@ -37,46 +37,47 @@ export function CurrentForecastPanel({
   const displayedTemperature = convertTemperature(forecast.airTemperature, temperatureUnit)
 
   return (
-    <div className="lg:row-span-2 flex min-w-0 flex-col justify-between rounded-4xl bg-linear-to-b from-accent-secondary to-accent-primary p-6">
-      <div className="text-[14px]">
+    <div className="flex h-full w-full min-w-0 flex-col justify-between overflow-hidden rounded-4xl bg-linear-to-b from-accent-secondary to-accent-primary px-4 py-4 sm:px-5 lg:px-6 lg:py-5">
+      <div className="shrink-0 text-[13px] leading-tight sm:text-[14px]">
         <p>{t("currentForecast.todayLabel", { date: formattedDate })}</p>
-        <div className="flex flex-wrap items-center gap-1 text-[14px] font-bold">
-          <MapPin className="w-6" />
-          <p className="break-words">{locationName}</p>
+        <div className="flex min-w-0 items-center gap-1 text-[13px] font-bold sm:text-[14px]">
+          <MapPin className="h-5 w-5 shrink-0 sm:h-6 sm:w-6" />
+          <p className="truncate">{locationName}</p>
         </div>
       </div>
 
-      <div className="mx-auto text-center">
-        <div className="flex translate-y-2 flex-wrap items-end justify-center gap-1 text-5xl font-bold 2xl:text-6xl">
-          <p className="text-6xl font-bold 2xl:text-7xl">
+      <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col items-center justify-center text-center">
+        <div className="translate-y-[clamp(0.8rem,2.1vh,1.75rem)] flex flex-wrap items-end justify-center gap-1 font-bold">
+          <p className="text-[clamp(2.6rem,6.8vh,5rem)] leading-none font-bold">
             {Math.round(displayedTemperature * 10) / 10}
           </p>
-          <p className="text-3xl font-semibold 2xl:text-4xl">
+          <p className="text-[clamp(1.55rem,3.6vh,2.5rem)] leading-none font-semibold">
             {getTemperatureUnitLabel(temperatureUnit)}
           </p>
         </div>
         <WeatherSymbolIcon
           symbol={forecast.weatherSymbol}
-          className="w-46 mx-auto -translate-y-8"
+          className="mx-auto w-[clamp(6.25rem,15.5vh,11.5rem)] -translate-y-[clamp(0.8rem,2.1vh,1.75rem)]"
         />
       </div>
 
-      <div className="mx-auto flex w-full flex-wrap gap-y-4 lg:flex-nowrap">
+      <div className="flex w-full shrink-0 flex-nowrap gap-y-2">
         <WeatherStat
-          icon={<Wind size={34} />}
+          icon={<Wind size={28} />}
           value={formatWindSpeed(forecast.windSpeed, windSpeedUnit)}
           label={t("currentForecast.wind")}
           showDivider
+      
         />
         <WeatherStat
-          icon={<Droplets size={34} />}
+          icon={<Droplets size={28} />}
           value={forecast.humidity}
           unit={meta.relative_humidity?.unitDisplayName}
           label={t("currentForecast.humidity")}
           showDivider
         />
         <WeatherStat
-          icon={<CloudRain size={34} />}
+          icon={<CloudRain size={28} />}
           value={formatPrecipitation(forecast.precipitationAmount, precipitationUnit)}
           label={t("currentForecast.precipitation")}
         />

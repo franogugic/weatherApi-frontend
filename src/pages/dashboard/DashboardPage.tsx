@@ -12,6 +12,10 @@ import { DashboardWidgetPalette } from "./DashboardWidgetPalette"
 import { useDashboardLayoutStore } from "@/features/dashboard-layout/dashboard-layout-store"
 import { useEffect } from "react"
 
+function isDashboardLocationPath(pathname: string) {
+  return /^\/\d+$/.test(pathname)
+}
+
 export function DashboardPage() {
   const { t } = useTranslation()
   const {forecast, meta, isLoading} = useForecastStore()
@@ -20,7 +24,9 @@ export function DashboardPage() {
 
   useEffect(() => {
     return () => {
-      useDashboardLayoutStore.getState().discardDraftBlocks()
+      if (!isDashboardLocationPath(window.location.pathname)) {
+        useDashboardLayoutStore.getState().discardDraftBlocks()
+      }
     }
   }, [])
 
@@ -59,7 +65,7 @@ export function DashboardPage() {
       <DashboardWidgetPalette />
       {meta ? (
         <div
-          className={`relative grid min-h-0 min-w-0 flex-1 overflow-hidden grid-cols-1 gap-5 lg:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] lg:grid-rows-[repeat(2,minmax(0,1fr))] ${
+          className={`relative grid min-h-0 min-w-0 flex-1 overflow-visible grid-cols-1 gap-5 lg:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] lg:grid-rows-[repeat(2,minmax(0,1fr))] ${
             isEditingDashboard ? "dashboard-edit-frame" : ""
           }`}
         >

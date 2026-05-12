@@ -74,6 +74,16 @@ function getBlockGridStyle(cellIds: DashboardCellId[]): CSSProperties {
   }
 }
 
+function isVerticalDashboardBlock(cellIds: DashboardCellId[]) {
+  if (cellIds.length !== 2) {
+    return false
+  }
+
+  const positions = cellIds.map((cellId) => cellPosition[cellId])
+
+  return positions[0]?.column === positions[1]?.column
+}
+
 function parseDashboardDragPayload(event: DragEvent<HTMLDivElement>) {
   try {
     const payload = event.dataTransfer.getData(DASHBOARD_DRAG_DATA_TYPE)
@@ -197,7 +207,12 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
         }
 
         const renderedWidget = block.widgetId
-          ? dashboardWidgetRegistry[block.widgetId].render(props)
+          ? dashboardWidgetRegistry[block.widgetId].render({
+              ...props,
+              blockCellCount: block.cellIds.length,
+              blockCellIds: block.cellIds,
+              isVerticalBlock: isVerticalDashboardBlock(block.cellIds),
+            })
           : <EmptyDashboardBlock />
         const expansionOptions =
           isEditingDashboard && block.widgetId !== null && block.cellIds.length === 1 && startCellId
@@ -260,9 +275,11 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
               setDraggedBlockId(null)
               setDropTargetBlockId(null)
             }}
-            className={`group relative h-full min-h-0 min-w-0 overflow-hidden transition ${
+            className={`group relative h-full min-h-0 min-w-0 transition ${
               block.widgetId === "map" ? "hidden lg:block" : ""
-            } ${isEditingDashboard ? "dashboard-edit-frame cursor-grab active:cursor-grabbing" : ""} ${
+            } ${block.widgetId === "graph" ? "overflow-visible" : "overflow-hidden"} ${
+              isEditingDashboard ? "dashboard-edit-frame cursor-grab active:cursor-grabbing" : ""
+            } ${
               draggedBlockId === block.id ? "scale-[0.985] opacity-55" : ""
             } ${
               dropTargetBlockId === block.id

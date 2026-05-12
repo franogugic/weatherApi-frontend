@@ -369,7 +369,7 @@ export function GraphPanel({ forecast }: GraphPanelProps) {
     <div className="lg:col-span-2 flex h-full min-h-0 min-w-0 flex-col overflow-visible rounded-4xl bg-div p-6">
       <div className="mb-3 flex shrink-0 flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3 w-full">
-          <p className="text-[26px]">
+          <p className="text-[22px] font-semibold">
             {t("graph.overview")}
           </p>
 

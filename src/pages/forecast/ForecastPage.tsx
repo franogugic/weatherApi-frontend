@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { CalendarDays, Cloud, CloudRain, Droplets, Gauge, MoveUp, Thermometer } from "lucide-react"
+import { CalendarDays, Cloud, CloudRain, Droplets, Gauge, MoveUp, Thermometer, Wind } from "lucide-react"
 import { CROATIA_TIME_ZONE, formatShortDate } from "@/shared/lib/format-date"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 import { useTranslation } from "react-i18next"
@@ -148,14 +148,14 @@ export function ForecastPage() {
                 </div>
 
                 <div className="flex flex-1 items-center justify-center gap-6 w-full">
-                  <WeatherSymbolIcon symbol={daily.weatherSymbol} className="w-20 drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)]" />
+                  <WeatherSymbolIcon symbol={daily.weatherSymbol} className="w-18 drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)]" />
                   <div>
                     <p className="text-[46px] font-semibold leading-none tracking-tight text-white">
                       {formatTemperature(daily.averageTemperature, temperatureUnit)}
                     </p>
                     <p className="mt-3 text-center text-sm text-white/70">
                       <span className="font-semibold text-[#4da3ff]">min {formatTemperature(daily.minTemperature, temperatureUnit)}</span>
-                      <span className="px-3 text-white/50">|</span>
+                      <span className="px-2 text-white/50">|</span>
                       <span className="font-semibold text-[#ff6b6b]">max {formatTemperature(daily.maxTemperature, temperatureUnit)}</span>
                     </p>
                   </div>
@@ -184,7 +184,7 @@ export function ForecastPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 border-b border-white/10 py-3 pl-4">
-                    <MoveUp size={18} className="rotate-45 text-white/75" />
+                    <Wind size={18} className="rotate-45 text-white/75" />
                     <div>
                       <p className="font-medium">{formatWindSpeed(daily.windSpeed, windSpeedUnit)}</p>
                       <p className="text-xs text-white/55">{t("forecast.wind")}</p>

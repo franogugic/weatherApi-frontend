@@ -55,15 +55,15 @@ export function SearchPanel() {
   }
 
   return (
-    <div className="bg-div relative h-fit min-w-0 self-start rounded-4xl px-6 py-5">
-      <div className="flex items-center gap-2">
-        <Search size={22} />
+    <div className="relative z-[9999] h-fit min-w-0 self-start rounded-4xl border border-white/10 bg-[#1F2026]/97 px-6 py-5 shadow-[0_8px_22px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-xl transition hover:border-white/20 hover:bg-[#252a31]">
+      <div className="flex items-center gap-3">
+        <Search size={22} className="text-white/70" />
         <input
           type="text"
           placeholder={t("search.placeholder")}
           disabled={isLoading}
           value={locationValue}
-          className="min-w-0 w-full bg-transparent border-none font-extralight focus:outline-none"
+          className="min-w-0 w-full border-none bg-transparent font-extralight text-white placeholder:text-white/40 focus:outline-none"
           onChange={(e) => setLocationValue(e.target.value)}
           onKeyDown={(e) => {
             if (!shouldShowDropdown) {
@@ -98,12 +98,14 @@ export function SearchPanel() {
 
       {/*dropwdon reUltata lokacija*/}
       {shouldShowDropdown && (
-        <ul className="absolute left-0 right-0 top-[100%] z-10 mt-2 max-h-72 overflow-y-auto rounded-4xl border border-white/15 bg-white/8 p-4 shadow-lg backdrop-blur-xl">
+        <ul className="absolute left-0 right-0 top-[100%] z-[10000] mt-2 max-h-72 overflow-y-auto rounded-3xl border border-white/10 bg-[#171b21]/98 p-2 shadow-[0_18px_45px_rgba(0,0,0,0.48),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-2xl">
           {filteredLocations.map((loc, index) => (
             <li
               key={loc.id}
-              className={`cursor-pointer rounded-3xl px-4 py-3 transition ${
-                index === highlightedIndex ? "bg-white/5" : ""
+              className={`cursor-pointer rounded-2xl px-3 py-2.5 transition ${
+                index === highlightedIndex
+                  ? "bg-linear-to-br from-accent-secondary/22 to-accent-primary/18 text-white"
+                  : "text-white/62 hover:bg-white/7 hover:text-white"
               }`}
               onClick={() => {
                 setSelectedLocation(loc)
@@ -116,8 +118,8 @@ export function SearchPanel() {
               <p
                 className={`text-[14px] font-semibold ${
                   loc.id === selectedLocation?.id
-                    ? "text-accent-primary "
-                    : "text-white"
+                    ? "text-accent-primary"
+                    : "text-inherit"
                 }`}
               >
                 {loc.name}
@@ -126,9 +128,6 @@ export function SearchPanel() {
                 {t("search.latitudeShort")} {loc.latitude.toFixed(2)} | {t("search.longitudeShort")}{" "}
                 {loc.longitude.toFixed(2)} | {t("search.altitudeShort")} {loc.altitude}
               </p>
-              {index < filteredLocations.length - 1 && (
-                <div className="mt-3 border-b border-white/50" />
-              )}
             </li>
           ))}
         </ul>
