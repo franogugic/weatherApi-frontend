@@ -23,25 +23,46 @@ type SettingsUnitsBlockProps = {
     value: UnitPreferences[K],
   ) => Promise<void>;
   preferenceErrorMessage: string;
+  compact?: boolean;
+  showHeader?: boolean;
+  showDropdownChevron?: boolean;
 };
 
 export function SettingsUnitsBlock({
   preferences,
   handlePreferenceChange,
   preferenceErrorMessage,
+  compact = false,
+  showHeader = true,
+  showDropdownChevron = true,
 }: SettingsUnitsBlockProps) {
   return (
     <div>
-      <LinearText text="Units" className="text-[20px] font-semibold" />
-      <p className="mt-1 mb-6 text-[12px] font-light text-white/60">
-        Choose your preferred weather units.
-      </p>
+      {showHeader ? (
+        <>
+          <LinearText
+            text="Units"
+            className={compact ? "text-[16px] font-semibold" : "text-[20px] font-semibold"}
+          />
+          {!compact ? (
+            <p className="mt-1 mb-6 text-[12px] font-light text-white/60">
+              Choose your preferred weather units.
+            </p>
+          ) : null}
+        </>
+      ) : null}
 
-      <div className="max-h-75 overflow-y-auto grid grid-cols-1 lg:grid-cols-2 gap-4 border-t border-white/10 pt-4">
+      <div className={`grid  ${
+        compact
+          ? "mt-2 grid-cols-2 gap-2 pt-2"
+          : `${showHeader ? "max-h-75" : ""} grid-cols-1 gap-4 overflow-y-auto pt-4 lg:grid-cols-2`
+      }`}>
         <UnitSelect
           label="Temperature"
           value={preferences.temperatureUnit}
           icon={Thermometer}
+          compact={compact}
+          showChevron={showDropdownChevron}
           onChange={(value) =>
             void handlePreferenceChange(
               "temperatureUnit",
@@ -68,6 +89,8 @@ export function SettingsUnitsBlock({
           label="Wind speed"
           value={preferences.windSpeedUnit}
           icon={Wind}
+          compact={compact}
+          showChevron={showDropdownChevron}
           onChange={(value) =>
             void handlePreferenceChange("windSpeedUnit", value as WindSpeedUnit)
           }
@@ -95,6 +118,8 @@ export function SettingsUnitsBlock({
           label="Pressure"
           value={preferences.pressureUnit}
           icon={Gauge}
+          compact={compact}
+          showChevron={showDropdownChevron}
           onChange={(value) =>
             void handlePreferenceChange("pressureUnit", value as PressureUnit)
           }
@@ -118,6 +143,8 @@ export function SettingsUnitsBlock({
           label="Cloudiness"
           value={preferences.cloudinessUnit}
           icon={Cloud}
+          compact={compact}
+          showChevron={showDropdownChevron}
           onChange={(value) =>
             void handlePreferenceChange(
               "cloudinessUnit",
@@ -140,6 +167,8 @@ export function SettingsUnitsBlock({
           label="Precipitation"
           value={preferences.precipitationUnit}
           icon={CloudRain}
+          compact={compact}
+          showChevron={showDropdownChevron}
           onChange={(value) =>
             void handlePreferenceChange(
               "precipitationUnit",

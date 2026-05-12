@@ -12,7 +12,6 @@ import {
   formatWindSpeed,
 } from "@/features/unit-preferences/format-units"
 import { CloudRain, Droplets, Wind } from "lucide-react"
-import { NavLink, useParams } from "react-router-dom"
 
 
 function formatDailyDateLabel(dateString: string, locale: string) {
@@ -30,7 +29,6 @@ function formatDailyDateLabel(dateString: string, locale: string) {
 export function DailyForecastsPanel (){
     const { forecast } = useForecastStore()
     const { t, i18n } = useTranslation()
-    const { id } = useParams();
     const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
     const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
     const windSpeedUnit = useUnitPreferenceStore((state) => state.preferences.windSpeedUnit)
@@ -40,7 +38,9 @@ export function DailyForecastsPanel (){
 
     return(
         <div className="bg-div rounded-4xl h-full flex flex-col justify-between p-6">
-            <p className=" text-[22px] font-semibold">{dailyForecasts.length}-Day Forecast</p>
+            <div>
+              <p className=" text-[22px] font-semibold">{dailyForecasts.length}-Day Forecast</p>
+            </div>
             <div className="flex justify-between items-center gap-4 mt-4">
                 {dailyForecasts.map((daily, index) => (
                     <div
@@ -63,9 +63,7 @@ export function DailyForecastsPanel (){
                         </div>
                      </div>
                  ))}
-            </div>
-            
-            <NavLink to={`/forecast/${id}`} className="text-center underline cursor-pointer bg-linear-to-r from-accent-secondary to-accent-primary bg-clip-text text-transparent">See detailed daily forecast</NavLink>
+            </div>            
         </div>
             
     )

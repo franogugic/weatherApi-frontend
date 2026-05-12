@@ -26,6 +26,7 @@ type AppDropdownProps = {
   menuClassName?: string;
   align?: "left" | "right";
   placement?: "auto" | "top" | "bottom";
+  showChevron?: boolean;
 };
 
 export function AppDropdown({
@@ -39,6 +40,7 @@ export function AppDropdown({
   menuClassName = "",
   align = "right",
   placement = "auto",
+  showChevron = true,
 }: AppDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [menuStyle, setMenuStyle] = useState<CSSProperties>({});
@@ -192,12 +194,14 @@ export function AppDropdown({
             {selectedOption?.label ?? placeholder}
           </span>
         </span>
-        <ChevronDown
-          size={16}
-          className={`shrink-0 text-white/55 transition ${
-            isOpen ? "rotate-180 text-accent-primary" : ""
-          }`}
-        />
+        {showChevron ? (
+          <ChevronDown
+            size={16}
+            className={`shrink-0 text-white/55 transition ${
+              isOpen ? "rotate-180 text-accent-primary" : ""
+            }`}
+          />
+        ) : null}
       </button>
 
       {menu ? createPortal(menu, document.body) : null}

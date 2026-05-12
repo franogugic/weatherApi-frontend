@@ -148,14 +148,14 @@ export function ForecastPage() {
                 </div>
 
                 <div className="flex flex-1 items-center justify-center gap-6 w-full">
-                  <WeatherSymbolIcon symbol={daily.weatherSymbol} className="w-20 drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)]" />
+                  <WeatherSymbolIcon symbol={daily.weatherSymbol} className="w-18 drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)]" />
                   <div>
                     <p className="text-[46px] font-semibold leading-none tracking-tight text-white">
                       {formatTemperature(daily.averageTemperature, temperatureUnit)}
                     </p>
                     <p className="mt-3 text-center text-sm text-white/70">
                       <span className="font-semibold text-[#4da3ff]">min {formatTemperature(daily.minTemperature, temperatureUnit)}</span>
-                      <span className="px-3 text-white/50">|</span>
+                      <span className="px-2 text-white/50">|</span>
                       <span className="font-semibold text-[#ff6b6b]">max {formatTemperature(daily.maxTemperature, temperatureUnit)}</span>
                     </p>
                   </div>

@@ -6,7 +6,7 @@ import type { DashboardWidgetId } from "@/features/dashboard-layout/dashboard-la
 import type { DashboardWidgetDefinition } from "./dashboard-widget-types"
 import { DailyForecastsPanel } from "@/widgets/daily-forecast-panel/DailyForecastPanel"
 import { FavoriteLocationsWidgetPanel } from "@/widgets/favorite-locations-panel/FavoriteLocationsPanel"
-import { SettingsExtendedPanel } from "@/widgets/settings-panel/SettingsExtendedPanel"
+import { UnitsWidgetPanel } from "@/widgets/units-panel/UnitsWidgetPanel"
 
 // lista svih potencijalnih widgeta za drag & drop na hommeu
 export const dashboardWidgetRegistry = {
@@ -22,8 +22,12 @@ export const dashboardWidgetRegistry = {
     id: "nextHourly",
     title: "Next hourly",
     defaultLayout: { w: 4, h: 6 },
-    render: ({ nextHourlyForecast, meta }) => (
-      <NextHourlysPanel forecast={nextHourlyForecast} meta={meta} />
+    render: ({ nextHourlyForecast, meta, isVerticalBlock }) => (
+      <NextHourlysPanel
+        forecast={nextHourlyForecast}
+        meta={meta}
+        visibleItems={isVerticalBlock ? 12 : 4}
+      />
     ),
   },
   map: {
@@ -56,10 +60,10 @@ export const dashboardWidgetRegistry = {
   },
   settings: {
     id: "settings",
-    title: "Settings",
+    title: "Units",
     defaultLayout: { w: 4, h: 3 },
     render: () => (
-      <SettingsExtendedPanel/>
+      <UnitsWidgetPanel/>
     ),
   },
 } satisfies Record<DashboardWidgetId, DashboardWidgetDefinition>

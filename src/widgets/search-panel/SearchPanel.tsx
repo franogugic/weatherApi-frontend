@@ -55,7 +55,7 @@ export function SearchPanel() {
   }
 
   return (
-    <div className="relative h-fit min-w-0 self-start rounded-4xl border border-white/10 bg-[#1F2026]/90 px-6 py-5 shadow-[0_8px_22px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-xl transition hover:border-white/20 hover:bg-[#252a31]/95">
+    <div className="relative z-[9999] h-fit min-w-0 self-start rounded-4xl border border-white/10 bg-[#1F2026]/97 px-6 py-5 shadow-[0_8px_22px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-xl transition hover:border-white/20 hover:bg-[#252a31]">
       <div className="flex items-center gap-3">
         <Search size={22} className="text-white/70" />
         <input
@@ -98,7 +98,7 @@ export function SearchPanel() {
 
       {/*dropwdon reUltata lokacija*/}
       {shouldShowDropdown && (
-        <ul className="absolute left-0 right-0 top-[100%] z-50 mt-2 max-h-72 overflow-y-auto rounded-3xl border border-white/10 bg-[#1F2026]/95 p-2 shadow-[0_18px_45px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-2xl">
+        <ul className="absolute left-0 right-0 top-[100%] z-[10000] mt-2 max-h-72 overflow-y-auto rounded-3xl border border-white/10 bg-[#171b21]/98 p-2 shadow-[0_18px_45px_rgba(0,0,0,0.48),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-2xl">
           {filteredLocations.map((loc, index) => (
             <li
               key={loc.id}

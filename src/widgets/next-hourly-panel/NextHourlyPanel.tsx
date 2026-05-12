@@ -11,20 +11,22 @@ import { formatTemperature } from "@/features/unit-preferences/format-units"
 type NextHourlyPanelProps = {
   forecast: WeatherForecastItem[],
   meta: WeatherMeta;
+  visibleItems?: number;
   
 }
 
-export function NextHourlysPanel( {forecast}: NextHourlyPanelProps) {
+export function NextHourlysPanel( {forecast, visibleItems = 12}: NextHourlyPanelProps) {
   const { t, i18n } = useTranslation()
   const selectedLocation = useLocationStore((state) => state.selectedLocation)
   const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
   const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
   const forecastPath = selectedLocation ? `/forecast/${selectedLocation.id}` : "/map"
+  const visibleForecast = forecast.slice(0, visibleItems)
   
   return (
   <div className="lg:row-span-2 flex h-full min-h-0 min-w-0 flex-col rounded-4xl bg-div p-6">
     <div className="mb-4 flex items-center justify-between">
-      <p className="text-[22px] font-semibold">{t("nextHourly.title")}</p>
+      <p className="text-[22px] font-semibold">{getNextHourlyTitle(visibleItems, i18n.language)}</p>
       <NavLink to={forecastPath} className="text-[14px] underline cursor-pointer bg-linear-to-t from-accent-secondary to-accent-primary bg-clip-text text-transparent">
           {t("nextHourly.seeMore")}
       </NavLink>
@@ -38,9 +40,9 @@ export function NextHourlysPanel( {forecast}: NextHourlyPanelProps) {
 
     <div
       className="grid flex-1"
-      style={{ gridTemplateRows: `repeat(${forecast.length}, minmax(0, 1fr))` }}
+      style={{ gridTemplateRows: `repeat(${visibleForecast.length}, minmax(0, 1fr))` }}
     >
-      {forecast.map((item, index) => (
+      {visibleForecast.map((item, index) => (
         <div key={index} className="grid h-full grid-cols-3 items-center px-2">
           <p className="font-light">{getHourFromForecastTime(item.forecastTime, locale)}</p>
           <WeatherSymbolIcon
@@ -59,6 +61,14 @@ export function NextHourlysPanel( {forecast}: NextHourlyPanelProps) {
     </NavLink>
   </div>
   )
+}
+
+function getNextHourlyTitle(hours: number, language: string) {
+  if (language === "hr") {
+    return `Sljedećih ${hours} sata`
+  }
+
+  return `Next ${hours} Hours`
 }
 
 

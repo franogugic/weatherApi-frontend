@@ -5,6 +5,7 @@ import type {
 } from "@/entities/weather/model/types"
 import type { User } from "@/entities/user/types"
 import type { DashboardWidgetId } from "@/features/dashboard-layout/dashboard-layout-types"
+import type { DashboardCellId } from "@/features/dashboard-layout/dashboard-layout-types"
 
 export type DashboardWidgetRenderProps = {
   currentForecast: WeatherForecastItem
@@ -12,6 +13,9 @@ export type DashboardWidgetRenderProps = {
   nextHourlyForecast: WeatherForecastItem[]
   meta: WeatherMeta
   user: User | null
+  blockCellCount?: number
+  blockCellIds?: DashboardCellId[]
+  isVerticalBlock?: boolean
 }
 
 export type DashboardWidgetDefinition = {

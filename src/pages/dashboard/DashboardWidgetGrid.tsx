@@ -74,6 +74,16 @@ function getBlockGridStyle(cellIds: DashboardCellId[]): CSSProperties {
   }
 }
 
+function isVerticalDashboardBlock(cellIds: DashboardCellId[]) {
+  if (cellIds.length !== 2) {
+    return false
+  }
+
+  const positions = cellIds.map((cellId) => cellPosition[cellId])
+
+  return positions[0]?.column === positions[1]?.column
+}
+
 function parseDashboardDragPayload(event: DragEvent<HTMLDivElement>) {
   try {
     const payload = event.dataTransfer.getData(DASHBOARD_DRAG_DATA_TYPE)
@@ -196,9 +206,13 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
           return null
         }
 
-        {console.log(block.widgetId)}
         const renderedWidget = block.widgetId
-          ? dashboardWidgetRegistry[block.widgetId].render(props)
+          ? dashboardWidgetRegistry[block.widgetId].render({
+              ...props,
+              blockCellCount: block.cellIds.length,
+              blockCellIds: block.cellIds,
+              isVerticalBlock: isVerticalDashboardBlock(block.cellIds),
+            })
           : <EmptyDashboardBlock />
         const expansionOptions =
           isEditingDashboard && block.widgetId !== null && block.cellIds.length === 1 && startCellId
