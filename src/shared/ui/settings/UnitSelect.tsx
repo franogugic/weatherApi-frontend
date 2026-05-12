@@ -1,3 +1,4 @@
+import { AppDropdown } from "@/shared/ui/dropdown/AppDropdown"
 import type { LucideIcon } from "lucide-react"
 
 type UnitSelectProps = {
@@ -27,22 +28,14 @@ export function UnitSelect({
         </span>
       </div>
 
-      <select
+      <AppDropdown
         value={value}
-        onChange={(event) =>
-          onChange(event.target.value)
-        }
-        className="w-full rounded-lg border border-white/10 bg-[#1F2026] px-3 py-1.5 text-xs text-white outline-none transition focus:border-accent-primary lg:w-[35%]"
-      >
-        {options.map((option) => (
-          <option
-            key={option.value}
-            value={option.value}
-          >
-            {option.label}
-          </option>
-        ))}
-      </select>
+        onChange={onChange}
+        options={options}
+        className="w-full lg:w-[38%]"
+        buttonClassName="py-1.5 text-xs"
+        menuClassName="min-w-36"
+      />
     </label>
   )
 }

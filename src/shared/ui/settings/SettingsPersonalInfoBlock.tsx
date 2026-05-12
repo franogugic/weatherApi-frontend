@@ -4,6 +4,10 @@ import { LinearText } from "../linear-text/LinearText";
 export function SettingsPersonalInfoBlock() {
   const user = useAuthStore((state) => state.user);
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <div>
       <LinearText

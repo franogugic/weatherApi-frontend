@@ -1,23 +1,18 @@
 import { LinearText } from "../linear-text/LinearText"
 import { LanguageDropdown, type LanguageOption } from "./LanguageDropdown"
-import type { Dispatch, RefObject, SetStateAction } from "react"
 
 type SettingsLanguageBlockProps = {
   selectedLanguage: LanguageOption
-  isOpen: boolean
-  setIsOpen: Dispatch<SetStateAction<boolean>>
-  dropdownRef: RefObject<HTMLDivElement>
   onSelectLanguage: (value: string) => void
+  dropdownPlacement?: "auto" | "top" | "bottom"
 }
 
 
 
 export function SettingsLanguageBlock({
   selectedLanguage,
-  isOpen,
-  setIsOpen,
-  dropdownRef,
   onSelectLanguage,
+  dropdownPlacement = "auto",
 }: SettingsLanguageBlockProps) {
   return (
     <div>
@@ -28,10 +23,8 @@ export function SettingsLanguageBlock({
       </p>
       <LanguageDropdown
         selectedLanguage={selectedLanguage}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        dropdownRef={dropdownRef}
         onSelectLanguage={onSelectLanguage}
+        placement={dropdownPlacement}
       />
     </div>
   )

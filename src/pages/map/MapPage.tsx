@@ -4,7 +4,11 @@ import { MessageState } from "@/shared/ui/status/MessageState"
 import { useTranslation } from "react-i18next"
 import { NavLink, useNavigate } from "react-router-dom"
 
-export function MapPage() {
+type MapPageProps = {
+  showAuthActions?: boolean
+}
+
+export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const locations = useLocationStore((state) => state.locations)
@@ -26,7 +30,7 @@ export function MapPage() {
           <MapView
             markers={mapMarkers}
             zoom={7}
-            onMarkerClick={(marker) => navigate(`/`)}
+            onMarkerClick={() => navigate(`/`)}
           />
         </div>
 

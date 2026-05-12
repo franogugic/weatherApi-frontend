@@ -8,13 +8,14 @@ import { useLocationStore } from "@/features/location/location-store";
 import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store";
 
 import type { UnitPreferences } from "@/features/unit-preferences/unit-preferences-types";
+import { AppDropdown } from "@/shared/ui/dropdown/AppDropdown";
 import { LinearText } from "@/shared/ui/linear-text/LinearText";
 import { SettingsFavoriteLocationsBlock } from "@/shared/ui/settings/SettingsFavoriteLocationsBlock";
 import { SettingsLanguageBlock } from "@/shared/ui/settings/SettingsLanguageBlock";
 import { SettingsPersonalInfoBlock } from "@/shared/ui/settings/SettingsPersonalInfoBlock";
 import { SettingsUnitsBlock } from "@/shared/ui/settings/SettingUnitsBlock";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Pencil } from "lucide-react";
 
@@ -27,10 +28,6 @@ export function SettingsPage() {
   );
   const language = useLanguageStore((state) => state.language);
   const setLanguage = useLanguageStore((state) => state.setLanguage);
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const [isAddOpen, setIsAddOpen] = useState(false);
-  const addLocationRef = useRef<HTMLDivElement | null>(null);
 
   const favoriteLocations = useFavoriteLocationStore(
     (state) => state.favoriteLocations,
@@ -42,32 +39,6 @@ export function SettingsPage() {
     (state) => state.addFavoriteLocation,
   );
   const locations = useLocationStore((state) => state.locations);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        event.target instanceof Node &&
-        !dropdownRef.current.contains(event.target)
-      ) {
-        setIsOpen(false);
-      }
-
-      if (
-        addLocationRef.current &&
-        event.target instanceof Node &&
-        !addLocationRef.current.contains(event.target)
-      ) {
-        setIsAddOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   const selectedLanguage =
     LANGUAGE_OPTIONS.find((option) => option.value === language) ??
@@ -206,41 +177,23 @@ export function SettingsPage() {
               text="Favorite locations"
               className="text-[20px] font-semibold"
             />
-            <div ref={addLocationRef} className="relative">
-              <button
-                type="button"
-                onClick={() => setIsAddOpen((current) => !current)}
-                className="rounded-lg border border-white/10 bg-[#1F2026] px-2 py-1 text-sm font-semibold text-white transition hover:border-white/20"
-              >
-                Add location
-              </button>
-
-              {isAddOpen ? (
-                <div className="absolute right-0 z-20 mt-2 w-65 overflow-hidden rounded-4xl border border-white/15 bg-[#1F2026]/95 p-3 shadow-lg backdrop-blur-xl">
-                  {possibleLocations.length ? (
-                    <div className="space-y-2 max-h-72 overflow-y-auto">
-                      {possibleLocations.map((location) => (
-                        <button
-                          key={location.id}
-                          type="button"
-                          onClick={async () => {
-                            await addFavoriteLocation(location.id);
-                            setIsAddOpen(false);
-                          }}
-                          className="flex w-full items-center justify-between rounded-3xl border border-white/10 px-3 py-2 text-left text-sm text-white transition hover:border-white/20 hover:bg-white/5"
-                        >
-                          <span>{location.name}</span>
-                        </button>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="rounded-3xl border border-white/10 bg-[#25282f] px-3 py-3 text-sm text-white/50">
-                      No more locations to add.
-                    </div>
-                  )}
-                </div>
-              ) : null}
-            </div>
+            <AppDropdown
+              value=""
+              placeholder="Add location"
+              options={possibleLocations.map((location) => ({
+                value: String(location.id),
+                label: location.name,
+                description: `${location.latitude.toFixed(2)} lat | ${location.longitude.toFixed(2)} lon`,
+              }))}
+              emptyMessage="No more locations to add."
+              onChange={(value) => {
+                void addFavoriteLocation(Number(value));
+              }}
+              className="w-44"
+              buttonClassName="rounded-2xl px-3 py-1.5 text-[13px]"
+              menuClassName="w-72"
+              placement="auto"
+            />
           </div>
 
           <SettingsFavoriteLocationsBlock
@@ -252,12 +205,9 @@ export function SettingsPage() {
         <div className="rounded-4xl border-white/10 bg-[#2b2f36]/70 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 p-4 min-w-0">
           <SettingsLanguageBlock
             selectedLanguage={selectedLanguage}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            dropdownRef={dropdownRef}
+            dropdownPlacement="top"
             onSelectLanguage={(value) => {
               setLanguage(value);
-              setIsOpen(false);
             }}
           />
         </div>
