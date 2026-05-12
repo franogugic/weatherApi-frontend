@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { CalendarDays, Cloud, CloudRain, Droplets, Gauge, MoveUp, Thermometer } from "lucide-react"
+import { CalendarDays, Cloud, CloudRain, Droplets, Gauge, MoveUp, Thermometer, Wind } from "lucide-react"
 import { CROATIA_TIME_ZONE, formatShortDate } from "@/shared/lib/format-date"
 import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 import { useTranslation } from "react-i18next"
@@ -184,7 +184,7 @@ export function ForecastPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 border-b border-white/10 py-3 pl-4">
-                    <MoveUp size={18} className="rotate-45 text-white/75" />
+                    <Wind size={18} className="rotate-45 text-white/75" />
                     <div>
                       <p className="font-medium">{formatWindSpeed(daily.windSpeed, windSpeedUnit)}</p>
                       <p className="text-xs text-white/55">{t("forecast.wind")}</p>

@@ -12,6 +12,10 @@ import { DashboardWidgetPalette } from "./DashboardWidgetPalette"
 import { useDashboardLayoutStore } from "@/features/dashboard-layout/dashboard-layout-store"
 import { useEffect } from "react"
 
+function isDashboardLocationPath(pathname: string) {
+  return /^\/\d+$/.test(pathname)
+}
+
 export function DashboardPage() {
   const { t } = useTranslation()
   const {forecast, meta, isLoading} = useForecastStore()
@@ -20,7 +24,9 @@ export function DashboardPage() {
 
   useEffect(() => {
     return () => {
-      useDashboardLayoutStore.getState().discardDraftBlocks()
+      if (!isDashboardLocationPath(window.location.pathname)) {
+        useDashboardLayoutStore.getState().discardDraftBlocks()
+      }
     }
   }, [])
 
