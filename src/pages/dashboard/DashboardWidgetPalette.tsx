@@ -32,7 +32,7 @@ export function DashboardWidgetPalette() {
   }
 
   return (
-    <div className="fixed top-6 left-1/2 z-[10000] hidden -translate-x-1/2 rounded-full border border-white/10 bg-[#20252c]/90 px-3 py-2 shadow-[0_18px_45px_rgba(0,0,0,0.32)] backdrop-blur-xl lg:block">
+    <div className="fixed top-6 left-1/2 z-[10000] hidden -translate-x-1/2 rounded-3xl border border-white/10 bg-[#1F2026]/95 p-2 shadow-[0_18px_45px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-2xl lg:block">
       <div className="flex items-center gap-2">
         {dashboardWidgets.map((widget) => {
           const Icon = widgetIcons[widget.id]
@@ -51,16 +51,20 @@ export function DashboardWidgetPalette() {
                 )
                 event.dataTransfer.setData("text/plain", widget.id)
               }}
-              className={`group flex h-[62px] w-[82px] cursor-grab flex-col items-center justify-center gap-1 rounded-full border border-white/10 bg-white/[0.045] px-2 text-center transition hover:-translate-y-0.5 hover:border-accent-primary/45 hover:bg-white/[0.075] active:cursor-grabbing ${
-                isActive ? "opacity-55" : "opacity-100"
+              className={`group flex h-[64px] w-[92px] cursor-grab flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 text-center transition hover:-translate-y-0.5 active:cursor-grabbing ${
+                isActive
+                  ? "bg-linear-to-br from-accent-secondary/22 to-accent-primary/18 text-white opacity-60"
+                  : "text-white/62 hover:bg-white/7 hover:text-white"
               }`}
               title={isActive ? t("dashboard.widgetAlreadyUsed") : t("dashboard.widgetDragHint")}
             >
               <Icon
-                size={17}
-                className="text-accent-primary transition group-hover:text-accent-secondary"
+                size={18}
+                className={`transition ${
+                  isActive ? "text-white" : "text-accent-primary group-hover:text-accent-secondary"
+                }`}
               />
-              <span className="line-clamp-2 text-[9px] font-medium leading-tight text-white/75">
+              <span className="line-clamp-2 text-[10px] font-semibold leading-tight">
                 {t(`dashboard.widgets.${widget.id}`)}
               </span>
             </button>
