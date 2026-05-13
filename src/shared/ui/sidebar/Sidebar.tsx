@@ -1,15 +1,24 @@
+import { useAuthStore } from "@/features/auth/auth-store";
 import { useLocationStore } from "@/features/location/location-store";
 import { LAST_VIEWED_LOCATION_ID_KEY } from "@/features/location/last-viewed-location";
-import { CloudSun, LayoutDashboard, Map, Settings, Sun } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { CloudSun, DoorOpen, LayoutDashboard, Map, Settings, Sun, UserRoundCheck } from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
 
 export function Sidebar() {
+  const navigate = useNavigate()
+  const user = useAuthStore((state) => state.user)
+  const logout = useAuthStore((state) => state.logout)
   const selectedLocation = useLocationStore((state) => state.selectedLocation)
   const locations = useLocationStore((state) => state.locations)
   const storedLocationId = localStorage.getItem(LAST_VIEWED_LOCATION_ID_KEY)
   const fallbackLocationId = selectedLocation?.id ?? storedLocationId ?? locations[0]?.id
   const dashboardPath = fallbackLocationId ? `/${fallbackLocationId}` : "/map"
   const forecastPath = fallbackLocationId ? `/forecast/${fallbackLocationId}` : "/map"
+
+  async function handleLogout() {
+    await logout()
+    navigate("/")
+  }
 
   return (
     <aside className="bg-div flex flex-row items-center justify-between rounded-4xl px-6 py-4 xl:flex-col xl:justify-start xl:p-6">
@@ -38,6 +47,24 @@ export function Sidebar() {
           )}
         </NavLink>
       </ul>
+      <div className="xl:mt-auto">
+        {user ? (
+          <button
+            type="button"
+            onClick={() => void handleLogout()}
+            className="text-white/50 transition hover:text-red-300"
+            aria-label="Logout"
+          >
+            <DoorOpen />
+          </button>
+        ) : (
+          <NavLink to="/login" aria-label="Login">
+            {({ isActive }) => (
+              <UserRoundCheck className={isActive ? "" : "text-white/50"} />
+            )}
+          </NavLink>
+        )}
+      </div>
     </aside>
   )
 }
