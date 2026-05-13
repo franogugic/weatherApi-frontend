@@ -41,7 +41,7 @@ export function DailyForecastsPanel (){
     return(
         <div className="bg-div rounded-4xl h-full flex flex-col gap-2 p-6">
             <div>
-              <p className=" text-[22px] font-semibold">{dailyForecasts.length}-Day Forecast</p>
+              <p className=" text-[22px] font-semibold">{t("dailyForecast.title", { count: dailyForecasts.length })}</p>
             </div>
             <div className="flex justify-between items-center gap-4 mt-4">
                 {dailyForecasts.map((daily, index) => (

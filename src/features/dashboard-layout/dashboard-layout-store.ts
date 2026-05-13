@@ -355,4 +355,15 @@ export const useDashboardLayoutStore = create<DashboardLayoutStore>((set, get) =
 
     set(getDraftState(get().blocks, defaultBlocks))
   },
+  resetDashboardLayout: () => {
+    const defaultBlocks = cloneBlocks(DEFAULT_DASHBOARD_BLOCKS)
+
+    set({
+      blocks: defaultBlocks,
+      draftBlocks: cloneBlocks(defaultBlocks),
+      isEditingDashboard: false,
+      hasUnsavedChanges: false,
+      hasEmptyVisibleBlocks: hasEmptyVisibleBlocks(defaultBlocks),
+    })
+  },
 }))

@@ -7,6 +7,7 @@ import { MessageState } from "@/shared/ui/status/MessageState"
 import { useTranslation } from "react-i18next"
 import { NavLink, useNavigate } from "react-router-dom"
 import { AvailableLocationsPanel } from "./AvailableLocationsPanel"
+import { MapPageSkeleton } from "./MapPageSkeleton"
 
 type MapPageProps = {
   showAuthActions?: boolean
@@ -17,6 +18,7 @@ export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
   const navigate = useNavigate()
   const user = useAuthStore((state) => state.user)
   const hasLoadedCurrentUser = useAuthStore((state) => state.hasLoadedCurrentUser)
+  const isLoadingLocations = useLocationStore((state) => state.isLoading)
   const locations = useLocationStore((state) => state.locations)
   const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
   const showAuthActions = _showAuthActions || (hasLoadedCurrentUser && !user)
@@ -29,6 +31,10 @@ export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
         : undefined,
     weatherSymbol: location.currentWeather?.weatherSymbol ?? undefined,
   }))
+
+  if (isLoadingLocations) {
+    return <MapPageSkeleton />
+  }
 
   if (!locations.length) {
     return (
@@ -48,14 +54,14 @@ export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
               to="/login"
               className="rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-white/80 transition hover:border-white/20 hover:bg-white/8 hover:text-white"
             >
-              Login
+              {t("common.login")}
             </NavLink>
             <NavLink
               to="/register"
               className="relative overflow-hidden rounded-full bg-linear-to-r from-accent-secondary to-accent-primary px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(0,0,0,0.18)] transition hover:brightness-110"
             >
               <span className="absolute inset-0 bg-black/20" />
-              <span className="relative z-10">Register</span>
+              <span className="relative z-10">{t("common.register")}</span>
             </NavLink>
           </div>
         ) : null}

@@ -2,8 +2,10 @@ import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-prefere
 import type { UnitPreferences } from "@/features/unit-preferences/unit-preferences-types";
 import { SettingsUnitsBlock } from "@/shared/ui/settings/SettingUnitsBlock";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export function UnitsWidgetPanel() {
+  const { t } = useTranslation()
   const preferences = useUnitPreferenceStore((state) => state.preferences);
   const updatePreferences = useUnitPreferenceStore(
     (state) => state.updatePreferences,
@@ -28,7 +30,7 @@ export function UnitsWidgetPanel() {
     <div className="flex h-full min-h-0 flex-col rounded-4xl bg-div p-6">
       <div className="mb-4 shrink-0">
         <p className="mb-4 text-[22px] font-semibold text-white">
-          Measurement units
+          {t("units.widgetTitle")}
         </p>
       </div>
       <SettingsUnitsBlock

@@ -43,4 +43,5 @@ export type DashboardLayoutStore = {
   saveDraftBlocks: () => void
   discardDraftBlocks: () => void
   resetDraftBlocks: () => void
+  resetDashboardLayout: () => void
 }

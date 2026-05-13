@@ -4,6 +4,7 @@ import { formatTemperature } from "@/features/unit-preferences/format-units"
 import type { TemperatureUnit } from "@/features/unit-preferences/unit-preferences-types"
 import { MapPin } from "lucide-react"
 import { NavLink } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 type FavoriteLocationsPanelProps = {
   locations: Location[]
@@ -16,15 +17,16 @@ export function FavoriteLocationsPanel({
   temperatureUnit,
   isLoading,
 }: FavoriteLocationsPanelProps) {
+  const { t } = useTranslation()
   return (
     <div className="relative z-10 shrink-0 overflow-visible rounded-4xl bg-div p-4 sm:p-5">
       <div className="relative z-0 mb-4 flex items-center justify-between gap-3">
         <div>
           <p className="bg-linear-to-b from-accent-secondary to-accent-primary bg-clip-text text-[22px] font-semibold text-transparent">
-            Your favorite locations 
+            {t("favorites.title")}
           </p>
           <p className="text-[12px] text-subtext font-light">
-            {isLoading ? "Loading favorites..." : "Quick access to your saved places"}
+            {isLoading ? t("favorites.loading") : t("favorites.quickAccess")}
           </p>
         </div>
         <NavLink
@@ -32,7 +34,7 @@ export function FavoriteLocationsPanel({
           className="relative shrink-0 overflow-hidden rounded-full bg-linear-to-r from-accent-secondary to-accent-primary px-3 py-1.5 text-[14px] font-semibold text-white shadow-[0_8px_18px_rgba(0,0,0,0.18)] transition hover:brightness-110"
         >
           <span className="absolute inset-0 bg-black/25" />
-          <span className="relative z-10">Edit your locations</span>
+          <span className="relative z-10">{t("favorites.edit")}</span>
         </NavLink>
       </div>
 
@@ -46,23 +48,23 @@ export function FavoriteLocationsPanel({
             >
               <div className="pointer-events-none absolute left-1/2 top-0 z-[999] w-[220px] -translate-x-1/2 -translate-y-[calc(100%+10px)] rounded-2xl border border-white/10 bg-[#20252c]/95 p-3 opacity-0 shadow-[0_14px_30px_rgba(0,0,0,0.35)] backdrop-blur-xl transition duration-200 group-hover/card:opacity-100">
                 <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/35">
-                  Coordinates
+                  {t("favorites.coordinates")}
                 </p>
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-[11px] font-light text-subtext">Latitude</span>
+                    <span className="text-[11px] font-light text-subtext">{t("map.latitude")}</span>
                     <span className="bg-linear-to-r from-accent-secondary to-accent-primary bg-clip-text text-xs font-semibold text-transparent">
                       {location.latitude}
                     </span>
                   </div>
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-[11px] font-light text-subtext">Longitude</span>
+                    <span className="text-[11px] font-light text-subtext">{t("map.longitude")}</span>
                     <span className="bg-linear-to-r from-accent-secondary to-accent-primary bg-clip-text text-xs font-semibold text-transparent">
                       {location.longitude}
                     </span>
                   </div>
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-[11px] font-light text-subtext">Altitude</span>
+                    <span className="text-[11px] font-light text-subtext">{t("map.altitude")}</span>
                     <span className="bg-linear-to-r from-accent-secondary to-accent-primary bg-clip-text text-xs font-semibold text-transparent">
                       {location.altitude ?? "--"}
                     </span>
@@ -102,7 +104,7 @@ export function FavoriteLocationsPanel({
       ) : (
         <div className="flex min-h-[132px] items-center justify-center">
           <p className="text-center text-[18px] font-extralight text-subtext">
-            No favorite locations yet. <span className="cursor-pointer bg-linear-to-r from-accent-secondary to-accent-primary bg-clip-text text-transparent">Add favorites now</span>!
+            {t("favorites.empty")} <span className="cursor-pointer bg-linear-to-r from-accent-secondary to-accent-primary bg-clip-text text-transparent">{t("favorites.addNow")}</span>!
           </p>
         </div>
       )}

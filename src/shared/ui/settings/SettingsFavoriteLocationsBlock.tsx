@@ -2,6 +2,7 @@ import { WeatherSymbolIcon } from "@/entities/weather/ui/WeatherSymbolIcon";
 import { Star, Trash2 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import type { Location } from "@/entities/location/types";
+import { useTranslation } from "react-i18next";
 
 type SettingsFavoriteLocationsBlockProps = {
   favoriteLocations: Location[]
@@ -12,6 +13,7 @@ export function SettingsFavoriteLocationsBlock({
   favoriteLocations,
   removeFavoriteLocation,
 }: SettingsFavoriteLocationsBlockProps) {
+  const { t } = useTranslation()
   return (
     <div className="flex min-h-0 flex-1 pt-2 flex-col gap-2 overflow-y-auto pr-1">
       {favoriteLocations.length ? (
@@ -32,8 +34,8 @@ export function SettingsFavoriteLocationsBlock({
                   {location.name}
                 </p>
                 <div className="mt-1 space-y-0.5 text-[10px] gap-2 font-light flex leading-tight text-white/45">
-                  <p>Latatitude: {location.latitude}</p>
-                  <p>Longitude: {location.longitude}</p>
+                  <p>{t("map.latitude")}: {location.latitude}</p>
+                  <p>{t("map.longitude")}: {location.longitude}</p>
                 </div>
               </div>
             </div>
@@ -58,7 +60,7 @@ export function SettingsFavoriteLocationsBlock({
                   void removeFavoriteLocation(location.id);
                 }}
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition hover:white/20"
-                aria-label="Remove favorite location"
+                aria-label={t("favorites.remove")}
               >
                 <Trash2 size={17} />
               </button>
@@ -68,7 +70,7 @@ export function SettingsFavoriteLocationsBlock({
       ) : (
         <div className="flex min-h-26 flex-1 items-center justify-center p-4">
           <p className="text-center text-[16px] font-extralight text-subtext">
-            No favorite locations yet.
+            {t("favorites.empty")}
           </p>
         </div>
       )}

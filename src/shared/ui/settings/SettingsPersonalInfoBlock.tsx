@@ -1,7 +1,9 @@
 import { useAuthStore } from "@/features/auth/auth-store";
+import { useTranslation } from "react-i18next";
 import { LinearText } from "../linear-text/LinearText";
 
 export function SettingsPersonalInfoBlock() {
+  const { t } = useTranslation()
   const user = useAuthStore((state) => state.user);
 
   if (!user) {
@@ -11,7 +13,7 @@ export function SettingsPersonalInfoBlock() {
   return (
     <div>
       <LinearText
-        text="Personal information"
+        text={t("settings.personalInformation")}
         className="text-[20px] font-semibold mb-6"
       />
       <div className="flex items-center justify-start gap-2">

@@ -18,24 +18,44 @@ import { useAuthStore } from "./features/auth/auth-store"
 import { useUnitPreferenceStore } from "./features/unit-preferences/unit-preference-store"
 import { LAST_VIEWED_LOCATION_ID_KEY } from "./features/location/last-viewed-location"
 import { useFavoriteLocationStore } from "./features/favorite-locations/favorite-locations-store"
+import { useDashboardLayoutStore } from "./features/dashboard-layout/dashboard-layout-store"
 
 function AuthSessionLoader() {
+  const user = useAuthStore((state) => state.user)
+  const hasLoadedCurrentUser = useAuthStore((state) => state.hasLoadedCurrentUser)
   const loadCurrentUser = useAuthStore((state) => state.loadCurrentUser)
   const loadPreferences = useUnitPreferenceStore((state) => state.loadPreferences)
   const loadFavoriteLocations = useFavoriteLocationStore((state) => state.loadFavoriteLocations)
+  const clearFavoriteLocations = useFavoriteLocationStore((state) => state.clearFavoriteLocations)
+  const resetDashboardLayout = useDashboardLayoutStore((state) => state.resetDashboardLayout)
 
   useEffect(() => {
-    async function loadSessionData() {
-      const user = await loadCurrentUser()
+    void loadCurrentUser()
+  }, [loadCurrentUser])
 
-      if (user) {
-        await loadPreferences()
-        await loadFavoriteLocations()
-      }
+  useEffect(() => {
+    if (!hasLoadedCurrentUser) {
+      return
     }
 
-    void loadSessionData()
-  }, [loadCurrentUser, loadFavoriteLocations, loadPreferences])
+    if (!user) {
+      clearFavoriteLocations()
+      resetDashboardLayout()
+      return
+    }
+
+    void Promise.all([
+      loadPreferences(),
+      loadFavoriteLocations(),
+    ])
+  }, [
+    clearFavoriteLocations,
+    hasLoadedCurrentUser,
+    loadFavoriteLocations,
+    loadPreferences,
+    resetDashboardLayout,
+    user,
+  ])
 
   return null
 }

@@ -2,6 +2,7 @@ import { useDashboardLayoutStore } from "@/features/dashboard-layout/dashboard-l
 import type { DashboardWidgetId } from "@/features/dashboard-layout/dashboard-layout-types"
 import type { LucideIcon } from "lucide-react"
 import { Activity, CalendarDays, Clock, CloudSun, Heart, Map, SlidersHorizontal } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { dashboardWidgets } from "./dashboard-widget-registry"
 
 const DASHBOARD_DRAG_DATA_TYPE = "application/x-dashboard-widget"
@@ -17,6 +18,7 @@ const widgetIcons: Record<DashboardWidgetId, LucideIcon> = {
 }
 
 export function DashboardWidgetPalette() {
+  const { t } = useTranslation()
   const isEditingDashboard = useDashboardLayoutStore((state) => state.isEditingDashboard)
   const draftBlocks = useDashboardLayoutStore((state) => state.draftBlocks)
   const activeWidgetIds = new Set(
@@ -52,14 +54,14 @@ export function DashboardWidgetPalette() {
               className={`group flex h-[62px] w-[82px] cursor-grab flex-col items-center justify-center gap-1 rounded-full border border-white/10 bg-white/[0.045] px-2 text-center transition hover:-translate-y-0.5 hover:border-accent-primary/45 hover:bg-white/[0.075] active:cursor-grabbing ${
                 isActive ? "opacity-55" : "opacity-100"
               }`}
-              title={isActive ? "Already used. Drag to move it." : "Drag into a dashboard box."}
+              title={isActive ? t("dashboard.widgetAlreadyUsed") : t("dashboard.widgetDragHint")}
             >
               <Icon
                 size={17}
                 className="text-accent-primary transition group-hover:text-accent-secondary"
               />
               <span className="line-clamp-2 text-[9px] font-medium leading-tight text-white/75">
-                {widget.title}
+                {t(`dashboard.widgets.${widget.id}`)}
               </span>
             </button>
           )

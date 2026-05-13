@@ -1,8 +1,10 @@
 import { useAuthStore } from "@/features/auth/auth-store"
 import { useDashboardLayoutStore } from "@/features/dashboard-layout/dashboard-layout-store"
 import { Check, Pencil, RotateCcw, X } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 export function DashboardWidgetControls() {
+  const { t } = useTranslation()
   const user = useAuthStore((state) => state.user)
   const isEditingDashboard = useDashboardLayoutStore((state) => state.isEditingDashboard)
   const hasUnsavedChanges = useDashboardLayoutStore((state) => state.hasUnsavedChanges)
@@ -22,10 +24,10 @@ export function DashboardWidgetControls() {
         type="button"
         onClick={startDashboardEditing}
         className="fixed right-6 bottom-6 z-50 flex items-center gap-2 rounded-full border border-white/10 bg-[#20252c]/90 px-4 py-3 text-[13px] font-semibold text-white/80 shadow-[0_14px_32px_rgba(0,0,0,0.32)] backdrop-blur-xl transition hover:text-white"
-        aria-label="Edit dashboard layout"
+        aria-label={t("dashboard.editLayout")}
       >
         <Pencil size={16} />
-        Edit layout
+        {t("dashboard.editLayout")}
       </button>
     )
   }
@@ -36,7 +38,7 @@ export function DashboardWidgetControls() {
         type="button"
         onClick={resetBlocks}
         className="rounded-full bg-white/7 p-3 text-white/70 transition hover:bg-white/12 hover:text-white"
-        aria-label="Reset dashboard draft"
+        aria-label={t("dashboard.resetDraft")}
       >
         <RotateCcw size={16} />
       </button>
@@ -46,12 +48,12 @@ export function DashboardWidgetControls() {
         className="flex items-center gap-2 rounded-full bg-white/7 px-4 py-3 text-[12px] font-medium text-white/70 transition hover:bg-white/12 hover:text-white"
       >
         <X size={15} />
-        Cancel
+        {t("common.cancel")}
       </button>
       <div className="group/save relative">
         {hasEmptyVisibleBlocks && (
           <div className="pointer-events-none absolute right-0 bottom-[calc(100%+10px)] w-[220px] rounded-2xl border border-white/10 bg-[#20252c]/95 px-4 py-3 text-center text-[12px] font-medium text-white/80 opacity-0 shadow-[0_14px_30px_rgba(0,0,0,0.35)] backdrop-blur-xl transition group-hover/save:opacity-100">
-            You can&apos;t save while there are empty blocks.
+            {t("dashboard.emptyBlocksWarning")}
           </div>
         )}
         <button
@@ -61,7 +63,7 @@ export function DashboardWidgetControls() {
           className="flex items-center gap-2 rounded-full bg-linear-to-br from-accent-secondary to-accent-primary px-4 py-3 text-[12px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-45"
         >
           <Check size={15} />
-          Save
+          {t("common.save")}
         </button>
       </div>
     </div>
