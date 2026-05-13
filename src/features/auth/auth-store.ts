@@ -24,6 +24,7 @@ type AuthStore = {
   loadCurrentUser: () => Promise<User | null>
   login: (request: LoginUserRequest) => Promise<User>
   register: (request: RegisterUserRequest) => Promise<User>
+  logout: () => Promise<void>
 }
 
 export const useAuthStore = create<AuthStore>((set) => ({
@@ -87,5 +88,13 @@ export const useAuthStore = create<AuthStore>((set) => ({
     }
 
     return await response.json() as User
+  },
+  logout: async () => {
+    await fetch(`${API_BASE_URL}/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    }).catch(() => null)
+
+    set({ user: null, hasLoadedCurrentUser: true })
   },
 }))

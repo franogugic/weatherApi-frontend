@@ -1,4 +1,6 @@
 import { useLocationStore } from "@/features/location/location-store"
+import { formatTemperature } from "@/features/unit-preferences/format-units"
+import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store"
 import { MapView, type MapMarker } from "@/shared/ui/map/MapView"
 import { MessageState } from "@/shared/ui/status/MessageState"
 import { useTranslation } from "react-i18next"
@@ -12,7 +14,16 @@ export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const locations = useLocationStore((state) => state.locations)
-  const mapMarkers: MapMarker[] = locations
+  const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
+  const mapMarkers: MapMarker[] = locations.map((location) => ({
+    ...location,
+    temperatureText:
+      location.currentWeather?.airTemperature !== null &&
+      location.currentWeather?.airTemperature !== undefined
+        ? formatTemperature(location.currentWeather.airTemperature, temperatureUnit)
+        : undefined,
+    weatherSymbol: location.currentWeather?.weatherSymbol ?? undefined,
+  }))
 
   if (!locations.length) {
     return (
@@ -30,7 +41,7 @@ export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
           <MapView
             markers={mapMarkers}
             zoom={7}
-            onMarkerClick={() => navigate(`/`)}
+            onMarkerClick={(marker) => navigate(`/${marker.id}`)}
           />
         </div>
 
