@@ -1,11 +1,13 @@
 import type { FormEvent } from "react"
 import { useMemo, useState } from "react"
 import { Check, Lock, Mail, UserRound } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuthStore } from "@/features/auth/auth-store"
 import { AuthInput } from "@/shared/ui/auth-input/AuthInput"
 
 export function RegisterPage(){
+    const { t } = useTranslation()
     const register = useAuthStore((state) => state.register)
     const navigate = useNavigate()
     const [firstName, setFirstName] = useState("")
@@ -55,11 +57,11 @@ export function RegisterPage(){
                 password,
             })
 
-            setSuccessMessage("Account created successfully.")
+            setSuccessMessage(t("auth.registerSuccess"))
             navigate("/login")
         } catch (error) {
             console.error("Registration failed:", error)
-            setErrorMessage(error instanceof Error ? error.message : "Registration failed.")
+            setErrorMessage(error instanceof Error ? error.message : t("auth.registerFailed"))
         } finally {
             setIsSubmitting(false)
         }
@@ -68,14 +70,14 @@ export function RegisterPage(){
     return (
         <div className="flex h-full min-h-0 items-center justify-center">
             <div className="bg-div rounded-2xl p-6">
-                <h1 className="text-[28px] text-center font-semibold">Create Account</h1>
-                <h2 className="text-[14px] mt-1 mb-6 text-center font-extralight text-white/40">Join Weather App and save your favorite locations.</h2>
+                <h1 className="text-[28px] text-center font-semibold">{t("auth.registerTitle")}</h1>
+                <h2 className="text-[14px] mt-1 mb-6 text-center font-extralight text-white/40">{t("auth.registerSubtitle")}</h2>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div className="flex gap-8">
                         <AuthInput
-                            label="First name"
+                            label={t("auth.firstName")}
                             name="firstName"
-                            placeholder="First name"
+                            placeholder={t("auth.firstName")}
                             icon={UserRound}
                             autoComplete="given-name"
                             value={firstName}
@@ -83,9 +85,9 @@ export function RegisterPage(){
                             required
                         />
                         <AuthInput
-                            label="Last name"
+                            label={t("auth.lastName")}
                             name="lastName"
-                            placeholder="Last name"
+                            placeholder={t("auth.lastName")}
                             icon={UserRound}
                             autoComplete="family-name"
                             value={lastName}
@@ -94,9 +96,9 @@ export function RegisterPage(){
                         />
                     </div>
                     <AuthInput
-                        label="Email"
+                        label={t("auth.email")}
                         name="email"
-                        placeholder="you@example.com"
+                        placeholder={t("auth.emailPlaceholder")}
                         icon={Mail}
                         type="email"
                         autoComplete="email"
@@ -105,9 +107,9 @@ export function RegisterPage(){
                         required
                     />
                     <AuthInput
-                        label="Password"
+                        label={t("auth.password")}
                         name="password"
-                        placeholder="Enter your password"
+                        placeholder={t("auth.passwordPlaceholder")}
                         icon={Lock}
                         type="password"
                         autoComplete="new-password"
@@ -116,9 +118,9 @@ export function RegisterPage(){
                         required
                     />
                     <AuthInput
-                        label="Confirm password"
+                        label={t("auth.confirmPassword")}
                         name="confirmPassword"
-                        placeholder="Confirm your password"
+                        placeholder={t("auth.confirmPasswordPlaceholder")}
                         icon={Lock}
                         type="password"
                         autoComplete="new-password"
@@ -138,16 +140,16 @@ export function RegisterPage(){
                         disabled={!isFormValid || isSubmitting}
                         className="relative mt-2 overflow-hidden rounded-lg bg-linear-to-b from-accent-secondary to-accent-primary p-3 text-center font-semibold text-white transition-opacity before:absolute before:inset-0 before:bg-black/20 disabled:cursor-not-allowed disabled:opacity-45"
                     >
-                        <span className="relative z-10">{isSubmitting ? "Creating account..." : "Create account"}</span>
+                        <span className="relative z-10">{isSubmitting ? t("auth.creatingAccount") : t("auth.createAccount")}</span>
                     </button>
                 </form>
                 <p className="mt-5 text-center text-[13px] text-white/50">
-                    Already have an account?{" "}
+                    {t("auth.alreadyHaveAccount")}{" "}
                     <Link
                         to="/login"
                         className="bg-linear-to-b from-accent-secondary to-accent-primary bg-clip-text font-medium text-transparent"
                     >
-                        Login
+                        {t("common.login")}
                     </Link>
                 </p>
             </div>
@@ -167,16 +169,17 @@ type PasswordRequirementsProps = {
 }
 
 function PasswordRequirements({ rules }: PasswordRequirementsProps){
+    const { t } = useTranslation()
     const requirements = [
-        { label: "At least 8 characters", isValid: rules.minLength },
-        { label: "1 uppercase letter", isValid: rules.hasUppercase },
-        { label: "1 number", isValid: rules.hasNumber },
-        { label: "Passwords match", isValid: rules.passwordsMatch },
+        { label: t("auth.passwordRuleMinLength"), isValid: rules.minLength },
+        { label: t("auth.passwordRuleUppercase"), isValid: rules.hasUppercase },
+        { label: t("auth.passwordRuleNumber"), isValid: rules.hasNumber },
+        { label: t("auth.passwordRuleMatch"), isValid: rules.passwordsMatch },
     ]
 
     return (
         <div>
-            <p className="mb-2 text-[14px] font-light ">Password must contain:</p>
+            <p className="mb-2 text-[14px] font-light ">{t("auth.passwordMustContain")}</p>
             <div className="flex flex-col gap-2">
                 {requirements.map((requirement) => (
                     <div

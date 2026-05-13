@@ -14,12 +14,15 @@ import { SettingsFavoriteLocationsBlock } from "@/shared/ui/settings/SettingsFav
 import { SettingsLanguageBlock } from "@/shared/ui/settings/SettingsLanguageBlock";
 import { SettingsPersonalInfoBlock } from "@/shared/ui/settings/SettingsPersonalInfoBlock";
 import { SettingsUnitsBlock } from "@/shared/ui/settings/SettingUnitsBlock";
+import { SettingsPageSkeleton } from "./SettingsPageSkeleton";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { Pencil } from "lucide-react";
 
 export function SettingsPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const isLoadingUser = useAuthStore((state) => state.isLoadingUser);
@@ -94,21 +97,17 @@ export function SettingsPage() {
   }
 
   if (isLoadingUser || !hasLoadedCurrentUser) {
-    return (
-      <div className="rounded-4xl bg-div p-6">
-        <p className="text-subtext">Loading settings...</p>
-      </div>
-    );
+    return <SettingsPageSkeleton />;
   }
 
   if (!user) {
     return (
       <div className="flex h-full min-h-0 items-center justify-center rounded-4xl bg-div p-6">
         <div className="max-w-md text-center">
-          <h1 className="mb-2 text-3xl font-semibold">Settings</h1>
+          <h1 className="mb-2 text-3xl font-semibold">{t("settings.title")}</h1>
 
           <p className="mb-6 text-sm text-subtext">
-            Login to customize measurement units.
+            {t("settings.loginToCustomize")}
           </p>
 
           <div className="flex justify-center gap-3">
@@ -116,14 +115,14 @@ export function SettingsPage() {
               to="/login"
               className="rounded-2xl border border-white/10 px-5 py-2 text-sm font-semibold text-white/80 transition hover:border-white/20 hover:text-white"
             >
-              Login
+              {t("common.login")}
             </Link>
 
             <Link
               to="/register"
               className="rounded-2xl bg-linear-to-b from-accent-secondary to-accent-primary px-5 py-2 text-sm font-semibold text-white transition hover:brightness-110"
             >
-              Register
+              {t("common.register")}
             </Link>
           </div>
         </div>
@@ -134,18 +133,18 @@ export function SettingsPage() {
   return (
     <main className="flex h-full min-h-0 flex-col overflow-hidden rounded-4xl bg-div p-6 text-white">
       <div className="mb-4 flex h-10 items-center justify-between">
-        <h1 className="text-2xl font-bold">Settings</h1>
+        <h1 className="text-2xl font-bold">{t("settings.title")}</h1>
       </div>
 
       <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-2 lg:grid-rows-[100px_150px_minmax(0,1fr)_150px_60px]">
         <div className="col-span-2 flex items-center justify-between gap-4 rounded-4xl border-white/10 bg-[#2b2f36]/70 px-8 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75">
           <div>
             <p className="flex text-[40px] font-semibold">
-              Welcome back,&nbsp;
+              {t("settings.welcome")}&nbsp;
               <LinearText text={user.firstName} />!
             </p>
             <p className="text-[12px] text-white/60">
-              Customize your experience and make the app truly yours.
+              {t("settings.subtitle")}
             </p>
           </div>
           <button
@@ -155,7 +154,7 @@ export function SettingsPage() {
             aria-label="Edit home layout"
           >
             <Pencil size={16} />
-            Edit layout
+            {t("dashboard.editLayout")}
           </button>
         </div>
 
@@ -174,18 +173,18 @@ export function SettingsPage() {
         <div className="row-span-2 rounded-4xl border-white/10 bg-[#2b2f36]/70 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 p-4 min-w-0">
           <div className="mb-4 flex items-center justify-between gap-3">
             <LinearText
-              text="Favorite locations"
+              text={t("settings.favoriteLocations")}
               className="text-[20px] font-semibold"
             />
             <AppDropdown
               value=""
-              placeholder="Add location"
+              placeholder={t("settings.addLocation")}
               options={possibleLocations.map((location) => ({
                 value: String(location.id),
                 label: location.name,
                 description: `${location.latitude.toFixed(2)} lat | ${location.longitude.toFixed(2)} lon`,
               }))}
-              emptyMessage="No more locations to add."
+              emptyMessage={t("settings.noMoreLocations")}
               onChange={(value) => {
                 void addFavoriteLocation(Number(value));
               }}

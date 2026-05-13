@@ -8,6 +8,7 @@ type FavoriteLocationStore = {
     isLoadingFavorites: boolean,
     hasLoadedFavorites: boolean,
     loadFavoriteLocations: () => Promise<void>
+    clearFavoriteLocations: () => void
     addFavoriteLocation: (locationId: number) => Promise<void>
     removeFavoriteLocation: (locationId: number) => Promise<void>
 }
@@ -36,6 +37,9 @@ export const useFavoriteLocationStore = create<FavoriteLocationStore>((set) => (
             set({ favoriteLocations: [], isLoadingFavorites: false, hasLoadedFavorites: true })
             return
         }
+    },
+    clearFavoriteLocations: () => {
+        set({ favoriteLocations: [], isLoadingFavorites: false, hasLoadedFavorites: false })
     },
     addFavoriteLocation: async (locationId) => {
         var response = await fetch(`${API_BASE_URL}/user-favorite-locations`, {

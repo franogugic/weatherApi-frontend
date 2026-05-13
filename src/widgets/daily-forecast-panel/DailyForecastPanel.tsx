@@ -3,7 +3,6 @@ import { getForecastDaily } from "@/shared/lib/get-forecast-daily"
 import { useMemo } from "react"
 import { capitalizeFirstLetter, CROATIA_TIME_ZONE } from "@/shared/lib/format-date"
 import { useTranslation } from "react-i18next"
-import { parseForecastDate } from "@/shared/lib/parse-forecast-date"
 import { WeatherSymbolIcon } from "@/entities/weather/ui/WeatherSymbolIcon"
 import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store"
 import {
@@ -13,6 +12,9 @@ import {
 } from "@/features/unit-preferences/format-units"
 import { CloudRain, Droplets, Wind } from "lucide-react"
 
+function parseDailyDate(dateString: string) {
+  return new Date(`${dateString}T00:00:00Z`)
+}
 
 function formatDailyDateLabel(dateString: string, locale: string) {
   const todayKey = new Date().toLocaleDateString("en-CA", {
@@ -20,10 +22,10 @@ function formatDailyDateLabel(dateString: string, locale: string) {
   })
 
   if (dateString === todayKey) {
-    return `${formatShortDate(new Date(`${dateString}T00:00:00Z`), locale)}`
+    return `${formatShortDate(parseDailyDate(dateString), locale)}`
   }
 
-  return formatShortDate(new Date(`${dateString}T00:00:00Z`), locale)
+  return formatShortDate(parseDailyDate(dateString), locale)
 }
 
 export function DailyForecastsPanel (){
@@ -37,9 +39,9 @@ export function DailyForecastsPanel (){
 
 
     return(
-        <div className="bg-div rounded-4xl h-full flex flex-col justify-between p-6">
+        <div className="bg-div rounded-4xl h-full flex flex-col gap-2 p-6">
             <div>
-              <p className=" text-[22px] font-semibold">{dailyForecasts.length}-Day Forecast</p>
+              <p className=" text-[22px] font-semibold">{t("dailyForecast.title", { count: dailyForecasts.length })}</p>
             </div>
             <div className="flex justify-between items-center gap-4 mt-4">
                 {dailyForecasts.map((daily, index) => (
@@ -83,13 +85,14 @@ function getDayLabel(
   locale: string,
   todayLabel: string,
   firstDateString?: string,) {
-  const date = parseForecastDate(dateString)
-  const firstDate = firstDateString ? parseForecastDate(firstDateString) : null
+  const date = parseDailyDate(dateString)
+  const firstDate = firstDateString ? parseDailyDate(firstDateString) : null
+  const todayKey = new Date().toLocaleDateString("en-CA", { timeZone: CROATIA_TIME_ZONE })
   const currentDay = date.toLocaleDateString("en-CA", { timeZone: CROATIA_TIME_ZONE })
   const firstDay = firstDate
     ? firstDate.toLocaleDateString("en-CA", { timeZone: CROATIA_TIME_ZONE })
     : null
-  const sameDay = firstDay && currentDay === firstDay
+  const sameDay = currentDay === todayKey || (firstDay && currentDay === firstDay)
 
   if (sameDay) {
     return todayLabel

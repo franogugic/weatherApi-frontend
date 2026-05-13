@@ -16,8 +16,6 @@ export function AvailableLocationsPanel({
   temperatureUnit,
 }: AvailableLocationsPanelProps) {
   const { t } = useTranslation()
-  console.log("primljeno: ")
-  console.log(locations)
 
   return (
     <div className="flex max-h-[360px] min-h-0 flex-col rounded-4xl bg-div p-4 sm:max-h-[420px] sm:p-6 xl:h-full xl:max-h-none xl:w-[320px] xl:shrink-0">

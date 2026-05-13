@@ -21,6 +21,13 @@ export function DashboardPage() {
   const {forecast, meta, isLoading} = useForecastStore()
   const user = useAuthStore((state) => state.user)
   const isEditingDashboard = useDashboardLayoutStore((state) => state.isEditingDashboard)
+  const discardDraftBlocks = useDashboardLayoutStore((state) => state.discardDraftBlocks)
+
+  useEffect(() => {
+    if (!user && isEditingDashboard) {
+      discardDraftBlocks()
+    }
+  }, [discardDraftBlocks, isEditingDashboard, user])
 
   useEffect(() => {
     return () => {
@@ -62,7 +69,7 @@ export function DashboardPage() {
         <div className="hidden lg:block" />
         <SettingsPanel user={user} />
       </div>
-      <DashboardWidgetPalette />
+      {user ? <DashboardWidgetPalette /> : null}
       {meta ? (
         <div
           className={`relative grid min-h-0 min-w-0 flex-1 overflow-visible grid-cols-1 gap-5 lg:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] lg:grid-rows-[repeat(2,minmax(0,1fr))] ${
@@ -78,7 +85,7 @@ export function DashboardPage() {
           />
         </div>
       ) : null}
-      <DashboardWidgetControls />
+      {user ? <DashboardWidgetControls /> : null}
     </div>
   )
 }

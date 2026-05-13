@@ -3,7 +3,15 @@
     "today": "Danas",
     "date": "Datum",
     "loading": "Učitavanje...",
-    "weatherIconAlt": "ikona vremena"
+    "weatherIconAlt": "ikona vremena",
+    "login": "Prijava",
+    "register": "Registracija",
+    "save": "Spremi",
+    "cancel": "Odustani",
+    "settings": "Postavke",
+    "logout": "Odjava",
+    "language": "Jezik",
+    "now": "SADA"
   },
   "search": {
     "placeholder": "Pretraži grad...",
@@ -24,7 +32,8 @@
     "seeAll": "Prikaži sve",
     "time": "Sati",
     "weather": "Vrijeme",
-    "temp": "Temp"
+    "temp": "Temp",
+    "dynamicTitle": "Sljedećih {{count}} sati"
   },
   "forecast": {
     "loading": "Učitavanje prognoze...",
@@ -61,7 +70,15 @@
     "noLocations": "Nema dostupnih lokacija."
   },
   "settings": {
-    "title": "Postavke"
+    "title": "Postavke",
+    "loading": "Učitavanje postavki...",
+    "loginToCustomize": "Prijavi se za prilagodbu mjernih jedinica.",
+    "welcome": "Dobrodošao natrag,",
+    "subtitle": "Prilagodi iskustvo i napravi aplikaciju po svojoj mjeri.",
+    "personalInformation": "Osobni podaci",
+    "favoriteLocations": "Omiljene lokacije",
+    "addLocation": "Dodaj lokaciju",
+    "noMoreLocations": "Nema više lokacija za dodati."
   },
   "weatherSymbols": {
     "showers": "pljuskovi",
@@ -87,5 +104,82 @@
       "snow": "snijeg",
       "unknown": "vrijeme"
     }
+  },
+  "auth": {
+    "loginTitle": "Dobrodošao natrag",
+    "loginSubtitle": "Prijavi se za nastavak praćenja omiljenih vremenskih lokacija.",
+    "email": "Email",
+    "emailPlaceholder": "ti@example.com",
+    "password": "Lozinka",
+    "passwordPlaceholder": "Unesi lozinku",
+    "forgotPassword": "Zaboravio si lozinku?",
+    "loggingIn": "Prijava...",
+    "loginSubmit": "Prijavi se",
+    "loginSuccess": "Uspješna prijava.",
+    "loginFailed": "Prijava nije uspjela.",
+    "noAccount": "Nemaš račun?",
+    "createAccountLink": "Kreiraj račun",
+    "registerTitle": "Kreiraj račun",
+    "registerSubtitle": "Pridruži se Weather Appu i spremi omiljene lokacije.",
+    "firstName": "Ime",
+    "lastName": "Prezime",
+    "confirmPassword": "Potvrdi lozinku",
+    "confirmPasswordPlaceholder": "Ponovi lozinku",
+    "creatingAccount": "Kreiranje računa...",
+    "createAccount": "Kreiraj račun",
+    "registerSuccess": "Račun je uspješno kreiran.",
+    "registerFailed": "Registracija nije uspjela.",
+    "alreadyHaveAccount": "Već imaš račun?",
+    "passwordMustContain": "Lozinka mora sadržavati:",
+    "passwordRuleMinLength": "Najmanje 8 znakova",
+    "passwordRuleUppercase": "1 veliko slovo",
+    "passwordRuleNumber": "1 broj",
+    "passwordRuleMatch": "Lozinke se podudaraju"
+  },
+  "dashboard": {
+    "editLayout": "Uredi layout",
+    "resetDraft": "Resetiraj nacrt dashboarda",
+    "emptyBlocksWarning": "Ne možeš spremiti dok postoje prazni blokovi.",
+    "widgetAlreadyUsed": "Već se koristi. Povuci za premještanje.",
+    "widgetDragHint": "Povuci u dashboard blok.",
+    "widgets": {
+      "currentForecast": "Trenutna prognoza",
+      "nextHourly": "Sljedeći sati",
+      "map": "Karta",
+      "graph": "Graf prognoze",
+      "dailyForecast": "Dnevna prognoza",
+      "favoriteLocations": "Omiljene lokacije",
+      "settings": "Jedinice"
+    }
+  },
+  "dailyForecast": {
+    "title": "{{count}}-dnevna prognoza"
+  },
+  "favorites": {
+    "title": "Omiljene lokacije",
+    "addNew": "Dodaj lokacije",
+    "edit": "Uredi lokacije",
+    "loading": "Učitavanje favorita...",
+    "quickAccess": "Brzi pristup spremljenim mjestima",
+    "empty": "Još nema omiljenih lokacija.",
+    "addNow": "Dodaj favorite sada",
+    "coordinates": "Koordinate",
+    "remove": "Ukloni omiljenu lokaciju"
+  },
+  "units": {
+    "title": "Jedinice",
+    "widgetTitle": "Mjerne jedinice",
+    "subtitle": "Odaberi željene vremenske jedinice.",
+    "temperature": "Temperatura",
+    "windSpeed": "Brzina vjetra",
+    "pressure": "Tlak",
+    "cloudiness": "Naoblaka",
+    "precipitation": "Oborine",
+    "celsius": "Celzij (°C)",
+    "fahrenheit": "Fahrenheit (°F)",
+    "kelvin": "Kelvin (K)",
+    "knots": "Čvorovi",
+    "percent": "Postotak (%)",
+    "okta": "Okta"
   }
 }

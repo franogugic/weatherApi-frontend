@@ -1,8 +1,13 @@
 import { useLocationStore } from "@/features/location/location-store"
+import { useAuthStore } from "@/features/auth/auth-store"
+import { formatTemperature } from "@/features/unit-preferences/format-units"
+import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store"
 import { MapView, type MapMarker } from "@/shared/ui/map/MapView"
 import { MessageState } from "@/shared/ui/status/MessageState"
 import { useTranslation } from "react-i18next"
 import { NavLink, useNavigate } from "react-router-dom"
+import { AvailableLocationsPanel } from "./AvailableLocationsPanel"
+import { MapPageSkeleton } from "./MapPageSkeleton"
 
 type MapPageProps = {
   showAuthActions?: boolean
@@ -11,8 +16,25 @@ type MapPageProps = {
 export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const user = useAuthStore((state) => state.user)
+  const hasLoadedCurrentUser = useAuthStore((state) => state.hasLoadedCurrentUser)
+  const isLoadingLocations = useLocationStore((state) => state.isLoading)
   const locations = useLocationStore((state) => state.locations)
-  const mapMarkers: MapMarker[] = locations
+  const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
+  const showAuthActions = _showAuthActions || (hasLoadedCurrentUser && !user)
+  const mapMarkers: MapMarker[] = locations.map((location) => ({
+    ...location,
+    temperatureText:
+      location.currentWeather?.airTemperature !== null &&
+      location.currentWeather?.airTemperature !== undefined
+        ? formatTemperature(location.currentWeather.airTemperature, temperatureUnit)
+        : undefined,
+    weatherSymbol: location.currentWeather?.weatherSymbol ?? undefined,
+  }))
+
+  if (isLoadingLocations) {
+    return <MapPageSkeleton />
+  }
 
   if (!locations.length) {
     return (
@@ -24,37 +46,36 @@ export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <h1 className="mb-4 text-xl font-bold sm:text-2xl">{t("map.title")}</h1>
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <h1 className="text-xl font-bold sm:text-2xl">{t("map.title")}</h1>
+        {showAuthActions ? (
+          <div className="flex items-center gap-2">
+            <NavLink
+              to="/login"
+              className="rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-white/80 transition hover:border-white/20 hover:bg-white/8 hover:text-white"
+            >
+              {t("common.login")}
+            </NavLink>
+            <NavLink
+              to="/register"
+              className="relative overflow-hidden rounded-full bg-linear-to-r from-accent-secondary to-accent-primary px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(0,0,0,0.18)] transition hover:brightness-110"
+            >
+              <span className="absolute inset-0 bg-black/20" />
+              <span className="relative z-10">{t("common.register")}</span>
+            </NavLink>
+          </div>
+        ) : null}
+      </div>
       <div className="flex min-h-0 flex-1 flex-col gap-4 xl:flex-row">
         <div className="min-h-[320px] overflow-hidden rounded-4xl md:min-h-[420px] xl:min-h-0 xl:flex-1">
           <MapView
             markers={mapMarkers}
             zoom={7}
-            onMarkerClick={() => navigate(`/`)}
+            onMarkerClick={(marker) => navigate(`/${marker.id}`)}
           />
         </div>
 
-        <div className="flex max-h-[360px] min-h-0 flex-col rounded-4xl bg-div p-4 sm:max-h-[420px] sm:p-6 xl:h-full xl:max-h-none xl:w-[320px] xl:shrink-0">
-          <p className="mb-4 bg-linear-to-b from-accent-secondary to-accent-primary bg-clip-text text-center text-xl text-transparent sm:mb-6 sm:text-[26px]">
-            {t("map.availableLocations")}
-          </p>
-          <ul className="min-h-0 flex-1 overflow-y-auto">
-          {locations.map((location) => (
-            <li key={location.id} >
-              <NavLink to={`/`} className="block border-y border-white/20 p-4 transition-colors hover:bg-white/8">
-                <p className="mb-2 text-base font-semibold sm:text-[18px]">{location.name}</p>
-                <div className="flex items-center justify-between">
-                  <div className="text-[12px] font-semibold flex flex-col gap-1">
-                    <p><span className="text-subtext  font-light">{t("map.latitude")}:</span> {location.latitude}</p>
-                    <p><span className="text-subtext font-light">{t("map.longitude")}:</span> {location.longitude}</p>
-                    <p><span className="text-subtext font-light">{t("map.altitude")}:</span> {location.altitude}</p>
-                  </div>
-                </div>
-              </NavLink>
-            </li>
-          ))}
-          </ul>
-      </div>
+        <AvailableLocationsPanel locations={locations} temperatureUnit={temperatureUnit} />
       </div>
     </div>
   )

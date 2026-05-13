@@ -270,7 +270,7 @@ export function ForecastPage() {
                 >
                   <div>
                     {item.forecastTime === currentForecast.forecastTime
-                      ? <p className="w-fit rounded-3xl bg-linear-to-br from-accent-secondary to-accent-primary px-2 font-bold">NOW</p>
+                      ? <p className="w-fit rounded-3xl bg-linear-to-br from-accent-secondary to-accent-primary px-2 font-bold">{t("common.now")}</p>
                       : formatHourLabel(item.forecastTime, locale)}
                   </div>
                   <WeatherSymbolIcon symbol={item.weatherSymbol} className="w-10" />

@@ -3,7 +3,15 @@
     "today": "Today",
     "date": "Date",
     "loading": "Loading...",
-    "weatherIconAlt": "weather icon"
+    "weatherIconAlt": "weather icon",
+    "login": "Login",
+    "register": "Register",
+    "save": "Save",
+    "cancel": "Cancel",
+    "settings": "Settings",
+    "logout": "Logout",
+    "language": "Language",
+    "now": "NOW"
   },
   "search": {
     "placeholder": "Search City...",
@@ -24,7 +32,8 @@
     "seeAll": "See all",
     "time": "Hours",
     "weather": "Weather",
-    "temp": "Temp"
+    "temp": "Temp",
+    "dynamicTitle": "Next {{count}} Hours"
   },
   "forecast": {
     "loading": "Loading forecast...",
@@ -61,7 +70,15 @@
     "noLocations": "No locations available."
   },
   "settings": {
-    "title": "Settings"
+    "title": "Settings",
+    "loading": "Loading settings...",
+    "loginToCustomize": "Login to customize measurement units.",
+    "welcome": "Welcome back,",
+    "subtitle": "Customize your experience and make the app truly yours.",
+    "personalInformation": "Personal information",
+    "favoriteLocations": "Favorite locations",
+    "addLocation": "Add location",
+    "noMoreLocations": "No more locations to add."
   },
   "weatherSymbols": {
     "showers": "showers",
@@ -87,5 +104,82 @@
       "snow": "snow",
       "unknown": "weather"
     }
+  },
+  "auth": {
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Login to continue tracking your favorite weather locations.",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "forgotPassword": "Forgot your password?",
+    "loggingIn": "Logging in...",
+    "loginSubmit": "Login",
+    "loginSuccess": "Logged in successfully.",
+    "loginFailed": "Login failed.",
+    "noAccount": "Don't have an account?",
+    "createAccountLink": "Create account",
+    "registerTitle": "Create Account",
+    "registerSubtitle": "Join Weather App and save your favorite locations.",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "confirmPassword": "Confirm password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "creatingAccount": "Creating account...",
+    "createAccount": "Create account",
+    "registerSuccess": "Account created successfully.",
+    "registerFailed": "Registration failed.",
+    "alreadyHaveAccount": "Already have an account?",
+    "passwordMustContain": "Password must contain:",
+    "passwordRuleMinLength": "At least 8 characters",
+    "passwordRuleUppercase": "1 uppercase letter",
+    "passwordRuleNumber": "1 number",
+    "passwordRuleMatch": "Passwords match"
+  },
+  "dashboard": {
+    "editLayout": "Edit layout",
+    "resetDraft": "Reset dashboard draft",
+    "emptyBlocksWarning": "You can't save while there are empty blocks.",
+    "widgetAlreadyUsed": "Already used. Drag to move it.",
+    "widgetDragHint": "Drag into a dashboard box.",
+    "widgets": {
+      "currentForecast": "Current forecast",
+      "nextHourly": "Next hourly",
+      "map": "Map",
+      "graph": "Forecast graph",
+      "dailyForecast": "Daily Forecast",
+      "favoriteLocations": "Favorite Locations",
+      "settings": "Units"
+    }
+  },
+  "dailyForecast": {
+    "title": "{{count}}-Day Forecast"
+  },
+  "favorites": {
+    "title": "Favorite Locations",
+    "addNew": "Add new locations",
+    "edit": "Edit your locations",
+    "loading": "Loading favorites...",
+    "quickAccess": "Quick access to your saved places",
+    "empty": "No favorite locations yet.",
+    "addNow": "Add favorites now",
+    "coordinates": "Coordinates",
+    "remove": "Remove favorite location"
+  },
+  "units": {
+    "title": "Units",
+    "widgetTitle": "Measurement units",
+    "subtitle": "Choose your preferred weather units.",
+    "temperature": "Temperature",
+    "windSpeed": "Wind speed",
+    "pressure": "Pressure",
+    "cloudiness": "Cloudiness",
+    "precipitation": "Precipitation",
+    "celsius": "Celsius (°C)",
+    "fahrenheit": "Fahrenheit (°F)",
+    "kelvin": "Kelvin (K)",
+    "knots": "Knots",
+    "percent": "Percent (%)",
+    "okta": "Okta"
   }
 }

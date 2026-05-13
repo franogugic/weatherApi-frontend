@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { UnitSelect } from "./UnitSelect";
 import { LinearText } from "../linear-text/LinearText";
+import { useTranslation } from "react-i18next";
 
 type SettingsUnitsBlockProps = {
   preferences: UnitPreferences;
@@ -36,17 +37,18 @@ export function SettingsUnitsBlock({
   showHeader = true,
   showDropdownChevron = true,
 }: SettingsUnitsBlockProps) {
+  const { t } = useTranslation()
   return (
     <div>
       {showHeader ? (
         <>
           <LinearText
-            text="Units"
+            text={t("units.title")}
             className={compact ? "text-[16px] font-semibold" : "text-[20px] font-semibold"}
           />
           {!compact ? (
             <p className="mt-1 mb-6 text-[12px] font-light text-white/60">
-              Choose your preferred weather units.
+              {t("units.subtitle")}
             </p>
           ) : null}
         </>
@@ -58,7 +60,7 @@ export function SettingsUnitsBlock({
           : `${showHeader ? "max-h-75" : ""} grid-cols-1 gap-4 overflow-y-auto pt-4 lg:grid-cols-2`
       }`}>
         <UnitSelect
-          label="Temperature"
+          label={t("units.temperature")}
           value={preferences.temperatureUnit}
           icon={Thermometer}
           compact={compact}
@@ -72,21 +74,21 @@ export function SettingsUnitsBlock({
           options={[
             {
               value: "celsius",
-              label: "Celsius (°C)",
+              label: t("units.celsius"),
             },
             {
               value: "fahrenheit",
-              label: "Fahrenheit (°F)",
+              label: t("units.fahrenheit"),
             },
             {
               value: "kelvin",
-              label: "Kelvin (K)",
+              label: t("units.kelvin"),
             },
           ]}
         />
 
         <UnitSelect
-          label="Wind speed"
+          label={t("units.windSpeed")}
           value={preferences.windSpeedUnit}
           icon={Wind}
           compact={compact}
@@ -109,13 +111,13 @@ export function SettingsUnitsBlock({
             },
             {
               value: "knots",
-              label: "Knots",
+              label: t("units.knots"),
             },
           ]}
         />
 
         <UnitSelect
-          label="Pressure"
+          label={t("units.pressure")}
           value={preferences.pressureUnit}
           icon={Gauge}
           compact={compact}
@@ -140,7 +142,7 @@ export function SettingsUnitsBlock({
         />
 
         <UnitSelect
-          label="Cloudiness"
+          label={t("units.cloudiness")}
           value={preferences.cloudinessUnit}
           icon={Cloud}
           compact={compact}
@@ -154,17 +156,17 @@ export function SettingsUnitsBlock({
           options={[
             {
               value: "percent",
-              label: "Percent (%)",
+              label: t("units.percent"),
             },
             {
               value: "okta",
-              label: "Okta",
+              label: t("units.okta"),
             },
           ]}
         />
 
         <UnitSelect
-          label="Precipitation"
+          label={t("units.precipitation")}
           value={preferences.precipitationUnit}
           icon={CloudRain}
           compact={compact}

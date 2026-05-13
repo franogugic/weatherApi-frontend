@@ -1,5 +1,7 @@
 import { getWeatherSymbolInfo } from "@/entities/weather/model/weather-symbols"
+import { useRef, useState, type CSSProperties } from "react"
 import { useTranslation } from "react-i18next"
+import { createPortal } from "react-dom"
 
 type WeatherSymbolIconProps = {
   symbol: string
@@ -13,6 +15,9 @@ export function WeatherSymbolIcon({
   wrapperClassName = "",
 }: WeatherSymbolIconProps) {
   const { t } = useTranslation()
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false)
+  const [tooltipStyle, setTooltipStyle] = useState<CSSProperties>({})
   const weatherInfo = getWeatherSymbolInfo(symbol)
   const label = t(`weatherSymbols.kind.${weatherInfo.kind}`)
   const descriptionParts = [
@@ -30,19 +35,53 @@ export function WeatherSymbolIcon({
       })
     : descriptionParts
 
+  function showTooltip() {
+    const wrapperElement = wrapperRef.current
+
+    if (!wrapperElement) {
+      return
+    }
+
+    const rect = wrapperElement.getBoundingClientRect()
+
+    setTooltipStyle({
+      left: rect.left + rect.width / 2,
+      top: rect.top - 8,
+      transform: "translate(-50%, -100%)",
+    })
+    setIsTooltipVisible(true)
+  }
+
+  function hideTooltip() {
+    setIsTooltipVisible(false)
+  }
+
   return (
     <div
-      className={`group/weather-symbol relative inline-flex items-center justify-center ${wrapperClassName}`.trim()}
+      ref={wrapperRef}
+      className={`inline-flex items-center justify-center ${wrapperClassName}`.trim()}
       tabIndex={0}
+      onMouseEnter={showTooltip}
+      onMouseLeave={hideTooltip}
+      onFocus={showTooltip}
+      onBlur={hideTooltip}
     >
       <img
         src={`/${symbol}.svg`}
         alt={label}
         className={className}
       />
-      <div className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-2 w-max max-w-[220px] -translate-x-1/2 rounded-2xl border border-white/10 bg-[#20252c]/95 px-3 py-2 text-center text-xs leading-tight text-white opacity-0 shadow-lg backdrop-blur-xl transition-opacity duration-75 group-hover/weather-symbol:opacity-100 group-focus-visible/weather-symbol:opacity-100">
-        {description}
-      </div>
+      {isTooltipVisible
+        ? createPortal(
+            <div
+              style={tooltipStyle}
+              className="pointer-events-none fixed z-[10000] w-max max-w-[220px] rounded-2xl border border-white/10 bg-[#20252c]/98 px-3 py-2 text-center text-xs leading-tight text-white shadow-[0_14px_30px_rgba(0,0,0,0.38)] backdrop-blur-xl"
+            >
+              {description}
+            </div>,
+            document.body,
+          )
+        : null}
     </div>
   )
 }

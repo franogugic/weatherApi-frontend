@@ -26,7 +26,7 @@ export function NextHourlysPanel( {forecast, visibleItems = 12}: NextHourlyPanel
   return (
   <div className="lg:row-span-2 flex h-full min-h-0 min-w-0 flex-col rounded-4xl bg-div p-6">
     <div className="mb-4 flex items-center justify-between">
-      <p className="text-[22px] font-semibold">{getNextHourlyTitle(visibleItems, i18n.language)}</p>
+      <p className="text-[22px] font-semibold">{t("nextHourly.dynamicTitle", { count: visibleItems })}</p>
       <NavLink to={forecastPath} className="text-[14px] underline cursor-pointer bg-linear-to-t from-accent-secondary to-accent-primary bg-clip-text text-transparent">
           {t("nextHourly.seeMore")}
       </NavLink>
@@ -62,15 +62,6 @@ export function NextHourlysPanel( {forecast, visibleItems = 12}: NextHourlyPanel
   </div>
   )
 }
-
-function getNextHourlyTitle(hours: number, language: string) {
-  if (language === "hr") {
-    return `Sljedećih ${hours} sata`
-  }
-
-  return `Next ${hours} Hours`
-}
-
 
 function getHourFromForecastTime(dateString: string, locale: string) {
   return parseForecastDate(dateString).toLocaleTimeString(locale, {
