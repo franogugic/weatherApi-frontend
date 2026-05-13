@@ -95,6 +95,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
       credentials: "include",
     }).catch(() => null)
 
+    localStorage.clear()
+    sessionStorage.clear()
     set({ user: null, hasLoadedCurrentUser: true })
   },
 }))

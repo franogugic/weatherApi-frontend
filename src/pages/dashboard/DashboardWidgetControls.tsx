@@ -1,7 +1,9 @@
+import { useAuthStore } from "@/features/auth/auth-store"
 import { useDashboardLayoutStore } from "@/features/dashboard-layout/dashboard-layout-store"
 import { Check, Pencil, RotateCcw, X } from "lucide-react"
 
 export function DashboardWidgetControls() {
+  const user = useAuthStore((state) => state.user)
   const isEditingDashboard = useDashboardLayoutStore((state) => state.isEditingDashboard)
   const hasUnsavedChanges = useDashboardLayoutStore((state) => state.hasUnsavedChanges)
   const hasEmptyVisibleBlocks = useDashboardLayoutStore((state) => state.hasEmptyVisibleBlocks)
@@ -9,6 +11,10 @@ export function DashboardWidgetControls() {
   const saveDraftBlocks = useDashboardLayoutStore((state) => state.saveDraftBlocks)
   const discardDraftBlocks = useDashboardLayoutStore((state) => state.discardDraftBlocks)
   const resetBlocks = useDashboardLayoutStore((state) => state.resetDraftBlocks)
+
+  if (!user) {
+    return null
+  }
 
   if (!isEditingDashboard) {
     return (
