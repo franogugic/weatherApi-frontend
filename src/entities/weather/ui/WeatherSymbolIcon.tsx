@@ -19,6 +19,7 @@ export function WeatherSymbolIcon({
   const [isTooltipVisible, setIsTooltipVisible] = useState(false)
   const [tooltipStyle, setTooltipStyle] = useState<CSSProperties>({})
   const weatherInfo = getWeatherSymbolInfo(symbol)
+  const iconSrc = `${import.meta.env.BASE_URL}${symbol}.svg`
   const label = t(`weatherSymbols.kind.${weatherInfo.kind}`)
   const descriptionParts = [
     weatherInfo.intensity ? t(`weatherSymbols.intensity.${weatherInfo.intensity}`) : "",
@@ -67,7 +68,7 @@ export function WeatherSymbolIcon({
       onBlur={hideTooltip}
     >
       <img
-        src={`/${symbol}.svg`}
+        src={iconSrc}
         alt={label}
         className={className}
       />

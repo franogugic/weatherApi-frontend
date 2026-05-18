@@ -7,7 +7,6 @@ import { MessageState } from "@/shared/ui/status/MessageState"
 import { useTranslation } from "react-i18next"
 import { NavLink, useNavigate } from "react-router-dom"
 import { AvailableLocationsPanel } from "./AvailableLocationsPanel"
-import { MapPageSkeleton } from "./MapPageSkeleton"
 
 type MapPageProps = {
   showAuthActions?: boolean
@@ -18,7 +17,6 @@ export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
   const navigate = useNavigate()
   const user = useAuthStore((state) => state.user)
   const hasLoadedCurrentUser = useAuthStore((state) => state.hasLoadedCurrentUser)
-  const isLoadingLocations = useLocationStore((state) => state.isLoading)
   const locations = useLocationStore((state) => state.locations)
   const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
   const showAuthActions = _showAuthActions || (hasLoadedCurrentUser && !user)
@@ -31,10 +29,6 @@ export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
         : undefined,
     weatherSymbol: location.currentWeather?.weatherSymbol ?? undefined,
   }))
-
-  if (isLoadingLocations) {
-    return <MapPageSkeleton />
-  }
 
   if (!locations.length) {
     return (

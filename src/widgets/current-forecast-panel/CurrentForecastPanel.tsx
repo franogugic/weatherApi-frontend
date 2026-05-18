@@ -35,6 +35,9 @@ export function CurrentForecastPanel({
   const precipitationUnit = useUnitPreferenceStore((state) => state.preferences.precipitationUnit)
   const locationName = selectedLocation?.name ?? t("forecast.locationUnavailable")
   const displayedTemperature = convertTemperature(forecast.airTemperature, temperatureUnit)
+  const temperatureUnitLabel = meta.air_temperature?.unitDisplayName
+  const windSpeedUnitLabel = meta.wind_speed?.unitDisplayName
+  const precipitationUnitLabel = meta.precipitation_amount?.unitDisplayName
 
   return (
     <div className="flex h-full w-full min-w-0 flex-col justify-between overflow-hidden rounded-4xl bg-linear-to-b from-accent-secondary to-accent-primary px-4 py-4 sm:px-5 lg:px-6 lg:py-5">
@@ -52,7 +55,7 @@ export function CurrentForecastPanel({
             {Math.round(displayedTemperature * 10) / 10}
           </p>
           <p className="text-[clamp(1.55rem,3.6vh,2.5rem)] leading-none font-semibold">
-            {getTemperatureUnitLabel(temperatureUnit)}
+            {getTemperatureUnitLabel(temperatureUnit, temperatureUnitLabel)}
           </p>
         </div>
         <WeatherSymbolIcon
@@ -64,7 +67,7 @@ export function CurrentForecastPanel({
       <div className="flex w-full shrink-0 flex-nowrap gap-y-2">
         <WeatherStat
           icon={<Wind size={28} />}
-          value={formatWindSpeed(forecast.windSpeed, windSpeedUnit)}
+          value={formatWindSpeed(forecast.windSpeed, windSpeedUnit, windSpeedUnitLabel)}
           label={t("currentForecast.wind")}
           showDivider
       
@@ -78,7 +81,7 @@ export function CurrentForecastPanel({
         />
         <WeatherStat
           icon={<CloudRain size={28} />}
-          value={formatPrecipitation(forecast.precipitationAmount, precipitationUnit)}
+          value={formatPrecipitation(forecast.precipitationAmount, precipitationUnit, precipitationUnitLabel)}
           label={t("currentForecast.precipitation")}
         />
       </div>

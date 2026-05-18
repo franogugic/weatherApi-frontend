@@ -21,7 +21,10 @@ export function convertTemperature(
   return valueInCelsius
 }
 
-export function getTemperatureUnitLabel(unit: TemperatureUnit) {
+export function getTemperatureUnitLabel(
+  unit: TemperatureUnit,
+  defaultUnitLabel?: string,
+) {
   if (unit === "fahrenheit") {
     return "°F"
   }
@@ -30,16 +33,17 @@ export function getTemperatureUnitLabel(unit: TemperatureUnit) {
     return "K"
   }
 
-  return "°C"
+  return defaultUnitLabel ?? "°C"
 }
 
 export function formatTemperature(
   valueInCelsius: number,
   unit: TemperatureUnit,
+  defaultUnitLabel?: string,
 ) {
   const convertedValue = convertTemperature(valueInCelsius, unit)
 
-  return `${roundToOneDecimal(convertedValue)} ${getTemperatureUnitLabel(unit)}`
+  return `${roundToOneDecimal(convertedValue)} ${getTemperatureUnitLabel(unit, defaultUnitLabel)}`
 }
 
 export function convertWindSpeed(
@@ -61,7 +65,10 @@ export function convertWindSpeed(
   return valueInMetersPerSecond
 }
 
-export function getWindSpeedUnitLabel(unit: WindSpeedUnit) {
+export function getWindSpeedUnitLabel(
+  unit: WindSpeedUnit,
+  defaultUnitLabel?: string,
+) {
   if (unit === "kilometersPerHour") {
     return "km/h"
   }
@@ -74,16 +81,17 @@ export function getWindSpeedUnitLabel(unit: WindSpeedUnit) {
     return "kt"
   }
 
-  return "m/s"
+  return defaultUnitLabel ?? "m/s"
 }
 
 export function formatWindSpeed(
   valueInMetersPerSecond: number,
   unit: WindSpeedUnit,
+  defaultUnitLabel?: string,
 ) {
   const convertedValue = convertWindSpeed(valueInMetersPerSecond, unit)
 
-  return `${roundToOneDecimal(convertedValue)} ${getWindSpeedUnitLabel(unit)}`
+  return `${roundToOneDecimal(convertedValue)} ${getWindSpeedUnitLabel(unit, defaultUnitLabel)}`
 }
 
 export function convertPressure(
@@ -97,7 +105,10 @@ export function convertPressure(
   return valueInHectopascal
 }
 
-export function getPressureUnitLabel(unit: PressureUnit) {
+export function getPressureUnitLabel(
+  unit: PressureUnit,
+  defaultUnitLabel?: string,
+) {
   if (unit === "pascal") {
     return "Pa"
   }
@@ -106,16 +117,17 @@ export function getPressureUnitLabel(unit: PressureUnit) {
     return "mbar"
   }
 
-  return "hPa"
+  return defaultUnitLabel ?? "hPa"
 }
 
 export function formatPressure(
   valueInHectopascal: number,
   unit: PressureUnit,
+  defaultUnitLabel?: string,
 ) {
   const convertedValue = convertPressure(valueInHectopascal, unit)
 
-  return `${roundToOneDecimal(convertedValue)} ${getPressureUnitLabel(unit)}`
+  return `${roundToOneDecimal(convertedValue)} ${getPressureUnitLabel(unit, defaultUnitLabel)}`
 }
 
 export function convertCloudiness(
@@ -129,21 +141,25 @@ export function convertCloudiness(
   return valueInPercent
 }
 
-export function getCloudinessUnitLabel(unit: CloudinessUnit) {
+export function getCloudinessUnitLabel(
+  unit: CloudinessUnit,
+  defaultUnitLabel?: string,
+) {
   if (unit === "okta") {
     return "okta"
   }
 
-  return "%"
+  return defaultUnitLabel ?? "%"
 }
 
 export function formatCloudiness(
   valueInPercent: number,
   unit: CloudinessUnit,
+  defaultUnitLabel?: string,
 ) {
   const convertedValue = convertCloudiness(valueInPercent, unit)
 
-  return `${roundToOneDecimal(convertedValue)} ${getCloudinessUnitLabel(unit)}`
+  return `${roundToOneDecimal(convertedValue)} ${getCloudinessUnitLabel(unit, defaultUnitLabel)}`
 }
 
 export function convertPrecipitation(
@@ -153,21 +169,25 @@ export function convertPrecipitation(
   return valueInMillimeter
 }
 
-export function getPrecipitationUnitLabel(unit: PrecipitationUnit) {
+export function getPrecipitationUnitLabel(
+  unit: PrecipitationUnit,
+  defaultUnitLabel?: string,
+) {
   if (unit === "literPerSquareMeter") {
     return "l/m²"
   }
 
-  return "mm"
+  return defaultUnitLabel ?? "mm"
 }
 
 export function formatPrecipitation(
   valueInMillimeter: number,
   unit: PrecipitationUnit,
+  defaultUnitLabel?: string,
 ) {
   const convertedValue = convertPrecipitation(valueInMillimeter, unit)
 
-  return `${roundToOneDecimal(convertedValue)} ${getPrecipitationUnitLabel(unit)}`
+  return `${roundToOneDecimal(convertedValue)} ${getPrecipitationUnitLabel(unit, defaultUnitLabel)}`
 }
 
 function roundToOneDecimal(value: number) {

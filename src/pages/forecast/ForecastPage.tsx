@@ -61,6 +61,11 @@ export function ForecastPage() {
   const pressureUnit = useUnitPreferenceStore((state) => state.preferences.pressureUnit)
   const cloudinessUnit = useUnitPreferenceStore((state) => state.preferences.cloudinessUnit)
   const precipitationUnit = useUnitPreferenceStore((state) => state.preferences.precipitationUnit)
+  const temperatureUnitLabel = meta.air_temperature?.unitDisplayName
+  const pressureUnitLabel = meta.air_pressure_at_sea_level?.unitDisplayName
+  const cloudinessUnitLabel = meta.cloud_area_fraction?.unitDisplayName
+  const windSpeedUnitLabel = meta.wind_speed?.unitDisplayName
+  const precipitationUnitLabel = meta.precipitation_amount?.unitDisplayName
   const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
 
   const dailyForecasts = useMemo(() => getForecastDaily(forecast), [forecast])
@@ -151,12 +156,12 @@ export function ForecastPage() {
                   <WeatherSymbolIcon symbol={daily.weatherSymbol} className="w-18 drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)]" />
                   <div>
                     <p className="text-[46px] font-semibold leading-none tracking-tight text-white">
-                      {formatTemperature(daily.averageTemperature, temperatureUnit)}
+                      {formatTemperature(daily.averageTemperature, temperatureUnit, temperatureUnitLabel)}
                     </p>
                     <p className="mt-3 text-center text-sm text-white/70">
-                      <span className="font-semibold text-[#4da3ff]">min {formatTemperature(daily.minTemperature, temperatureUnit)}</span>
+                      <span className="font-semibold text-[#4da3ff]">min {formatTemperature(daily.minTemperature, temperatureUnit, temperatureUnitLabel)}</span>
                       <span className="px-2 text-white/50">|</span>
-                      <span className="font-semibold text-[#ff6b6b]">max {formatTemperature(daily.maxTemperature, temperatureUnit)}</span>
+                      <span className="font-semibold text-[#ff6b6b]">max {formatTemperature(daily.maxTemperature, temperatureUnit, temperatureUnitLabel)}</span>
                     </p>
                   </div>
                 </div>
@@ -165,7 +170,7 @@ export function ForecastPage() {
                   <div className="flex items-center gap-3 border-b border-white/10 py-3">
                     <Gauge size={18} className="text-white/75" />
                     <div>
-                      <p className="font-medium">{formatPressure(daily.pressure, pressureUnit)}</p>
+                      <p className="font-medium">{formatPressure(daily.pressure, pressureUnit, pressureUnitLabel)}</p>
                       <p className="text-xs text-white/55">{t("forecast.pressure")}</p>
                     </div>
                   </div>
@@ -179,21 +184,21 @@ export function ForecastPage() {
                   <div className="flex items-center gap-3 border-b border-white/10 py-3">
                     <Cloud size={18} className="text-white/75" />
                     <div>
-                      <p className="font-medium">{formatCloudiness(daily.cloudiness, cloudinessUnit)}</p>
+                      <p className="font-medium">{formatCloudiness(daily.cloudiness, cloudinessUnit, cloudinessUnitLabel)}</p>
                       <p className="text-xs text-white/55">{t("forecast.clouds")}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 border-b border-white/10 py-3 pl-4">
                     <Wind size={18} className="rotate-45 text-white/75" />
                     <div>
-                      <p className="font-medium">{formatWindSpeed(daily.windSpeed, windSpeedUnit)}</p>
+                      <p className="font-medium">{formatWindSpeed(daily.windSpeed, windSpeedUnit, windSpeedUnitLabel)}</p>
                       <p className="text-xs text-white/55">{t("forecast.wind")}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 py-3">
                     <CloudRain size={18} className="text-[#4da3ff]" />
                     <div>
-                      <p className="font-medium">{formatPrecipitation(daily.precipitation, precipitationUnit)}</p>
+                      <p className="font-medium">{formatPrecipitation(daily.precipitation, precipitationUnit, precipitationUnitLabel)}</p>
                       <p className="text-xs text-white/55">{t("forecast.precipitation")}</p>
                     </div>
                   </div>
@@ -209,44 +214,7 @@ export function ForecastPage() {
             )
           })}
         </div>
-        {/*<p className="text-[14px] text-subtext underline cursor-pointer">show on map</p> */}
       </div>
-
-      {/*<div className="mb-8 flex flex-col items-center justify-center">
-        <p className="mb-2 text-[20px] font-extralight">{t("forecast.currentConditions")}</p>
-        <div className="flex flex-wrap items-center justify-center gap-6">
-          {currentForecast?.weatherSymbol ? (
-            <WeatherSymbolIcon symbol={currentForecast.weatherSymbol} className="w-16" />
-          ) : null}
-          <div className="flex items-center justify-between">
-            <Thermometer size={40} className="fill-red-400" />
-            <p className="text-[28px] font-semibold">
-              {currentForecast?.airTemperature}{" "}
-              <span className="text-[20px] font-medium">
-                {meta.air_temperature?.unitDisplayName}
-              </span>
-            </p>
-          </div>
-          <div className="flex items-center justify-between">
-            <CloudRain size={40} className="fill-blue-400" />
-            <p className="text-[28px] font-semibold">
-              {currentForecast?.precipitationAmount}{" "}
-              <span className="text-[20px] font-medium">
-                {meta.precipitation_amount?.unitDisplayName}
-              </span>
-            </p>
-          </div>
-          <div className="flex items-center justify-between">
-            <Wind size={40} className="fill-blue-200" />
-            <p className="text-[28px] font-semibold">
-              {currentForecast?.windSpeed}{" "}
-              <span className="text-[20px] font-medium">
-                {meta.wind_speed?.unitDisplayName}
-              </span>
-            </p>
-          </div>
-        </div>
-      </div>  */}
 
       <div className="rounded-3xl py-4">
         <div className="overflow-x-auto">
@@ -275,19 +243,19 @@ export function ForecastPage() {
                   </div>
                   <WeatherSymbolIcon symbol={item.weatherSymbol} className="w-10" />
                   <p>
-                    {formatTemperature(item.airTemperature, temperatureUnit)}
+                    {formatTemperature(item.airTemperature, temperatureUnit, temperatureUnitLabel)}
                   </p>
                   <p>
-                    {formatPressure(item.airPressureAtSeaLevel, pressureUnit)}
+                    {formatPressure(item.airPressureAtSeaLevel, pressureUnit, pressureUnitLabel)}
                   </p>
                   <p>
-                    {formatCloudiness(item.cloudiness, cloudinessUnit)}
+                    {formatCloudiness(item.cloudiness, cloudinessUnit, cloudinessUnitLabel)}
                   </p>
                   <p>
                     {item.humidity} {meta.relative_humidity?.unitDisplayName}
                   </p>
                   <p>
-                    {formatPrecipitation(item.precipitationAmount, precipitationUnit)}
+                    {formatPrecipitation(item.precipitationAmount, precipitationUnit, precipitationUnitLabel)}
                   </p>
                   <div className="flex items-center gap-2">
                     <MoveUp
@@ -295,7 +263,7 @@ export function ForecastPage() {
                       style={{ transform: `rotate(${item.windDirection}deg)` }}
                     />
                     <p>
-                      {formatWindSpeed(item.windSpeed, windSpeedUnit)}
+                      {formatWindSpeed(item.windSpeed, windSpeedUnit, windSpeedUnitLabel)}
                     </p>
                   </div>
                 </div>

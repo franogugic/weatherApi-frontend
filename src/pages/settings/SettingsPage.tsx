@@ -176,6 +176,7 @@ export function SettingsPage() {
               text={t("settings.favoriteLocations")}
               className="text-[20px] font-semibold"
             />
+            { possibleLocations.length > 0 ?
             <AppDropdown
               value=""
               placeholder={t("settings.addLocation")}
@@ -193,6 +194,8 @@ export function SettingsPage() {
               menuClassName="w-72"
               placement="auto"
             />
+              : null
+          }
           </div>
 
           <SettingsFavoriteLocationsBlock
