@@ -10,6 +10,7 @@ import type {
   DashboardWidgetId,
 } from "@/features/dashboard-layout/dashboard-layout-types"
 import { dashboardWidgetRegistry } from "./dashboard-widget-registry"
+import { setDashboardDragPreview } from "./dashboard-drag-preview"
 import type { DashboardWidgetRenderProps } from "./dashboard-widget-types"
 import type { CSSProperties, DragEvent } from "react"
 import { useState } from "react"
@@ -197,6 +198,25 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
   const [dropTargetBlockId, setDropTargetBlockId] = useState<DashboardBlockId | null>(null)
   const claimedCellIds = getClaimedDashboardCellIds(blocks)
 
+  function startBlockDrag(
+    event: DragEvent<HTMLDivElement>,
+    blockId: DashboardBlockId,
+    previewElement?: HTMLElement,
+  ) {
+    event.dataTransfer.effectAllowed = "move"
+    event.dataTransfer.setData(
+      DASHBOARD_DRAG_DATA_TYPE,
+      JSON.stringify({ type: "block", blockId }),
+    )
+    event.dataTransfer.setData("text/plain", "")
+
+    if (previewElement) {
+      setDashboardDragPreview(event, previewElement)
+    }
+
+    setDraggedBlockId(blockId)
+  }
+
   return (
     <>
       {blocks.map((block) => {
@@ -229,13 +249,7 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
                 return
               }
 
-              event.dataTransfer.effectAllowed = "move"
-              event.dataTransfer.setData(
-                DASHBOARD_DRAG_DATA_TYPE,
-                JSON.stringify({ type: "block", blockId: block.id }),
-              )
-              event.dataTransfer.setData("text/plain", block.id)
-              setDraggedBlockId(block.id)
+              startBlockDrag(event, block.id, event.currentTarget)
             }}
             onDragOver={(event) => {
               if (!isEditingDashboard || draggedBlockId === block.id) {
@@ -319,7 +333,7 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
                       DASHBOARD_DRAG_DATA_TYPE,
                       JSON.stringify({ type: "expand", blockId: block.id }),
                     )
-                    event.dataTransfer.setData("text/plain", block.id)
+                    event.dataTransfer.setData("text/plain", "")
                     setDraggedBlockId(block.id)
                   }}
                   onClick={(event) => {
@@ -333,6 +347,30 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
                 </button>
               )
             })}
+            {isEditingDashboard && block.widgetId !== null && (
+              <div
+                draggable
+                onDragStart={(event) => {
+                  const previewElement = event.currentTarget.parentElement
+
+                  if (previewElement) {
+                    startBlockDrag(event, block.id, previewElement)
+                    return
+                  }
+
+                  startBlockDrag(event, block.id)
+                }}
+                onClick={(event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                }}
+                onMouseDown={(event) => {
+                  event.stopPropagation()
+                }}
+                className="absolute inset-0 z-20 cursor-grab active:cursor-grabbing"
+                aria-hidden="true"
+              />
+            )}
             <div className="h-full">{renderedWidget}</div>
           </div>
         )

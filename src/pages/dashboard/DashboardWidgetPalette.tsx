@@ -4,6 +4,10 @@ import type { LucideIcon } from "lucide-react"
 import { Activity, CalendarDays, Clock, CloudSun, Heart, Map, SlidersHorizontal } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { dashboardWidgets } from "./dashboard-widget-registry"
+import {
+  createDashboardPaletteDragPreview,
+  setDashboardDragPreview,
+} from "./dashboard-drag-preview"
 
 const DASHBOARD_DRAG_DATA_TYPE = "application/x-dashboard-widget"
 
@@ -44,12 +48,22 @@ export function DashboardWidgetPalette() {
               type="button"
               draggable
               onDragStart={(event) => {
+                const label = t(`dashboard.widgets.${widget.id}`)
+                const preview = createDashboardPaletteDragPreview(label)
+
+                document.body.appendChild(preview)
                 event.dataTransfer.effectAllowed = "copyMove"
                 event.dataTransfer.setData(
                   DASHBOARD_DRAG_DATA_TYPE,
                   JSON.stringify({ type: "widget", widgetId: widget.id }),
                 )
-                event.dataTransfer.setData("text/plain", widget.id)
+                event.dataTransfer.setData("text/plain", "")
+                setDashboardDragPreview(event, preview, {
+                  width: preview.offsetWidth,
+                  height: preview.offsetHeight,
+                  offsetX: Math.min(preview.offsetWidth / 2, 90),
+                  offsetY: preview.offsetHeight / 2,
+                })
               }}
               className={`group flex h-[64px] w-[92px] cursor-grab flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 text-center transition hover:-translate-y-0.5 active:cursor-grabbing ${
                 isActive

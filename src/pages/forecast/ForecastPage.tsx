@@ -18,6 +18,7 @@ import {
   formatTemperature,
   formatWindSpeed,
 } from "@/features/unit-preferences/format-units"
+import { useSearchParams } from "react-router-dom"
 
 function getDateKey(dateString: string) {
   return parseForecastDate(dateString).toLocaleDateString("en-CA", {
@@ -54,6 +55,7 @@ function getWeatherSymbolLabel(symbol: string, t: (key: string) => string) {
 
 export function ForecastPage() {
   const { t, i18n } = useTranslation()
+  const [searchParams, setSearchParams] = useSearchParams()
   const { forecast, meta, isLoading } = useForecastStore()
   const { selectedLocation } = useLocationStore()
   const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
@@ -79,10 +81,15 @@ export function ForecastPage() {
     [dailyForecasts],
   )
 
-  const [selectedDateKey, setSelectedDateKey] = useState<string>("")
+  const [selectedDateKey, setSelectedDateKey] = useState<string>(() => searchParams.get("day") ?? "")
   const selectedDate = dateOptions.some((option) => option.key === selectedDateKey)
     ? selectedDateKey
     : dateOptions[0]?.key ?? ""
+
+  function selectDate(dateKey: string) {
+    setSelectedDateKey(dateKey)
+    setSearchParams({ day: dateKey }, { replace: true })
+  }
 
   const selectedDayForecast = useMemo(
     () =>
@@ -104,13 +111,13 @@ export function ForecastPage() {
   
   function goToPreviousDay() {  
     if (hasPreviousDay) {
-      setSelectedDateKey(dateOptions[currentDateIndex - 1].key)
+      selectDate(dateOptions[currentDateIndex - 1].key)
     }
   }
 
   function goToNextDay() {    
     if (hasNextDay) {
-      setSelectedDateKey(dateOptions[currentDateIndex + 1].key)
+      selectDate(dateOptions[currentDateIndex + 1].key)
     }
   }
 
@@ -140,7 +147,7 @@ export function ForecastPage() {
               <button
                 key={daily.date}
                 type="button"
-                onClick={() => setSelectedDateKey(daily.date)}
+                onClick={() => selectDate(daily.date)}
                 className={`flex min-h-[320px] cursor-pointer flex-col gap-4 rounded-[22px] border p-[18px] text-left backdrop-blur-xl transition duration-200 ease-out hover:-translate-y-0.5 ${
                   isActive
                     ? "border-accent-primary bg-[#202832]/80 shadow-[0_16px_36px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(73,116,239,0.45)]"

@@ -11,6 +11,8 @@ import {
   formatWindSpeed,
 } from "@/features/unit-preferences/format-units"
 import { CloudRain, Droplets, Wind } from "lucide-react"
+import { NavLink } from "react-router-dom"
+import { useLocationStore } from "@/features/location/location-store"
 
 function parseDailyDate(dateString: string) {
   return new Date(`${dateString}T00:00:00Z`)
@@ -31,6 +33,7 @@ function formatDailyDateLabel(dateString: string, locale: string) {
 export function DailyForecastsPanel (){
     const { forecast, meta } = useForecastStore()
     const { t, i18n } = useTranslation()
+    const selectedLocation = useLocationStore((state) => state.selectedLocation)
     const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
     const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
     const windSpeedUnit = useUnitPreferenceStore((state) => state.preferences.windSpeedUnit)
@@ -48,8 +51,9 @@ export function DailyForecastsPanel (){
             </div>
             <div className="flex justify-between items-center gap-4 mt-4">
                 {dailyForecasts.map((daily, index) => (
-                    <div
+                    <NavLink
                         key={daily.date}
+                        to={selectedLocation ? `/forecast/${selectedLocation.id}?day=${daily.date}` : "/map"}
                         className={`relative flex-1 flex-col gap-1 text-center ${
                           index > 0 ? "before:absolute before:left-[-0.5rem] before:top-2 before:h-[calc(100%-1rem)] before:w-px before:bg-white/10" : ""
                         }`}
@@ -66,7 +70,7 @@ export function DailyForecastsPanel (){
                             <div className="flex items-center justify-center gap-1"><Droplets size={16}/> <span className="text-white font-semibold">{daily.humidity}%</span></div>
                             <div className="flex items-center justify-center gap-1"><CloudRain size={16}/> <span className="text-white font-semibold">{formatPrecipitation(daily.precipitation, precipitationUnit, precipitationUnitLabel)}</span></div>
                         </div>
-                     </div>
+                     </NavLink>
                  ))}
             </div>            
         </div>
