@@ -1,11 +1,10 @@
 import type { Location } from "@/entities/location/types";
+import { API_BASE_URL } from "@/shared/config/api";
 import { create } from "zustand";
 import { getAuthErrorMessage } from "../auth/auth-error";
 import { useLocationStore } from "../location/location-store";
 import { LAST_VIEWED_LOCATION_ID_KEY } from "../location/last-viewed-location";
 import type { CreateLocationRequest, LocationFetchLog } from "./admin-location-types";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 type AdminLocationStore = {
   expandedLocationId: number | null;

@@ -1,7 +1,6 @@
 import type { WeatherForecastItem, WeatherForecastResponse, WeatherMeta } from "@/entities/weather/model/types"
+import { API_BASE_URL } from "@/shared/config/api"
 import { create } from "zustand"
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 type ForecastStore = {
     forecast: WeatherForecastItem[],

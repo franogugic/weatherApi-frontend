@@ -1,8 +1,7 @@
 import type { User } from "@/entities/user/types"
+import { API_BASE_URL } from "@/shared/config/api"
 import { create } from "zustand"
 import { getAuthErrorMessage } from "./auth-error"
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 type LoginUserRequest = {
   email: string

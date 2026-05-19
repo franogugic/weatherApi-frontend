@@ -1,7 +1,6 @@
 import { create } from "zustand"
 import type { Location } from "@/entities/location/types"
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { API_BASE_URL } from "@/shared/config/api";
 
 type FavoriteLocationStore = {
     favoriteLocations: Location[],

@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { API_BASE_URL } from "@/shared/config/api"
 import type {
   DashboardBlock,
   DashboardBlockId,
@@ -7,7 +8,6 @@ import type {
   DashboardWidgetId,
 } from "./dashboard-layout-types"
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 const DASHBOARD_LAYOUT_STORAGE_KEY = "weather-dashboard-six-box-layout-v2"
 
 const DASHBOARD_WIDGET_IDS: Record<DashboardWidgetId, true> = {
