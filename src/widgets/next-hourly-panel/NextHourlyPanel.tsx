@@ -15,13 +15,14 @@ type NextHourlyPanelProps = {
   
 }
 
-export function NextHourlysPanel( {forecast, visibleItems = 12}: NextHourlyPanelProps) {
+export function NextHourlysPanel( {forecast, meta, visibleItems = 12}: NextHourlyPanelProps) {
   const { t, i18n } = useTranslation()
   const selectedLocation = useLocationStore((state) => state.selectedLocation)
   const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
   const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
   const forecastPath = selectedLocation ? `/forecast/${selectedLocation.id}` : "/map"
   const visibleForecast = forecast.slice(0, visibleItems)
+  const temperatureUnitLabel = meta.air_temperature?.unitDisplayName
   
   return (
   <div className="lg:row-span-2 flex h-full min-h-0 min-w-0 flex-col rounded-4xl bg-div p-6">
@@ -49,7 +50,7 @@ export function NextHourlysPanel( {forecast, visibleItems = 12}: NextHourlyPanel
             symbol={item.weatherSymbol}
             className="w-10 mx-auto"
           />
-          <p className="font-light text-end">{formatTemperature(item.airTemperature, temperatureUnit)}</p>
+          <p className="font-light text-end">{formatTemperature(item.airTemperature, temperatureUnit, temperatureUnitLabel)}</p>
         </div>
       ))}
     </div>

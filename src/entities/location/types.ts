@@ -3,7 +3,7 @@ type Location = {
   name: string
   latitude: number
   longitude: number
-  altitude: number
+  altitude: number | null
   currentWeather?: {
     airTemperature: number | null
     weatherSymbol: string | null

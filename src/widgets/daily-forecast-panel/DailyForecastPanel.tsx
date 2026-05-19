@@ -11,6 +11,8 @@ import {
   formatWindSpeed,
 } from "@/features/unit-preferences/format-units"
 import { CloudRain, Droplets, Wind } from "lucide-react"
+import { NavLink } from "react-router-dom"
+import { useLocationStore } from "@/features/location/location-store"
 
 function parseDailyDate(dateString: string) {
   return new Date(`${dateString}T00:00:00Z`)
@@ -29,13 +31,17 @@ function formatDailyDateLabel(dateString: string, locale: string) {
 }
 
 export function DailyForecastsPanel (){
-    const { forecast } = useForecastStore()
+    const { forecast, meta } = useForecastStore()
     const { t, i18n } = useTranslation()
+    const selectedLocation = useLocationStore((state) => state.selectedLocation)
     const locale = i18n.language === "hr" ? "hr-HR" : "en-GB"
     const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
     const windSpeedUnit = useUnitPreferenceStore((state) => state.preferences.windSpeedUnit)
     const precipitationUnit = useUnitPreferenceStore((state) => state.preferences.precipitationUnit)
     const dailyForecasts = useMemo(() => getForecastDaily(forecast), [forecast])
+    const temperatureUnitLabel = meta.air_temperature?.unitDisplayName
+    const windSpeedUnitLabel = meta.wind_speed?.unitDisplayName
+    const precipitationUnitLabel = meta.precipitation_amount?.unitDisplayName
 
 
     return(
@@ -45,8 +51,9 @@ export function DailyForecastsPanel (){
             </div>
             <div className="flex justify-between items-center gap-4 mt-4">
                 {dailyForecasts.map((daily, index) => (
-                    <div
+                    <NavLink
                         key={daily.date}
+                        to={selectedLocation ? `/forecast/${selectedLocation.id}?day=${daily.date}` : "/map"}
                         className={`relative flex-1 flex-col gap-1 text-center ${
                           index > 0 ? "before:absolute before:left-[-0.5rem] before:top-2 before:h-[calc(100%-1rem)] before:w-px before:bg-white/10" : ""
                         }`}
@@ -55,15 +62,15 @@ export function DailyForecastsPanel (){
                         <p className="text-[13px] text-white/40">{formatDailyDateLabel(daily.date, locale)}</p>
                         <WeatherSymbolIcon symbol={daily.weatherSymbol} className="w-10 drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)] py-4"/>
                         <div className="flex flex-col gap-1">
-                            <p className="font-semibold bg-linear-to-r from-accent-secondary to-accent-primary bg-clip-text text-transparent">{formatTemperature(daily.maxTemperature, temperatureUnit)}</p>
-                            <p className="font-light text-[13px]">{formatTemperature(daily.minTemperature, temperatureUnit)}</p>
+                            <p className="font-semibold bg-linear-to-r from-accent-secondary to-accent-primary bg-clip-text text-transparent">{formatTemperature(daily.maxTemperature, temperatureUnit, temperatureUnitLabel)}</p>
+                            <p className="font-light text-[13px]">{formatTemperature(daily.minTemperature, temperatureUnit, temperatureUnitLabel)}</p>
                         </div>
                         <div className="mt-3 space-y-1 text-[10px] font-light leading-tight text-white/45">
-                            <div className="flex items-center justify-center gap-1"><Wind size={16}/> <span className="text-white font-semibold">{formatWindSpeed(daily.windSpeed, windSpeedUnit)}</span></div>
+                            <div className="flex items-center justify-center gap-1"><Wind size={16}/> <span className="text-white font-semibold">{formatWindSpeed(daily.windSpeed, windSpeedUnit, windSpeedUnitLabel)}</span></div>
                             <div className="flex items-center justify-center gap-1"><Droplets size={16}/> <span className="text-white font-semibold">{daily.humidity}%</span></div>
-                            <div className="flex items-center justify-center gap-1"><CloudRain size={16}/> <span className="text-white font-semibold">{formatPrecipitation(daily.precipitation, precipitationUnit)}</span></div>
+                            <div className="flex items-center justify-center gap-1"><CloudRain size={16}/> <span className="text-white font-semibold">{formatPrecipitation(daily.precipitation, precipitationUnit, precipitationUnitLabel)}</span></div>
                         </div>
-                     </div>
+                     </NavLink>
                  ))}
             </div>            
         </div>

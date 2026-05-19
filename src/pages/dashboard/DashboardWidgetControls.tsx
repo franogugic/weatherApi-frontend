@@ -36,7 +36,9 @@ export function DashboardWidgetControls() {
     <div className="fixed right-6 bottom-6 z-50 flex items-center gap-2 rounded-full border border-white/10 bg-[#20252c]/90 p-2 shadow-[0_18px_45px_rgba(0,0,0,0.35)] backdrop-blur-xl">
       <button
         type="button"
-        onClick={resetBlocks}
+        onClick={() => {
+          void resetBlocks()
+        }}
         className="rounded-full bg-white/7 p-3 text-white/70 transition hover:bg-white/12 hover:text-white"
         aria-label={t("dashboard.resetDraft")}
       >
@@ -58,7 +60,9 @@ export function DashboardWidgetControls() {
         )}
         <button
           type="button"
-          onClick={saveDraftBlocks}
+          onClick={() => {
+            void saveDraftBlocks()
+          }}
           disabled={!hasUnsavedChanges || hasEmptyVisibleBlocks}
           className="flex items-center gap-2 rounded-full bg-linear-to-br from-accent-secondary to-accent-primary px-4 py-3 text-[12px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-45"
         >

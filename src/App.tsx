@@ -28,6 +28,7 @@ function AuthSessionLoader() {
   const loadFavoriteLocations = useFavoriteLocationStore((state) => state.loadFavoriteLocations)
   const clearFavoriteLocations = useFavoriteLocationStore((state) => state.clearFavoriteLocations)
   const resetDashboardLayout = useDashboardLayoutStore((state) => state.resetDashboardLayout)
+  const loadDashboardLayout = useDashboardLayoutStore((state) => state.loadDashboardLayout)
 
   useEffect(() => {
     void loadCurrentUser()
@@ -40,17 +41,19 @@ function AuthSessionLoader() {
 
     if (!user) {
       clearFavoriteLocations()
-      resetDashboardLayout()
+      void resetDashboardLayout()
       return
     }
 
     void Promise.all([
       loadPreferences(),
       loadFavoriteLocations(),
+      loadDashboardLayout(),
     ])
   }, [
     clearFavoriteLocations,
     hasLoadedCurrentUser,
+    loadDashboardLayout,
     loadFavoriteLocations,
     loadPreferences,
     resetDashboardLayout,

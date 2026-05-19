@@ -32,6 +32,9 @@ export type DashboardLayoutStore = {
   isEditingDashboard: boolean
   hasUnsavedChanges: boolean
   hasEmptyVisibleBlocks: boolean
+  isLoadingDashboardLayout: boolean
+  hasLoadedDashboardLayout: boolean
+  loadDashboardLayout: () => Promise<DashboardBlock[]>
   startDashboardEditing: () => void
   setDraftBlockWidget: (blockId: DashboardBlockId, widgetId: DashboardWidgetId | null) => void
   setDraftBlockCells: (blockId: DashboardBlockId, cellIds: DashboardCellId[]) => void
@@ -40,8 +43,8 @@ export type DashboardLayoutStore = {
     sourceBlockId: DashboardBlockId,
     targetBlockId: DashboardBlockId,
   ) => void
-  saveDraftBlocks: () => void
+  saveDraftBlocks: () => Promise<void>
   discardDraftBlocks: () => void
   resetDraftBlocks: () => void
-  resetDashboardLayout: () => void
+  resetDashboardLayout: () => Promise<void>
 }

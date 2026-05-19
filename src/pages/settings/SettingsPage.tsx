@@ -13,6 +13,7 @@ import { LinearText } from "@/shared/ui/linear-text/LinearText";
 import { SettingsFavoriteLocationsBlock } from "@/shared/ui/settings/SettingsFavoriteLocationsBlock";
 import { SettingsLanguageBlock } from "@/shared/ui/settings/SettingsLanguageBlock";
 import { SettingsPersonalInfoBlock } from "@/shared/ui/settings/SettingsPersonalInfoBlock";
+import { SettingsAdminLocationsBlock } from "@/shared/ui/settings/SettingsAdminLocationsBlock";
 import { SettingsUnitsBlock } from "@/shared/ui/settings/SettingUnitsBlock";
 import { SettingsPageSkeleton } from "./SettingsPageSkeleton";
 
@@ -25,6 +26,7 @@ export function SettingsPage() {
   const { t } = useTranslation()
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
+  const isAdmin = user?.role === 2;
   const isLoadingUser = useAuthStore((state) => state.isLoadingUser);
   const startDashboardEditing = useDashboardLayoutStore(
     (state) => state.startDashboardEditing,
@@ -131,12 +133,12 @@ export function SettingsPage() {
   }
 
   return (
-    <main className="flex h-full min-h-0 flex-col overflow-hidden rounded-4xl bg-div p-6 text-white">
+    <main className="flex h-full min-h-0 flex-col overflow-y-auto rounded-4xl bg-div p-6 text-white">
       <div className="mb-4 flex h-10 items-center justify-between">
         <h1 className="text-2xl font-bold">{t("settings.title")}</h1>
       </div>
 
-      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-2 lg:grid-rows-[100px_150px_minmax(0,1fr)_150px_60px]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:grid-rows-[100px_150px_minmax(0,1fr)_150px]">
         <div className="col-span-2 flex items-center justify-between gap-4 rounded-4xl border-white/10 bg-[#2b2f36]/70 px-8 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75">
           <div>
             <p className="flex text-[40px] font-semibold">
@@ -176,6 +178,7 @@ export function SettingsPage() {
               text={t("settings.favoriteLocations")}
               className="text-[20px] font-semibold"
             />
+            { possibleLocations.length > 0 ?
             <AppDropdown
               value=""
               placeholder={t("settings.addLocation")}
@@ -193,6 +196,8 @@ export function SettingsPage() {
               menuClassName="w-72"
               placement="auto"
             />
+              : null
+          }
           </div>
 
           <SettingsFavoriteLocationsBlock
@@ -210,7 +215,14 @@ export function SettingsPage() {
             }}
           />
         </div>
+
       </div>
+
+      {isAdmin ? (
+        <div className="mt-4 rounded-4xl border-white/10 bg-[#2b2f36]/70 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75">
+          <SettingsAdminLocationsBlock />
+        </div>
+      ) : null}
     </main>
   );
 }

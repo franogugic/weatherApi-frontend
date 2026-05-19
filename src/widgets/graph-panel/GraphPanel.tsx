@@ -307,7 +307,7 @@ function externalTooltipHandler(
 }
 
 // main metoda
-export function GraphPanel({ forecast }: GraphPanelProps) {
+export function GraphPanel({ forecast, meta }: GraphPanelProps) {
   const { t, i18n } = useTranslation()
   const [metric, setMetric] = useState<GraphMetric>("temperature")
   const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
@@ -333,10 +333,10 @@ export function GraphPanel({ forecast }: GraphPanelProps) {
   const config = resolvedMetricConfig[metric]
   const unit =
     metric === "temperature"
-      ? getTemperatureUnitLabel(temperatureUnit)
+      ? getTemperatureUnitLabel(temperatureUnit, meta.air_temperature?.unitDisplayName)
       : metric === "wind"
-        ? getWindSpeedUnitLabel(windSpeedUnit)
-        : getPrecipitationUnitLabel(precipitationUnit)
+        ? getWindSpeedUnitLabel(windSpeedUnit, meta.wind_speed?.unitDisplayName)
+        : getPrecipitationUnitLabel(precipitationUnit, meta.precipitation_amount?.unitDisplayName)
   const labels = chartItems.map((item) => item.forecastTime)
   const values = chartItems.map((item) => {
     if (metric === "temperature") {
