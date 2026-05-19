@@ -217,7 +217,7 @@ export function SettingsAdminLocationsBlock() {
 
       <form
         onSubmit={handleSubmit}
-        className="grid gap-2 rounded-[22px] border border-white/10 bg-[#20252c]/55 p-3 shadow-[0_4px_12px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.03)] md:grid-cols-[minmax(160px,1.4fr)_repeat(3,minmax(92px,0.8fr))_auto]"
+        className="grid gap-2 rounded-[22px] border border-white/10 bg-[#20252c]/55 p-3 shadow-[0_4px_12px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.03)] sm:grid-cols-2 xl:grid-cols-[minmax(160px,1.4fr)_repeat(3,minmax(92px,0.8fr))_auto]"
       >
         <input
           value={form.name}
@@ -249,7 +249,7 @@ export function SettingsAdminLocationsBlock() {
         <button
           type="submit"
           disabled={isCreatingLocation}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-linear-to-b from-accent-secondary to-accent-primary px-4 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-linear-to-b from-accent-secondary to-accent-primary px-4 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2 xl:col-span-1"
         >
           {isCreatingLocation ? (
             <Loader2 size={16} className="animate-spin" />
@@ -278,7 +278,7 @@ export function SettingsAdminLocationsBlock() {
             key={location.id}
             className="rounded-[22px] border border-white/10 bg-[#2b2f36]/70 px-4 py-3 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] transition duration-200 ease-out hover:border-white/15 hover:bg-[#303640]/75"
           >
-            <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:grid-cols-[minmax(0,1fr)_auto_auto]">
               <button
                 type="button"
                 onClick={() => {

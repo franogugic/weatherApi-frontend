@@ -13,7 +13,7 @@ import { dashboardWidgetRegistry } from "./dashboard-widget-registry"
 import { setDashboardDragPreview } from "./dashboard-drag-preview"
 import type { DashboardWidgetRenderProps } from "./dashboard-widget-types"
 import type { CSSProperties, DragEvent } from "react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Trash2 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
@@ -196,7 +196,25 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
   )
   const [draggedBlockId, setDraggedBlockId] = useState<DashboardBlockId | null>(null)
   const [dropTargetBlockId, setDropTargetBlockId] = useState<DashboardBlockId | null>(null)
+  const [isDesktopGrid, setIsDesktopGrid] = useState(() =>
+    typeof window === "undefined" ? true : window.matchMedia("(min-width: 1024px)").matches,
+  )
   const claimedCellIds = getClaimedDashboardCellIds(blocks)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 1024px)")
+
+    function handleChange() {
+      setIsDesktopGrid(mediaQuery.matches)
+    }
+
+    handleChange()
+    mediaQuery.addEventListener("change", handleChange)
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange)
+    }
+  }, [])
 
   function startBlockDrag(
     event: DragEvent<HTMLDivElement>,
@@ -289,7 +307,7 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
               setDraggedBlockId(null)
               setDropTargetBlockId(null)
             }}
-            className={`group relative h-full min-h-0 min-w-0 transition ${
+            className={`group relative min-h-[260px] min-w-0 transition lg:h-full lg:min-h-0 ${
               block.widgetId === "map" ? "hidden lg:block" : ""
             } ${block.widgetId === "graph" ? "overflow-visible" : "overflow-hidden"} ${
               isEditingDashboard ? "dashboard-edit-frame cursor-grab active:cursor-grabbing" : ""
@@ -300,7 +318,7 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
                 ? "rounded-4xl ring-2 ring-accent-primary/80 ring-offset-2 ring-offset-[#111820]"
                 : ""
             }`}
-            style={getBlockGridStyle(block.cellIds)}
+            style={isDesktopGrid ? getBlockGridStyle(block.cellIds) : undefined}
           >
             {isEditingDashboard && block.widgetId !== null && (
               <button
@@ -371,7 +389,7 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
                 aria-hidden="true"
               />
             )}
-            <div className="h-full">{renderedWidget}</div>
+            <div className="h-full min-h-[260px] lg:min-h-0">{renderedWidget}</div>
           </div>
         )
       })}

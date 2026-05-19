@@ -133,15 +133,15 @@ export function SettingsPage() {
   }
 
   return (
-    <main className="flex h-full min-h-0 flex-col overflow-y-auto rounded-4xl bg-div p-6 text-white">
-      <div className="mb-4 flex h-10 items-center justify-between">
+    <main className="flex flex-col overflow-y-visible rounded-[28px] bg-div p-4 text-white sm:rounded-4xl sm:p-6 lg:h-full lg:min-h-0 lg:overflow-y-auto">
+      <div className="mb-4 flex min-h-10 items-center justify-between">
         <h1 className="text-2xl font-bold">{t("settings.title")}</h1>
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:grid-rows-[100px_150px_minmax(0,1fr)_150px]">
-        <div className="col-span-2 flex items-center justify-between gap-4 rounded-4xl border-white/10 bg-[#2b2f36]/70 px-8 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75">
+        <div className="flex flex-col gap-4 rounded-[28px] border-white/10 bg-[#2b2f36]/70 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:col-span-2 lg:rounded-4xl">
           <div>
-            <p className="flex text-[40px] font-semibold">
+            <p className="flex flex-wrap text-3xl font-semibold sm:text-[40px]">
               {t("settings.welcome")}&nbsp;
               <LinearText text={user.firstName} />!
             </p>
@@ -160,11 +160,11 @@ export function SettingsPage() {
           </button>
         </div>
 
-        <div className="rounded-4xl border-white/10 bg-[#2b2f36]/70 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 p-4">
+        <div className="rounded-[28px] border-white/10 bg-[#2b2f36]/70 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 lg:rounded-4xl">
           <SettingsPersonalInfoBlock />
         </div>
 
-        <div className="row-span-2 w-full min-w-0 rounded-4xl border-white/10 bg-[#2b2f36]/70 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 p-4">
+        <div className="w-full min-w-0 rounded-[28px] border-white/10 bg-[#2b2f36]/70 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 lg:row-span-2 lg:rounded-4xl">
           <SettingsUnitsBlock
             preferences={preferences}
             handlePreferenceChange={handlePreferenceChange}
@@ -172,8 +172,8 @@ export function SettingsPage() {
           />
         </div>
 
-        <div className="row-span-2 rounded-4xl border-white/10 bg-[#2b2f36]/70 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 p-4 min-w-0">
-          <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="min-w-0 rounded-[28px] border-white/10 bg-[#2b2f36]/70 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 lg:row-span-2 lg:rounded-4xl">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <LinearText
               text={t("settings.favoriteLocations")}
               className="text-[20px] font-semibold"
@@ -191,7 +191,7 @@ export function SettingsPage() {
               onChange={(value) => {
                 void addFavoriteLocation(Number(value));
               }}
-              className="w-44"
+              className="w-full sm:w-44"
               buttonClassName="rounded-2xl px-3 py-1.5 text-[13px]"
               menuClassName="w-72"
               placement="auto"
@@ -206,7 +206,7 @@ export function SettingsPage() {
           />
         </div>
 
-        <div className="rounded-4xl border-white/10 bg-[#2b2f36]/70 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 p-4 min-w-0">
+        <div className="min-w-0 rounded-[28px] border-white/10 bg-[#2b2f36]/70 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 lg:rounded-4xl">
           <SettingsLanguageBlock
             selectedLanguage={selectedLanguage}
             dropdownPlacement="top"
@@ -219,7 +219,7 @@ export function SettingsPage() {
       </div>
 
       {isAdmin ? (
-        <div className="mt-4 rounded-4xl border-white/10 bg-[#2b2f36]/70 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75">
+        <div className="mt-4 rounded-[28px] border-white/10 bg-[#2b2f36]/70 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 lg:rounded-4xl">
           <SettingsAdminLocationsBlock />
         </div>
       ) : null}

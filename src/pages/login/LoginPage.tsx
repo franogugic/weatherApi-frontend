@@ -55,9 +55,9 @@ export function LoginPage(){
     }
 
     return (
-        <div className="flex h-full min-h-0 items-center justify-center">
-            <div className="bg-div rounded-2xl p-6 lg:min-w-[500px]">
-                <h1 className="text-[28px] text-center font-semibold">{t("auth.loginTitle")}</h1>
+        <div className="flex min-h-[calc(100vh-1.5rem)] items-center justify-center py-6 lg:h-full lg:min-h-0 lg:py-0">
+            <div className="w-full max-w-[500px] rounded-2xl bg-div p-5 sm:p-6">
+                <h1 className="text-center text-2xl font-semibold sm:text-[28px]">{t("auth.loginTitle")}</h1>
                 <h2 className="text-[14px] mt-1 mb-6 text-center font-extralight text-white/40">{t("auth.loginSubtitle")}</h2>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <AuthInput

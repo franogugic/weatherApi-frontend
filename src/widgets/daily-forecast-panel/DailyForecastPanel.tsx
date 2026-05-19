@@ -45,22 +45,22 @@ export function DailyForecastsPanel (){
 
 
     return(
-        <div className="bg-div rounded-4xl h-full flex flex-col gap-2 p-6">
+        <div className="flex h-full flex-col gap-2 rounded-[28px] bg-div p-4 sm:p-6 lg:rounded-4xl">
             <div>
-              <p className=" text-[22px] font-semibold">{t("dailyForecast.title", { count: dailyForecasts.length })}</p>
+              <p className="text-xl font-semibold sm:text-[22px]">{t("dailyForecast.title", { count: dailyForecasts.length })}</p>
             </div>
-            <div className="flex justify-between items-center gap-4 mt-4">
+            <div className="mt-4 grid grid-cols-[repeat(auto-fit,minmax(130px,1fr))] gap-3 lg:flex lg:items-center lg:justify-between lg:gap-4">
                 {dailyForecasts.map((daily, index) => (
                     <NavLink
                         key={daily.date}
                         to={selectedLocation ? `/forecast/${selectedLocation.id}?day=${daily.date}` : "/map"}
-                        className={`relative flex-1 flex-col gap-1 text-center ${
-                          index > 0 ? "before:absolute before:left-[-0.5rem] before:top-2 before:h-[calc(100%-1rem)] before:w-px before:bg-white/10" : ""
+                        className={`relative min-w-0 rounded-2xl bg-white/[0.03] p-3 text-center lg:flex-1 lg:bg-transparent lg:p-0 ${
+                          index > 0 ? "lg:before:absolute lg:before:left-[-0.5rem] lg:before:top-2 lg:before:h-[calc(100%-1rem)] lg:before:w-px lg:before:bg-white/10" : ""
                         }`}
                     >
                         <p className="font-semibold">{getDayLabel(daily.date, locale, t("graph.today"))}</p>
                         <p className="text-[13px] text-white/40">{formatDailyDateLabel(daily.date, locale)}</p>
-                        <WeatherSymbolIcon symbol={daily.weatherSymbol} className="w-10 drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)] py-4"/>
+                        <WeatherSymbolIcon symbol={daily.weatherSymbol} className="mx-auto w-10 py-4 drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)]"/>
                         <div className="flex flex-col gap-1">
                             <p className="font-semibold bg-linear-to-r from-accent-secondary to-accent-primary bg-clip-text text-transparent">{formatTemperature(daily.maxTemperature, temperatureUnit, temperatureUnitLabel)}</p>
                             <p className="font-light text-[13px]">{formatTemperature(daily.minTemperature, temperatureUnit, temperatureUnitLabel)}</p>

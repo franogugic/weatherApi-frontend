@@ -21,11 +21,11 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="bg-div flex flex-row items-center justify-between rounded-4xl px-6 py-4 xl:flex-col xl:justify-start xl:p-6">
+    <aside className="bg-div sticky top-3 z-40 flex flex-row items-center justify-between rounded-[28px] px-4 py-3 sm:px-6 sm:py-4 lg:static lg:rounded-4xl xl:flex-col xl:justify-start xl:p-6">
       <NavLink to="/">
-        <Sun size={32} className="text-yellow-500 transition-transform duration-200 hover:scale-105 active:scale-95" />
+        <Sun size={28} className="text-yellow-500 transition-transform duration-200 hover:scale-105 active:scale-95 sm:size-8" />
       </NavLink>
-      <ul className="my-0 flex flex-row items-center gap-6 xl:my-8 xl:w-full xl:flex-col xl:gap-8 xl:border-y xl:border-white/25 xl:py-8">
+      <ul className="my-0 flex flex-row items-center gap-3 sm:gap-6 xl:my-8 xl:w-full xl:flex-col xl:gap-8 xl:border-y xl:border-white/25 xl:py-8">
         <NavLink to={dashboardPath}>
           {({ isActive }) => (
             <LayoutDashboard className={isActive ? "" : "text-white/50"} />

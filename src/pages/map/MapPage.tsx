@@ -32,18 +32,18 @@ export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
 
   if (!locations.length) {
     return (
-      <div className="rounded-4xl bg-div p-6">
+      <div className="rounded-[28px] bg-div p-4 sm:rounded-4xl sm:p-6">
         <MessageState message={t("map.noLocations")} />
       </div>
     )
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div className="mb-4 flex items-center justify-between gap-4">
+    <div className="flex min-h-0 flex-col lg:h-full">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-xl font-bold sm:text-2xl">{t("map.title")}</h1>
         {showAuthActions ? (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <NavLink
               to="/login"
               className="rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-white/80 transition hover:border-white/20 hover:bg-white/8 hover:text-white"

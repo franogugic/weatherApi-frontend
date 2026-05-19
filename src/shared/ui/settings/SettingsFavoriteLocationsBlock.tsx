@@ -21,7 +21,7 @@ export function SettingsFavoriteLocationsBlock({
           <NavLink
             key={location.id}
             to={`/${location.id}`}
-            className="group relative flex items-center justify-between gap-4 overflow-visible rounded-[22px] border border-white/10 bg-[#2b2f36]/70 px-4 py-2 text-left shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl transition duration-200 ease-out hover:-translate-y-0.5 hover:border-white/15 hover:bg-[#303640]/75"
+            className="group relative flex flex-col gap-3 overflow-visible rounded-[22px] border border-white/10 bg-[#2b2f36]/70 px-4 py-3 text-left shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl transition duration-200 ease-out hover:-translate-y-0.5 hover:border-white/15 hover:bg-[#303640]/75 sm:flex-row sm:items-center sm:justify-between sm:py-2"
           >
             <div className="flex min-w-0 items-center gap-3">
               <Star
@@ -33,14 +33,14 @@ export function SettingsFavoriteLocationsBlock({
                 <p className="line-clamp-1 text-[18px] font-semibold">
                   {location.name}
                 </p>
-                <div className="mt-1 space-y-0.5 text-[10px] gap-2 font-light flex leading-tight text-white/45">
+                <div className="mt-1 flex flex-wrap gap-x-2 gap-y-0.5 text-[10px] font-light leading-tight text-white/45">
                   <p>{t("map.latitude")}: {location.latitude}</p>
                   <p>{t("map.longitude")}: {location.longitude}</p>
                 </div>
               </div>
             </div>
 
-            <div className="flex shrink-0 items-center gap-3">
+            <div className="flex shrink-0 items-center justify-between gap-3 sm:justify-end">
               {location.currentWeather?.weatherSymbol ? (
                 <WeatherSymbolIcon
                   symbol={location.currentWeather.weatherSymbol}

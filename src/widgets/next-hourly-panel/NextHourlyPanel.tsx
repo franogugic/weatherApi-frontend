@@ -25,9 +25,9 @@ export function NextHourlysPanel( {forecast, meta, visibleItems = 12}: NextHourl
   const temperatureUnitLabel = meta.air_temperature?.unitDisplayName
   
   return (
-  <div className="lg:row-span-2 flex h-full min-h-0 min-w-0 flex-col rounded-4xl bg-div p-6">
-    <div className="mb-4 flex items-center justify-between">
-      <p className="text-[22px] font-semibold">{t("nextHourly.dynamicTitle", { count: visibleItems })}</p>
+  <div className="flex h-full min-h-0 min-w-0 flex-col rounded-[28px] bg-div p-4 sm:p-6 lg:row-span-2 lg:rounded-4xl">
+    <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <p className="text-xl font-semibold sm:text-[22px]">{t("nextHourly.dynamicTitle", { count: visibleItems })}</p>
       <NavLink to={forecastPath} className="text-[14px] underline cursor-pointer bg-linear-to-t from-accent-secondary to-accent-primary bg-clip-text text-transparent">
           {t("nextHourly.seeMore")}
       </NavLink>
@@ -40,11 +40,11 @@ export function NextHourlysPanel( {forecast, meta, visibleItems = 12}: NextHourl
     </div>
 
     <div
-      className="grid flex-1"
+      className="grid flex-1 gap-1"
       style={{ gridTemplateRows: `repeat(${visibleForecast.length}, minmax(0, 1fr))` }}
     >
       {visibleForecast.map((item, index) => (
-        <div key={index} className="grid h-full grid-cols-3 items-center px-2">
+        <div key={index} className="grid min-h-10 grid-cols-3 items-center px-2">
           <p className="font-light">{getHourFromForecastTime(item.forecastTime, locale)}</p>
           <WeatherSymbolIcon
             symbol={item.weatherSymbol}
@@ -55,7 +55,7 @@ export function NextHourlysPanel( {forecast, meta, visibleItems = 12}: NextHourl
       ))}
     </div>
 
-    <NavLink to={forecastPath} className="mt-4 text-[18px] font-extralight">
+    <NavLink to={forecastPath} className="mt-4 text-base font-extralight sm:text-[18px]">
       <div className="bg-linear-to-b flex items-center justify-center from-accent-secondary to-accent-primary rounded-4xl py-2 cursor-pointer">
         {t("nextHourly.seeAll")}
       </div>

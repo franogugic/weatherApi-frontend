@@ -56,14 +56,14 @@ export function DashboardPage() {
 
   if (!forecastItems.length || !currentForecast) {
     return (
-      <div className="rounded-4xl bg-div p-6">
+      <div className="rounded-[28px] bg-div p-4 sm:rounded-4xl sm:p-6">
         <MessageState message={t("forecast.noData")} />
       </div>
     )
   }
 
   return (
-    <div className="flex h-full min-h-0 min-w-0 flex-col gap-5 overflow-hidden">
+    <div className="flex min-h-0 min-w-0 flex-col gap-4 pb-4 lg:h-full lg:gap-5 lg:overflow-hidden lg:pb-0">
       <div className="grid shrink-0 grid-cols-1 gap-5 lg:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)]">
         <SearchPanel />
         <div className="hidden lg:block" />
@@ -72,7 +72,7 @@ export function DashboardPage() {
       {user ? <DashboardWidgetPalette /> : null}
       {meta ? (
         <div
-          className={`relative grid min-h-0 min-w-0 flex-1 overflow-visible grid-cols-1 gap-5 lg:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] lg:grid-rows-[repeat(2,minmax(0,1fr))] ${
+          className={`relative grid min-h-0 min-w-0 grid-cols-1 gap-4 overflow-visible lg:flex-1 lg:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] lg:grid-rows-[repeat(2,minmax(0,1fr))] lg:gap-5 ${
             isEditingDashboard ? "dashboard-edit-frame" : ""
           }`}
         >

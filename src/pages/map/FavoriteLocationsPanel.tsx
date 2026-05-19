@@ -19,8 +19,8 @@ export function FavoriteLocationsPanel({
 }: FavoriteLocationsPanelProps) {
   const { t } = useTranslation()
   return (
-    <div className="relative z-10 shrink-0 overflow-visible rounded-4xl bg-div p-4 sm:p-5">
-      <div className="relative z-0 mb-4 flex items-center justify-between gap-3">
+    <div className="relative z-10 shrink-0 overflow-visible rounded-[28px] bg-div p-4 sm:p-5 lg:rounded-4xl">
+      <div className="relative z-0 mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="bg-linear-to-b from-accent-secondary to-accent-primary bg-clip-text text-[22px] font-semibold text-transparent">
             {t("favorites.title")}
@@ -39,14 +39,14 @@ export function FavoriteLocationsPanel({
       </div>
 
       {locations.length ? (
-        <div className="relative z-20 grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4 overflow-visible px-1 pb-2">
+        <div className="relative z-20 grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4 overflow-visible px-1 pb-2">
           {locations.map((location) => (
             <NavLink
               key={location.id}
               to={`/${location.id}`}
               className="group/card relative z-0 flex min-h-[132px] min-w-0 flex-col justify-between rounded-[22px] border border-white/10 bg-[#2b2f36]/70 p-[18px] text-left shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl transition duration-200 ease-out hover:z-50 hover:-translate-y-0.5 hover:border-white/15 hover:bg-[#303640]/75"
             >
-              <div className="pointer-events-none absolute left-1/2 top-0 z-[999] w-[220px] -translate-x-1/2 -translate-y-[calc(100%+10px)] rounded-2xl border border-white/10 bg-[#20252c]/95 p-3 opacity-0 shadow-[0_14px_30px_rgba(0,0,0,0.35)] backdrop-blur-xl transition duration-200 group-hover/card:opacity-100">
+              <div className="pointer-events-none absolute left-1/2 top-0 z-[999] hidden w-[220px] -translate-x-1/2 -translate-y-[calc(100%+10px)] rounded-2xl border border-white/10 bg-[#20252c]/95 p-3 opacity-0 shadow-[0_14px_30px_rgba(0,0,0,0.35)] backdrop-blur-xl transition duration-200 group-hover/card:opacity-100 sm:block">
                 <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/35">
                   {t("favorites.coordinates")}
                 </p>
