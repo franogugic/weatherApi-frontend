@@ -13,12 +13,12 @@ export function FavoriteLocationsWidgetPanel() {
   );
 
   return (
-    <div className="flex h-full min-h-0 flex-col rounded-4xl bg-div p-6">
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-[22px] font-semibold">{t("favorites.title")}</p>
+    <div className="flex h-full min-h-0 flex-col rounded-[28px] bg-div p-4 sm:p-6 lg:rounded-4xl">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-xl font-semibold sm:text-[22px]">{t("favorites.title")}</p>
         <NavLink
           to={"/settings"}
-          className="cursor-pointer rounded-2xl border-[1px] border-accent-primary px-4 py-1 bg-linear-to-r from-accent-secondary to-accent-primary bg-clip-text text-transparent"
+          className="cursor-pointer rounded-2xl border-[1px] border-accent-primary px-4 py-1 text-center bg-linear-to-r from-accent-secondary to-accent-primary bg-clip-text text-transparent"
         >
           {t("favorites.addNew")}
         </NavLink>

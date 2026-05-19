@@ -366,14 +366,14 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
   const maxY = Math.ceil(maxValue + 3)
 
   return (
-    <div className="lg:col-span-2 flex h-full min-h-0 min-w-0 flex-col overflow-visible rounded-4xl bg-div p-6">
+    <div className="flex h-full min-h-[320px] min-w-0 flex-col overflow-visible rounded-[28px] bg-div p-4 sm:p-6 lg:col-span-2 lg:min-h-0 lg:rounded-4xl">
       <div className="mb-3 flex shrink-0 flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3 w-full">
-          <p className="text-[22px] font-semibold">
+          <p className="text-xl font-semibold sm:text-[22px]">
             {t("graph.overview")}
           </p>
 
-          <div className="flex flex-wrap items-center gap-2 rounded-full bg-white/6 p-1">
+          <div className="flex w-full flex-wrap items-center gap-2 rounded-2xl bg-white/6 p-1 sm:w-auto sm:rounded-full">
             {(Object.keys(metricConfig) as GraphMetric[]).map((option) => {
               const isActive = metric === option
               const optionConfig = resolvedMetricConfig[option]
@@ -390,7 +390,7 @@ export function GraphPanel({ forecast, meta }: GraphPanelProps) {
                         }
                       : undefined
                   }
-                  className={`rounded-full px-3 py-1.5 text-sm transition ${
+                  className={`flex-1 rounded-full px-3 py-1.5 text-sm transition sm:flex-none ${
                     isActive
                       ? ""
                       : "text-subtext hover:text-white"

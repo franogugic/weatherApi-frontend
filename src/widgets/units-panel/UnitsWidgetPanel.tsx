@@ -27,9 +27,9 @@ export function UnitsWidgetPanel() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col rounded-4xl bg-div p-6">
+    <div className="flex h-full min-h-0 flex-col rounded-[28px] bg-div p-4 sm:p-6 lg:rounded-4xl">
       <div className="mb-4 shrink-0">
-        <p className="mb-4 text-[22px] font-semibold text-white">
+        <p className="mb-4 text-xl font-semibold text-white sm:text-[22px]">
           {t("units.widgetTitle")}
         </p>
       </div>

@@ -134,12 +134,12 @@ export function ForecastPage() {
   }
 
   return (
-    <div className="flex h-full min-w-0 flex-1 flex-col overflow-y-auto rounded-4xl bg-div p-6">
+    <div className="flex min-w-0 flex-1 flex-col overflow-y-visible rounded-[28px] bg-div p-4 sm:rounded-4xl sm:p-6 lg:h-full lg:overflow-y-auto">
       <div className="mb-8">
-        <h2 className="mb-8 break-words text-3xl font-semibold tracking-tight sm:text-4xl">
+        <h2 className="mb-6 break-words text-2xl font-semibold tracking-tight sm:mb-8 sm:text-4xl">
           {selectedLocation?.name ?? t("forecast.locationUnavailable")}
         </h2>
-        <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-4">
+        <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(min(100%,260px),1fr))] gap-4">
           {dailyForecasts.map((daily) => {
             const isActive = selectedDate === daily.date
 
@@ -148,7 +148,7 @@ export function ForecastPage() {
                 key={daily.date}
                 type="button"
                 onClick={() => selectDate(daily.date)}
-                className={`flex min-h-[320px] cursor-pointer flex-col gap-4 rounded-[22px] border p-[18px] text-left backdrop-blur-xl transition duration-200 ease-out hover:-translate-y-0.5 ${
+                className={`flex min-h-[300px] cursor-pointer flex-col gap-4 rounded-[22px] border p-4 text-left backdrop-blur-xl transition duration-200 ease-out hover:-translate-y-0.5 sm:min-h-[320px] sm:p-[18px] ${
                   isActive
                     ? "border-accent-primary bg-[#202832]/80 shadow-[0_16px_36px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(73,116,239,0.45)]"
                     : "border-white/10 bg-[#2b2f36]/70 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75"
@@ -159,10 +159,10 @@ export function ForecastPage() {
                   <span>{formatDailyDateLabel(daily.date, locale, t("common.today"))}</span>
                 </div>
 
-                <div className="flex flex-1 items-center justify-center gap-6 w-full">
+                <div className="flex w-full flex-1 flex-col items-center justify-center gap-4 text-center sm:flex-row sm:gap-6 sm:text-left">
                   <WeatherSymbolIcon symbol={daily.weatherSymbol} className="w-18 drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)]" />
                   <div>
-                    <p className="text-[46px] font-semibold leading-none tracking-tight text-white">
+                    <p className="text-4xl font-semibold leading-none tracking-tight text-white sm:text-[46px]">
                       {formatTemperature(daily.averageTemperature, temperatureUnit, temperatureUnitLabel)}
                     </p>
                     <p className="mt-3 text-center text-sm text-white/70">
@@ -173,7 +173,7 @@ export function ForecastPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 border-t border-white/10 text-sm text-white/85 w-full">
+                <div className="grid w-full grid-cols-1 border-t border-white/10 text-sm text-white/85 sm:grid-cols-2">
                   <div className="flex items-center gap-3 border-b border-white/10 py-3">
                     <Gauge size={18} className="text-white/75" />
                     <div>
@@ -181,7 +181,7 @@ export function ForecastPage() {
                       <p className="text-xs text-white/55">{t("forecast.pressure")}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 border-b border-white/10 py-3 pl-4">
+                  <div className="flex items-center gap-3 border-b border-white/10 py-3 sm:pl-4">
                     <Droplets size={18} className="text-white/75" />
                     <div>
                       <p className="font-medium">{daily.humidity} {meta.relative_humidity?.unitDisplayName}</p>
@@ -195,7 +195,7 @@ export function ForecastPage() {
                       <p className="text-xs text-white/55">{t("forecast.clouds")}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 border-b border-white/10 py-3 pl-4">
+                  <div className="flex items-center gap-3 border-b border-white/10 py-3 sm:pl-4">
                     <Wind size={18} className="rotate-45 text-white/75" />
                     <div>
                       <p className="font-medium">{formatWindSpeed(daily.windSpeed, windSpeedUnit, windSpeedUnitLabel)}</p>
@@ -209,7 +209,7 @@ export function ForecastPage() {
                       <p className="text-xs text-white/55">{t("forecast.precipitation")}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 py-3 pl-4">
+                  <div className="flex items-center gap-3 py-3 sm:pl-4">
                     <Thermometer size={18} className="text-[#ff6b6b]" />
                     <div>
                       <p className="font-medium">{getWeatherSymbolLabel(daily.weatherSymbol, t)}</p>
@@ -225,7 +225,7 @@ export function ForecastPage() {
 
       <div className="rounded-3xl py-4">
         <div className="overflow-x-auto">
-          <div className="min-w-[860px]">
+          <div className="min-w-[760px] sm:min-w-[860px]">
             <div className="mb-3 grid grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] px-3 text-[12px] text-subtext">
               <p>{t("forecast.time")}</p>
               <p>{t("forecast.weather")}</p>

@@ -104,7 +104,7 @@ export function SettingsPage() {
 
   if (!user) {
     return (
-      <div className="flex h-full min-h-0 items-center justify-center rounded-4xl bg-div p-6">
+      <div className="flex min-h-[calc(100vh-1.5rem)] items-center justify-center rounded-[28px] bg-div p-4 sm:rounded-4xl sm:p-6 lg:h-full lg:min-h-0">
         <div className="max-w-md text-center">
           <h1 className="mb-2 text-3xl font-semibold">{t("settings.title")}</h1>
 
