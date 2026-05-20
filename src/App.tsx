@@ -30,7 +30,9 @@ function AuthSessionLoader() {
   const loadPreferences = useUnitPreferenceStore((state) => state.loadPreferences)
   const loadFavoriteLocations = useFavoriteLocationStore((state) => state.loadFavoriteLocations)
   const clearFavoriteLocations = useFavoriteLocationStore((state) => state.clearFavoriteLocations)
-  const resetDashboardLayout = useDashboardLayoutStore((state) => state.resetDashboardLayout)
+  const resetDashboardLayoutLocal = useDashboardLayoutStore(
+    (state) => state.resetDashboardLayoutLocal,
+  )
   const loadDashboardLayout = useDashboardLayoutStore((state) => state.loadDashboardLayout)
 
   useEffect(() => {
@@ -44,7 +46,7 @@ function AuthSessionLoader() {
 
     if (!user) {
       clearFavoriteLocations()
-      void resetDashboardLayout()
+      resetDashboardLayoutLocal()
       return
     }
 
@@ -59,7 +61,7 @@ function AuthSessionLoader() {
     loadDashboardLayout,
     loadFavoriteLocations,
     loadPreferences,
-    resetDashboardLayout,
+    resetDashboardLayoutLocal,
     user,
   ])
 
