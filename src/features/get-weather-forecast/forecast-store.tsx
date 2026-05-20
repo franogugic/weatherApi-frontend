@@ -8,6 +8,7 @@ type ForecastStore = {
     meta: WeatherMeta
     isLoading: boolean
     loadedLocationId: number | null
+    hasLoadedForecast: boolean
     clearForecast: () => void
     fetchForecast: (locationId: number) => Promise<void>
 }
@@ -17,7 +18,8 @@ export const useForecastStore = create<ForecastStore>((set, get) => ({
     meta: {},
     isLoading: false,
     loadedLocationId: null,
-    clearForecast: () => set({ forecast: [], meta: {}, isLoading: false, loadedLocationId: null }),
+    hasLoadedForecast: false,
+    clearForecast: () => set({ forecast: [], meta: {}, isLoading: false, loadedLocationId: null, hasLoadedForecast: false }),
     fetchForecast: async (locationId: number) => {
         const { forecast, loadedLocationId, isLoading } = get()
 
@@ -29,19 +31,19 @@ export const useForecastStore = create<ForecastStore>((set, get) => ({
             return
         }
 
-        set({ forecast: [], meta: {}, isLoading: true })
+        set({ forecast: [], meta: {}, isLoading: true, hasLoadedForecast: false })
         try {
             const response = await fetch(`${API_BASE_URL}/WeatherForecast?locationId=${locationId}`)
             if (!response.ok) {
-                set({ forecast: [], meta: {}, loadedLocationId: null })
+                set({ forecast: [], meta: {}, loadedLocationId: null, hasLoadedForecast: true })
                 return
             }
 
             const jsonData = await response.json() as WeatherForecastResponse
-            set({ forecast: jsonData.items, meta: jsonData.meta, loadedLocationId: locationId })
+            set({ forecast: jsonData.items, meta: jsonData.meta, loadedLocationId: locationId, hasLoadedForecast: true })
         } catch (error) {
             console.error("Error fetching forecast:", error)
-            set({ forecast: [], meta: {}, loadedLocationId: null })
+            set({ forecast: [], meta: {}, loadedLocationId: null, hasLoadedForecast: true })
         } finally {
             set({ isLoading: false })
         }

@@ -57,7 +57,7 @@ export function SettingsUnitsBlock({
       <div className={`grid  ${
         compact
           ? "mt-2 grid-cols-2 gap-2 pt-2"
-          : `${showHeader ? "max-h-75" : ""} grid-cols-1 gap-4 overflow-y-auto pt-4 lg:grid-cols-2`
+          : `${showHeader ? "lg:max-h-75" : ""} grid-cols-1 gap-4 pt-4 lg:grid-cols-2 lg:overflow-y-auto`
       }`}>
         <UnitSelect
           label={t("units.temperature")}

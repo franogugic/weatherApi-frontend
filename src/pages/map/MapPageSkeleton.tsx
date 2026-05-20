@@ -2,10 +2,10 @@ import { Skeleton } from "@/shared/ui/skeleton/Skeleton"
 
 export function MapPageSkeleton() {
   return (
-    <div className="flex h-full min-h-0 flex-col">
+    <div className="flex min-h-0 flex-col lg:h-full">
       <Skeleton className="mb-4 h-8 w-32" />
       <div className="flex min-h-0 flex-1 flex-col gap-4 xl:flex-row">
-        <div className="relative min-h-[320px] overflow-hidden rounded-4xl bg-[#49484d] md:min-h-[420px] xl:min-h-0 xl:flex-1">
+        <div className="relative min-h-[360px] overflow-hidden rounded-4xl bg-[#49484d] sm:min-h-[460px] xl:min-h-0 xl:flex-1">
           <div className="absolute inset-0 opacity-70">
             <Skeleton className="absolute left-[8%] top-[18%] h-3 w-[42%] rotate-[-10deg] rounded-full bg-white/8" />
             <Skeleton className="absolute right-[10%] top-[34%] h-3 w-[36%] rotate-[14deg] rounded-full bg-white/8" />
@@ -31,7 +31,7 @@ export function MapPageSkeleton() {
           ))}
         </div>
 
-        <div className="flex max-h-[360px] min-h-0 flex-col rounded-4xl bg-div p-4 sm:max-h-[420px] sm:p-6 xl:h-full xl:max-h-none xl:w-[320px] xl:shrink-0">
+        <div className="flex min-h-0 flex-col rounded-4xl bg-div p-4 sm:p-6 xl:h-full xl:w-[320px] xl:shrink-0">
           <Skeleton className="mx-auto mb-6 h-8 w-48" />
           <div className="min-h-0 flex-1 space-y-0 overflow-hidden">
             {Array.from({ length: 6 }).map((_, index) => (

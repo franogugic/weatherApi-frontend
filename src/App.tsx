@@ -1,6 +1,6 @@
 import { useLocationStore } from "@/features/location/location-store"
 import { useEffect } from "react"
-import { Navigate, Outlet, Route, Routes, useParams } from "react-router-dom"
+import { Navigate, Outlet, Route, Routes, useLocation as useRouterLocation, useParams } from "react-router-dom"
 import { parseForecastDate } from "./shared/lib/parse-forecast-date"
 import {
   DEFAULT_TEMPERATURE_THEME,
@@ -14,6 +14,9 @@ import { AppLayout } from "./shared/ui/app-layout/AppLayout"
 import { RegisterPage } from "./pages/register/RegisterPage"
 import { LoginPage } from "./pages/login/LoginPage"
 import { SettingsPage } from "./pages/settings/SettingsPage"
+import { DashboardPageSkeleton } from "./pages/dashboard/DashboardPageSkeleton"
+import { ForecastPageSkeleton } from "./pages/forecast/ForecastPageSkeleton"
+import { MapPageSkeleton } from "./pages/map/MapPageSkeleton"
 import { useAuthStore } from "./features/auth/auth-store"
 import { useUnitPreferenceStore } from "./features/unit-preferences/unit-preference-store"
 import { LAST_VIEWED_LOCATION_ID_KEY } from "./features/location/last-viewed-location"
@@ -65,7 +68,10 @@ function AuthSessionLoader() {
 
 function LocationDataLoader() {
   const { id } = useParams()
+  const { pathname } = useRouterLocation()
   const locations = useLocationStore((state) => state.locations)
+  const isLoadingLocations = useLocationStore((state) => state.isLoading)
+  const hasLoadedLocations = useLocationStore((state) => state.hasLoadedLocations)
   const setSelectedLocation = useLocationStore((state) => state.setSelectedLocation)
   const fetchForecast = useForecastStore((state) => state.fetchForecast)
   const clearForecast = useForecastStore((state) => state.clearForecast)
@@ -106,15 +112,27 @@ function LocationDataLoader() {
     return <Navigate to="/map" replace />
   }
 
+  if (isLoadingLocations || !hasLoadedLocations) {
+    return pathname.startsWith("/forecast")
+      ? <ForecastPageSkeleton />
+      : <DashboardPageSkeleton />
+  }
+
+  if (!locations.some((location) => location.id === locationId)) {
+    return <Navigate to="/map" replace />
+  }
+
   return <Outlet />
 }
 
 function RootPage() {
   const user = useAuthStore((state) => state.user)
   const hasLoadedCurrentUser = useAuthStore((state) => state.hasLoadedCurrentUser)
+  const isLoadingLocations = useLocationStore((state) => state.isLoading)
+  const hasLoadedLocations = useLocationStore((state) => state.hasLoadedLocations)
 
-  if (!hasLoadedCurrentUser) {
-    return null
+  if (!hasLoadedCurrentUser || isLoadingLocations || !hasLoadedLocations) {
+    return <MapPageSkeleton />
   }
 
   const lastViewedLocationId = localStorage.getItem(LAST_VIEWED_LOCATION_ID_KEY)

@@ -45,17 +45,17 @@ export function DailyForecastsPanel (){
 
 
     return(
-        <div className="bg-div rounded-4xl h-full flex flex-col gap-2 p-6">
+        <div className="bg-div rounded-4xl h-full min-w-0 flex flex-col gap-2 p-4 sm:p-6">
             <div>
               <p className=" text-[22px] font-semibold">{t("dailyForecast.title", { count: dailyForecasts.length })}</p>
             </div>
-            <div className="flex justify-between items-center gap-4 mt-4">
+            <div className="mt-4 grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,96px),1fr))] gap-4">
                 {dailyForecasts.map((daily, index) => (
                     <NavLink
                         key={daily.date}
                         to={selectedLocation ? `/forecast/${selectedLocation.id}?day=${daily.date}` : "/map"}
-                        className={`relative flex-1 flex-col gap-1 text-center ${
-                          index > 0 ? "before:absolute before:left-[-0.5rem] before:top-2 before:h-[calc(100%-1rem)] before:w-px before:bg-white/10" : ""
+                        className={`relative min-w-0 flex-col gap-1 text-center ${
+                          index > 0 ? "lg:before:absolute lg:before:left-[-0.5rem] lg:before:top-2 lg:before:h-[calc(100%-1rem)] lg:before:w-px lg:before:bg-white/10" : ""
                         }`}
                     >
                         <p className="font-semibold">{getDayLabel(daily.date, locale, t("graph.today"))}</p>

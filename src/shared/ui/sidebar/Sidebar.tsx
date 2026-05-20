@@ -21,11 +21,11 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="bg-div flex flex-row items-center justify-between rounded-4xl px-6 py-4 xl:flex-col xl:justify-start xl:p-6">
+    <aside className="bg-div flex flex-row items-center justify-between rounded-4xl px-4 py-4 sm:px-6 lg:flex-col lg:justify-start lg:p-6">
       <NavLink to="/">
         <Sun size={32} className="text-yellow-500 transition-transform duration-200 hover:scale-105 active:scale-95" />
       </NavLink>
-      <ul className="my-0 flex flex-row items-center gap-6 xl:my-8 xl:w-full xl:flex-col xl:gap-8 xl:border-y xl:border-white/25 xl:py-8">
+      <ul className="my-0 flex flex-row items-center gap-4 sm:gap-6 lg:my-8 lg:w-full lg:flex-col lg:gap-8 lg:border-y lg:border-white/25 lg:py-8">
         <NavLink to={dashboardPath}>
           {({ isActive }) => (
             <LayoutDashboard className={isActive ? "" : "text-white/50"} />
@@ -47,7 +47,7 @@ export function Sidebar() {
           )}
         </NavLink>
       </ul>
-      <div className="xl:mt-auto">
+      <div className="lg:mt-auto">
         {user ? (
           <button
             type="button"

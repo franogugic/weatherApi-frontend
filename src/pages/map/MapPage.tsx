@@ -7,6 +7,7 @@ import { MessageState } from "@/shared/ui/status/MessageState"
 import { useTranslation } from "react-i18next"
 import { NavLink, useNavigate } from "react-router-dom"
 import { AvailableLocationsPanel } from "./AvailableLocationsPanel"
+import { MapPageSkeleton } from "./MapPageSkeleton"
 
 type MapPageProps = {
   showAuthActions?: boolean
@@ -18,6 +19,8 @@ export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
   const user = useAuthStore((state) => state.user)
   const hasLoadedCurrentUser = useAuthStore((state) => state.hasLoadedCurrentUser)
   const locations = useLocationStore((state) => state.locations)
+  const isLoadingLocations = useLocationStore((state) => state.isLoading)
+  const hasLoadedLocations = useLocationStore((state) => state.hasLoadedLocations)
   const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
   const showAuthActions = _showAuthActions || (hasLoadedCurrentUser && !user)
   const mapMarkers: MapMarker[] = locations.map((location) => ({
@@ -30,6 +33,10 @@ export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
     weatherSymbol: location.currentWeather?.weatherSymbol ?? undefined,
   }))
 
+  if (isLoadingLocations || !hasLoadedLocations) {
+    return <MapPageSkeleton />
+  }
+
   if (!locations.length) {
     return (
       <div className="rounded-4xl bg-div p-6">
@@ -39,8 +46,8 @@ export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div className="mb-4 flex items-center justify-between gap-4">
+    <div className="flex min-h-0 flex-col lg:h-full">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-xl font-bold sm:text-2xl">{t("map.title")}</h1>
         {showAuthActions ? (
           <div className="flex items-center gap-2">
@@ -61,7 +68,7 @@ export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
         ) : null}
       </div>
       <div className="flex min-h-0 flex-1 flex-col gap-4 xl:flex-row">
-        <div className="min-h-[320px] overflow-hidden rounded-4xl md:min-h-[420px] xl:min-h-0 xl:flex-1">
+        <div className="min-h-[360px] overflow-hidden rounded-4xl sm:min-h-[460px] xl:min-h-0 xl:flex-1">
           <MapView
             markers={mapMarkers}
             zoom={7}

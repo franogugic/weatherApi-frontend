@@ -2,10 +2,10 @@ import { Skeleton } from "@/shared/ui/skeleton/Skeleton"
 
 export function ForecastPageSkeleton() {
   return (
-    <div className="flex h-full min-w-0 flex-1 flex-col overflow-y-auto rounded-4xl bg-div p-6">
+    <div className="flex min-w-0 flex-1 flex-col rounded-4xl bg-div p-4 sm:p-6 lg:h-full lg:overflow-y-auto">
       <Skeleton className="mb-8 h-10 w-72 max-w-full" />
 
-      <div className="mb-8 grid w-full grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-4">
+      <div className="mb-8 grid w-full grid-cols-[repeat(auto-fit,minmax(min(100%,260px),1fr))] gap-4">
         {Array.from({ length: 4 }).map((_, index) => (
           <div
             key={index}
@@ -49,9 +49,8 @@ export function ForecastPageSkeleton() {
       </div>
 
       <div className="rounded-3xl py-4">
-        <div className="overflow-x-auto">
-        <div className="min-w-[860px]">
-          <div className="mb-4 grid grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] px-3">
+        <div>
+          <div className="mb-4 hidden grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] px-3 md:grid">
             {Array.from({ length: 8 }).map((_, index) => (
               <Skeleton key={index} className="h-3 w-16" />
             ))}
@@ -60,7 +59,7 @@ export function ForecastPageSkeleton() {
             {Array.from({ length: 9 }).map((_, rowIndex) => (
               <div
                 key={rowIndex}
-                className="grid grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] items-center border-b border-white/10 px-3 py-2"
+                className="grid grid-cols-2 gap-3 rounded-3xl border border-white/10 bg-white/[0.03] px-4 py-4 md:grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] md:items-center md:gap-0 md:rounded-none md:border-x-0 md:border-t-0 md:bg-transparent md:px-3 md:py-2"
               >
                 {Array.from({ length: 8 }).map((__, cellIndex) => (
                   <Skeleton key={cellIndex} className="h-4 w-16" />
@@ -68,7 +67,6 @@ export function ForecastPageSkeleton() {
               </div>
             ))}
           </div>
-        </div>
         </div>
       </div>
     </div>
