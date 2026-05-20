@@ -68,12 +68,12 @@ export function RegisterPage(){
     }
 
     return (
-        <div className="flex h-full min-h-0 items-center justify-center">
-            <div className="bg-div rounded-2xl p-6">
+        <div className="flex min-h-[calc(100vh-1.5rem)] items-center justify-center lg:h-full lg:min-h-0">
+            <div className="bg-div w-full max-w-[620px] rounded-2xl p-6">
                 <h1 className="text-[28px] text-center font-semibold">{t("auth.registerTitle")}</h1>
                 <h2 className="text-[14px] mt-1 mb-6 text-center font-extralight text-white/40">{t("auth.registerSubtitle")}</h2>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <div className="flex gap-8">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <AuthInput
                             label={t("auth.firstName")}
                             name="firstName"

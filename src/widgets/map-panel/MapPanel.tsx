@@ -34,7 +34,7 @@ export function MapPanel({}: MapPanelProps) {
     : []
 
   return (
-    <div className="relative h-full min-h-0 overflow-hidden rounded-4xl">
+    <div className="relative h-[280px] min-h-[280px] overflow-hidden rounded-4xl lg:h-full lg:min-h-0">
       <MapView
         latitude={selectedLocation.latitude}
         longitude={selectedLocation.longitude}

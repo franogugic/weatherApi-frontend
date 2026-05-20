@@ -19,10 +19,10 @@ export function FavoriteLocationsPanel({
 }: FavoriteLocationsPanelProps) {
   const { t } = useTranslation()
   return (
-    <div className="relative z-10 shrink-0 overflow-visible rounded-4xl bg-div p-4 sm:p-5">
+    <div className="relative z-10 shrink-0 overflow-visible rounded-4xl bg-div p-4">
       <div className="relative z-0 mb-4 flex items-center justify-between gap-3">
         <div>
-          <p className="bg-linear-to-b from-accent-secondary to-accent-primary bg-clip-text text-[22px] font-semibold text-transparent">
+          <p className="bg-linear-to-b from-accent-secondary to-accent-primary bg-clip-text text-[20px] font-semibold text-transparent">
             {t("favorites.title")}
           </p>
           <p className="text-[12px] text-subtext font-light">
@@ -39,12 +39,12 @@ export function FavoriteLocationsPanel({
       </div>
 
       {locations.length ? (
-        <div className="relative z-20 grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4 overflow-visible px-1 pb-2">
+        <div className="relative z-20 grid grid-cols-[repeat(auto-fit,minmax(min(100%,180px),1fr))] gap-3 overflow-visible px-1 pb-2 md:grid-flow-col md:auto-cols-[minmax(180px,220px)] md:grid-cols-none md:overflow-x-auto">
           {locations.map((location) => (
             <NavLink
               key={location.id}
               to={`/${location.id}`}
-              className="group/card relative z-0 flex min-h-[132px] min-w-0 flex-col justify-between rounded-[22px] border border-white/10 bg-[#2b2f36]/70 p-[18px] text-left shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl transition duration-200 ease-out hover:z-50 hover:-translate-y-0.5 hover:border-white/15 hover:bg-[#303640]/75"
+              className="group/card relative z-0 flex min-h-[104px] min-w-0 flex-col justify-between rounded-[20px] border border-white/10 bg-[#2b2f36]/70 p-3 text-left shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl transition duration-200 ease-out hover:z-50 hover:-translate-y-0.5 hover:border-white/15 hover:bg-[#303640]/75"
             >
               <div className="pointer-events-none absolute left-1/2 top-0 z-[999] w-[220px] -translate-x-1/2 -translate-y-[calc(100%+10px)] rounded-2xl border border-white/10 bg-[#20252c]/95 p-3 opacity-0 shadow-[0_14px_30px_rgba(0,0,0,0.35)] backdrop-blur-xl transition duration-200 group-hover/card:opacity-100">
                 <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/35">
@@ -74,7 +74,7 @@ export function FavoriteLocationsPanel({
 
               <div className="flex items-center gap-2">
                 <MapPin size={16} className="shrink-0 text-accent-primary" />
-                <p className="line-clamp-1 text-[15px] font-semibold text-white/90">
+                <p className="line-clamp-1 text-[14px] font-semibold text-white/90">
                   {location.name}
                 </p>
               </div>
@@ -83,18 +83,18 @@ export function FavoriteLocationsPanel({
                 <div>
                   {location.currentWeather?.airTemperature !== null &&
                   location.currentWeather?.airTemperature !== undefined ? (
-                    <p className="text-[32px] font-semibold leading-none text-white">
+                    <p className="text-[24px] font-semibold leading-none text-white">
                       {formatTemperature(location.currentWeather.airTemperature, temperatureUnit)}
                     </p>
                   ) : (
-                    <p className="text-[32px] font-semibold leading-none text-white">--</p>
+                    <p className="text-[24px] font-semibold leading-none text-white">--</p>
                   )}
                 </div>
 
                 {location.currentWeather?.weatherSymbol ? (
                   <WeatherSymbolIcon
                     symbol={location.currentWeather.weatherSymbol}
-                    className="w-16 drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)]"
+                    className="w-12 drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)]"
                   />
                 ) : null}
               </div>

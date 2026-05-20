@@ -208,6 +208,8 @@
     "kelvin": "Kelvin (K)",
     "knots": "Knots",
     "percent": "Percent (%)",
-    "okta": "Okta"
+    "okta": "Okta",
+    "resetDefaults": "Reset defaults",
+    "updateFailed": "Could not update preferences."
   }
 }

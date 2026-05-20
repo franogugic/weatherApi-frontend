@@ -62,7 +62,7 @@ function EmptyDashboardBlock() {
   )
 }
 
-function getBlockGridStyle(cellIds: DashboardCellId[]): CSSProperties {
+function getBlockGridStyle(cellIds: DashboardCellId[]): CSSProperties & Record<string, string> {
   const positions = cellIds.map((cellId) => cellPosition[cellId])
   const columnStart = Math.min(...positions.map((position) => position.column))
   const columnEnd = Math.max(...positions.map((position) => position.column))
@@ -70,8 +70,8 @@ function getBlockGridStyle(cellIds: DashboardCellId[]): CSSProperties {
   const rowEnd = Math.max(...positions.map((position) => position.row))
 
   return {
-    gridColumn: `${columnStart} / span ${columnEnd - columnStart + 1}`,
-    gridRow: `${rowStart} / span ${rowEnd - rowStart + 1}`,
+    "--dashboard-grid-column": `${columnStart} / span ${columnEnd - columnStart + 1}`,
+    "--dashboard-grid-row": `${rowStart} / span ${rowEnd - rowStart + 1}`,
   }
 }
 
@@ -289,9 +289,9 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
               setDraggedBlockId(null)
               setDropTargetBlockId(null)
             }}
-            className={`group relative h-full min-h-0 min-w-0 transition ${
-              block.widgetId === "map" ? "hidden lg:block" : ""
-            } ${block.widgetId === "graph" ? "overflow-visible" : "overflow-hidden"} ${
+            className={`group relative min-h-[280px] min-w-0 transition lg:h-full lg:min-h-0 lg:[grid-column:var(--dashboard-grid-column)] lg:[grid-row:var(--dashboard-grid-row)] ${
+              block.widgetId === "graph" ? "overflow-visible" : "overflow-hidden"
+            } ${
               isEditingDashboard ? "dashboard-edit-frame cursor-grab active:cursor-grabbing" : ""
             } ${
               draggedBlockId === block.id ? "scale-[0.985] opacity-55" : ""
@@ -371,7 +371,7 @@ export function DashboardWidgetGrid(props: DashboardWidgetGridProps) {
                 aria-hidden="true"
               />
             )}
-            <div className="h-full">{renderedWidget}</div>
+            <div className="h-full min-h-[280px] lg:min-h-0">{renderedWidget}</div>
           </div>
         )
       })}

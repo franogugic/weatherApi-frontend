@@ -8,6 +8,11 @@ body {
   margin: 0;
   background: linear-gradient(180deg, #27282d 0%, #191519 100%);
   color: white;
+  overflow-x: hidden;
+}
+
+html {
+  overflow-x: hidden;
 }
 
 :root {

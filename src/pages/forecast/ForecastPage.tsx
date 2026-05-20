@@ -56,7 +56,7 @@ function getWeatherSymbolLabel(symbol: string, t: (key: string) => string) {
 export function ForecastPage() {
   const { t, i18n } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
-  const { forecast, meta, isLoading } = useForecastStore()
+  const { forecast, meta, isLoading, hasLoadedForecast } = useForecastStore()
   const { selectedLocation } = useLocationStore()
   const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
   const windSpeedUnit = useUnitPreferenceStore((state) => state.preferences.windSpeedUnit)
@@ -121,7 +121,7 @@ export function ForecastPage() {
     }
   }
 
-  if (isLoading) {
+  if (isLoading || !hasLoadedForecast) {
     return <ForecastPageSkeleton />
   }
 
@@ -134,12 +134,12 @@ export function ForecastPage() {
   }
 
   return (
-    <div className="flex h-full min-w-0 flex-1 flex-col overflow-y-auto rounded-4xl bg-div p-6">
+    <div className="flex min-w-0 flex-1 flex-col rounded-4xl bg-div p-4 sm:p-6 lg:h-full lg:overflow-y-auto">
       <div className="mb-8">
         <h2 className="mb-8 break-words text-3xl font-semibold tracking-tight sm:text-4xl">
           {selectedLocation?.name ?? t("forecast.locationUnavailable")}
         </h2>
-        <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-4">
+        <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(min(100%,260px),1fr))] gap-4">
           {dailyForecasts.map((daily) => {
             const isActive = selectedDate === daily.date
 
@@ -224,9 +224,8 @@ export function ForecastPage() {
       </div>
 
       <div className="rounded-3xl py-4">
-        <div className="overflow-x-auto">
-          <div className="min-w-[860px]">
-            <div className="mb-3 grid grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] px-3 text-[12px] text-subtext">
+          <div>
+            <div className="mb-3 hidden grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] px-3 text-[12px] text-subtext md:grid">
               <p>{t("forecast.time")}</p>
               <p>{t("forecast.weather")}</p>
               <p>{t("forecast.temp")}</p>
@@ -241,30 +240,41 @@ export function ForecastPage() {
               {selectedDayForecast.map((item) => (
                 <div
                   key={item.forecastTime}
-                  className="grid grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] items-center border-b-[1px] border-white/20 px-3 py-2"
+                  className="grid grid-cols-2 gap-3 rounded-3xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm md:grid-cols-[110px_80px_1fr_1fr_1fr_1fr_1fr_1fr] md:items-center md:gap-0 md:rounded-none md:border-x-0 md:border-t-0 md:bg-transparent md:px-3 md:py-2"
                 >
-                  <div>
+                  <div className="col-span-2 flex items-center justify-between md:col-span-1 md:block">
+                    <span className="text-[11px] uppercase text-subtext md:hidden">{t("forecast.time")}</span>
                     {item.forecastTime === currentForecast.forecastTime
                       ? <p className="w-fit rounded-3xl bg-linear-to-br from-accent-secondary to-accent-primary px-2 font-bold">{t("common.now")}</p>
                       : formatHourLabel(item.forecastTime, locale)}
                   </div>
-                  <WeatherSymbolIcon symbol={item.weatherSymbol} className="w-10" />
-                  <p>
+                  <div className="flex items-center justify-between md:block">
+                    <span className="text-[11px] uppercase text-subtext md:hidden">{t("forecast.weather")}</span>
+                    <WeatherSymbolIcon symbol={item.weatherSymbol} className="w-10 md:mx-0" />
+                  </div>
+                  <p className="flex items-center justify-between gap-2 md:block">
+                    <span className="text-[11px] uppercase text-subtext md:hidden">{t("forecast.temp")}</span>
                     {formatTemperature(item.airTemperature, temperatureUnit, temperatureUnitLabel)}
                   </p>
-                  <p>
+                  <p className="flex items-center justify-between gap-2 md:block">
+                    <span className="text-[11px] uppercase text-subtext md:hidden">{t("forecast.pressure")}</span>
                     {formatPressure(item.airPressureAtSeaLevel, pressureUnit, pressureUnitLabel)}
                   </p>
-                  <p>
+                  <p className="flex items-center justify-between gap-2 md:block">
+                    <span className="text-[11px] uppercase text-subtext md:hidden">{t("forecast.clouds")}</span>
                     {formatCloudiness(item.cloudiness, cloudinessUnit, cloudinessUnitLabel)}
                   </p>
-                  <p>
+                  <p className="flex items-center justify-between gap-2 md:block">
+                    <span className="text-[11px] uppercase text-subtext md:hidden">{t("forecast.humidity")}</span>
                     {item.humidity} {meta.relative_humidity?.unitDisplayName}
                   </p>
-                  <p>
+                  <p className="flex items-center justify-between gap-2 md:block">
+                    <span className="text-[11px] uppercase text-subtext md:hidden">{t("forecast.precipitation")}</span>
                     {formatPrecipitation(item.precipitationAmount, precipitationUnit, precipitationUnitLabel)}
                   </p>
-                  <div className="flex items-center gap-2">
+                  <div className="col-span-2 flex items-center justify-between gap-2 md:col-span-1 md:justify-start">
+                    <span className="text-[11px] uppercase text-subtext md:hidden">{t("forecast.wind")}</span>
+                    <div className="flex items-center gap-2">
                     <MoveUp
                       size={16}
                       style={{ transform: `rotate(${item.windDirection}deg)` }}
@@ -272,12 +282,12 @@ export function ForecastPage() {
                     <p>
                       {formatWindSpeed(item.windSpeed, windSpeedUnit, windSpeedUnitLabel)}
                     </p>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
       </div>
         <div className="flex flex-wrap items-center justify-between gap-3">
                 <button onClick={goToPreviousDay} disabled={!hasPreviousDay} className="disabled:opacity-0 underline cursor-pointer bg-linear-to-r from-accent-secondary to-accent-primary bg-clip-text text-transparent">

@@ -4,7 +4,7 @@ import { getAuthErrorMessage } from "../auth/auth-error"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
-const DEFAULT_UNIT_PREFERENCES: UnitPreferences = {
+export const DEFAULT_UNIT_PREFERENCES: UnitPreferences = {
   temperatureUnit: "celsius",
   windSpeedUnit: "metersPerSecond",
   pressureUnit: "hectopascal",

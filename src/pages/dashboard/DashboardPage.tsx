@@ -19,8 +19,12 @@ function isDashboardLocationPath(pathname: string) {
 export function DashboardPage() {
   const { t } = useTranslation()
   const {forecast, meta, isLoading} = useForecastStore()
+  const hasLoadedForecast = useForecastStore((state) => state.hasLoadedForecast)
   const user = useAuthStore((state) => state.user)
+  const hasLoadedCurrentUser = useAuthStore((state) => state.hasLoadedCurrentUser)
   const isEditingDashboard = useDashboardLayoutStore((state) => state.isEditingDashboard)
+  const hasLoadedDashboardLayout = useDashboardLayoutStore((state) => state.hasLoadedDashboardLayout)
+  const isLoadingDashboardLayout = useDashboardLayoutStore((state) => state.isLoadingDashboardLayout)
   const discardDraftBlocks = useDashboardLayoutStore((state) => state.discardDraftBlocks)
 
   useEffect(() => {
@@ -37,7 +41,12 @@ export function DashboardPage() {
     }
   }, [])
 
-  if (isLoading) {
+  if (
+    isLoading ||
+    !hasLoadedCurrentUser ||
+    (user && (isLoadingDashboardLayout || !hasLoadedDashboardLayout)) ||
+    !hasLoadedForecast
+  ) {
     return <DashboardPageSkeleton />
   }
 
@@ -63,7 +72,7 @@ export function DashboardPage() {
   }
 
   return (
-    <div className="flex h-full min-h-0 min-w-0 flex-col gap-5 overflow-hidden">
+    <div className="flex min-h-0 min-w-0 flex-col gap-5 pb-24 lg:h-full lg:overflow-hidden lg:pb-0">
       <div className="grid shrink-0 grid-cols-1 gap-5 lg:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)]">
         <SearchPanel />
         <div className="hidden lg:block" />
@@ -72,7 +81,7 @@ export function DashboardPage() {
       {user ? <DashboardWidgetPalette /> : null}
       {meta ? (
         <div
-          className={`relative grid min-h-0 min-w-0 flex-1 overflow-visible grid-cols-1 gap-5 lg:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] lg:grid-rows-[repeat(2,minmax(0,1fr))] ${
+          className={`relative grid min-h-0 min-w-0 flex-1 grid-cols-1 gap-5 overflow-visible lg:grid-cols-[minmax(0,29fr)_minmax(0,33fr)_minmax(0,38fr)] lg:grid-rows-[repeat(2,minmax(0,1fr))] ${
             isEditingDashboard ? "dashboard-edit-frame" : ""
           }`}
         >

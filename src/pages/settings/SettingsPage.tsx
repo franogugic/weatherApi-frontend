@@ -5,7 +5,10 @@ import { LANGUAGE_OPTIONS } from "@/features/language/language-options";
 import { useLanguageStore } from "@/features/language/language-store";
 import { LAST_VIEWED_LOCATION_ID_KEY } from "@/features/location/last-viewed-location";
 import { useLocationStore } from "@/features/location/location-store";
-import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store";
+import {
+  DEFAULT_UNIT_PREFERENCES,
+  useUnitPreferenceStore,
+} from "@/features/unit-preferences/unit-preference-store";
 
 import type { UnitPreferences } from "@/features/unit-preferences/unit-preferences-types";
 import { AppDropdown } from "@/shared/ui/dropdown/AppDropdown";
@@ -88,6 +91,22 @@ export function SettingsPage() {
     }
   }
 
+  async function handleResetUnitPreferences() {
+    setPreferenceErrorMessage("");
+
+    try {
+      await updatePreferences(DEFAULT_UNIT_PREFERENCES);
+    } catch (error) {
+      console.error(error);
+
+      setPreferenceErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Could not update preferences.",
+      );
+    }
+  }
+
   function handleEditHomeLayout() {
     startDashboardEditing();
 
@@ -133,15 +152,15 @@ export function SettingsPage() {
   }
 
   return (
-    <main className="flex h-full min-h-0 flex-col overflow-y-auto rounded-4xl bg-div p-6 text-white">
+    <main className="flex min-h-0 flex-col rounded-4xl bg-div p-4 text-white sm:p-6 lg:h-full lg:overflow-y-auto">
       <div className="mb-4 flex h-10 items-center justify-between">
         <h1 className="text-2xl font-bold">{t("settings.title")}</h1>
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:grid-rows-[100px_150px_minmax(0,1fr)_150px]">
-        <div className="col-span-2 flex items-center justify-between gap-4 rounded-4xl border-white/10 bg-[#2b2f36]/70 px-8 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75">
-          <div>
-            <p className="flex text-[40px] font-semibold">
+        <div className="flex flex-col gap-4 rounded-4xl border-white/10 bg-[#2b2f36]/70 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 sm:px-8 lg:col-span-2 lg:flex-row lg:items-center lg:justify-between">
+          <div className="min-w-0">
+            <p className="flex flex-wrap text-[28px] font-semibold leading-tight sm:text-[40px]">
               {t("settings.welcome")}&nbsp;
               <LinearText text={user.firstName} />!
             </p>
@@ -164,16 +183,20 @@ export function SettingsPage() {
           <SettingsPersonalInfoBlock />
         </div>
 
-        <div className="row-span-2 w-full min-w-0 rounded-4xl border-white/10 bg-[#2b2f36]/70 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 p-4">
+        <div className="w-full min-w-0 rounded-4xl border-white/10 bg-[#2b2f36]/70 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 p-4 lg:row-span-2">
           <SettingsUnitsBlock
             preferences={preferences}
             handlePreferenceChange={handlePreferenceChange}
             preferenceErrorMessage={preferenceErrorMessage}
+            onResetDefaults={() => void handleResetUnitPreferences()}
+            isResetDisabled={
+              JSON.stringify(preferences) === JSON.stringify(DEFAULT_UNIT_PREFERENCES)
+            }
           />
         </div>
 
-        <div className="row-span-2 rounded-4xl border-white/10 bg-[#2b2f36]/70 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 p-4 min-w-0">
-          <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="rounded-4xl border-white/10 bg-[#2b2f36]/70 shadow-[0_4px_12px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.03)] hover:border-white/15 hover:bg-[#303640]/75 p-4 min-w-0 lg:row-span-2">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <LinearText
               text={t("settings.favoriteLocations")}
               className="text-[20px] font-semibold"
@@ -191,7 +214,7 @@ export function SettingsPage() {
               onChange={(value) => {
                 void addFavoriteLocation(Number(value));
               }}
-              className="w-44"
+              className="w-full sm:w-44"
               buttonClassName="rounded-2xl px-3 py-1.5 text-[13px]"
               menuClassName="w-72"
               placement="auto"

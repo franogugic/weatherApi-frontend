@@ -8,6 +8,7 @@ type LocationStore = {
     selectedLocation: Location | null
     locations: Location[]
     isLoading: boolean
+    hasLoadedLocations: boolean
     setSelectedLocation: (location: Location | null) => void
     fetchLocations: () => Promise<void>
 }
@@ -16,6 +17,7 @@ export const useLocationStore = create<LocationStore>((set) => ({
     selectedLocation: null,
     locations: [],
     isLoading: false,
+    hasLoadedLocations: false,
     setSelectedLocation: (location) => set({ selectedLocation: location }),
     fetchLocations: async () => {
         set({ isLoading: true })
@@ -29,9 +31,10 @@ export const useLocationStore = create<LocationStore>((set) => ({
                 localStorage.setItem(LAST_VIEWED_LOCATION_ID_KEY, String(jsonData[0].id))
             }
 
-            set({ locations: jsonData })
+            set({ locations: jsonData, hasLoadedLocations: true })
         } catch (error) {
             console.error("Error fetching locations:", error)
+            set({ hasLoadedLocations: true })
         } finally {
             set({ isLoading: false })
         }
