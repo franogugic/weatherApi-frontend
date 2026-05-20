@@ -46,5 +46,6 @@ export type DashboardLayoutStore = {
   saveDraftBlocks: () => Promise<void>
   discardDraftBlocks: () => void
   resetDraftBlocks: () => void
+  resetDashboardLayoutLocal: () => void
   resetDashboardLayout: () => Promise<void>
 }
