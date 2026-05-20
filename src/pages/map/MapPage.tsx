@@ -73,7 +73,7 @@ export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
       </div>
       <div className="flex min-h-0 flex-1 flex-col gap-4 xl:flex-row">
         <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4">
-          <div className="min-h-[360px] flex-1 overflow-hidden rounded-4xl sm:min-h-[460px] xl:min-h-0">
+          <div className="h-[360px] min-h-[360px] flex-1 overflow-hidden rounded-4xl sm:h-[460px] sm:min-h-[460px] xl:h-auto xl:min-h-0">
           <MapView
             markers={mapMarkers}
             zoom={7}

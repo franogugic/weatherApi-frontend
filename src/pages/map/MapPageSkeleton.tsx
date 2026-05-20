@@ -5,7 +5,7 @@ export function MapPageSkeleton() {
     <div className="flex min-h-0 flex-col lg:h-full">
       <Skeleton className="mb-4 h-8 w-32" />
       <div className="flex min-h-0 flex-1 flex-col gap-4 xl:flex-row">
-        <div className="relative min-h-[360px] overflow-hidden rounded-4xl bg-[#49484d] sm:min-h-[460px] xl:min-h-0 xl:flex-1">
+        <div className="relative h-[360px] min-h-[360px] overflow-hidden rounded-4xl bg-[#49484d] sm:h-[460px] sm:min-h-[460px] xl:h-auto xl:min-h-0 xl:flex-1">
           <div className="absolute inset-0 opacity-70">
             <Skeleton className="absolute left-[8%] top-[18%] h-3 w-[42%] rotate-[-10deg] rounded-full bg-white/8" />
             <Skeleton className="absolute right-[10%] top-[34%] h-3 w-[36%] rotate-[14deg] rounded-full bg-white/8" />
