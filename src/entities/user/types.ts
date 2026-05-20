@@ -5,4 +5,5 @@ export type User = {
     email: string
     role?: 1 | 2
     createdAt?: string
+    sessionToken?: string
 }

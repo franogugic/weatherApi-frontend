@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { API_BASE_URL } from "@/shared/config/api"
+import { getAuthHeaders } from "@/shared/config/auth-token"
 import type { UnitPreferences, UnitPreferenceStore } from "./unit-preferences-types"
 import { getAuthErrorMessage } from "../auth/auth-error"
 
@@ -40,6 +41,7 @@ export const useUnitPreferenceStore = create<UnitPreferenceStore>((set, get) => 
     try {
       const response = await fetch(`${API_BASE_URL}/user-preferences`, {
         method: "GET",
+        headers: getAuthHeaders(),
         credentials: "include",
       })
 
@@ -69,6 +71,7 @@ export const useUnitPreferenceStore = create<UnitPreferenceStore>((set, get) => 
     const response = await fetch(`${API_BASE_URL}/user-preferences`, {
       method: "PUT",
       headers: {
+        ...getAuthHeaders(),
         "Content-Type": "application/json",
       },
       credentials: "include",

@@ -1,5 +1,6 @@
 import type { Location } from "@/entities/location/types";
 import { API_BASE_URL } from "@/shared/config/api";
+import { getAuthHeaders } from "@/shared/config/auth-token";
 import { create } from "zustand";
 import { getAuthErrorMessage } from "../auth/auth-error";
 import { useLocationStore } from "../location/location-store";
@@ -36,6 +37,7 @@ export const useAdminLocationStore = create<AdminLocationStore>((set, get) => ({
       const response = await fetch(`${API_BASE_URL}/admin/locations`, {
         method: "POST",
         headers: {
+          ...getAuthHeaders(),
           "Content-Type": "application/json",
         },
         credentials: "include",
@@ -66,6 +68,7 @@ export const useAdminLocationStore = create<AdminLocationStore>((set, get) => ({
     try {
       const response = await fetch(`${API_BASE_URL}/admin/locations/${locationId}`, {
         method: "DELETE",
+        headers: getAuthHeaders(),
         credentials: "include",
       });
 
@@ -122,6 +125,7 @@ export const useAdminLocationStore = create<AdminLocationStore>((set, get) => ({
         `${API_BASE_URL}/admin/locations/${locationId}/fetches`,
         {
           method: "GET",
+          headers: getAuthHeaders(),
           credentials: "include",
         },
       );
@@ -153,6 +157,7 @@ export const useAdminLocationStore = create<AdminLocationStore>((set, get) => ({
         `${API_BASE_URL}/admin/locations/${locationId}/fetches/${fetchId}`,
         {
           method: "DELETE",
+          headers: getAuthHeaders(),
           credentials: "include",
         },
       );

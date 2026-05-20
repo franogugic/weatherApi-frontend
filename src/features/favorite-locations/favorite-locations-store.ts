@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import type { Location } from "@/entities/location/types"
 import { API_BASE_URL } from "@/shared/config/api";
+import { getAuthHeaders } from "@/shared/config/auth-token";
 
 type FavoriteLocationStore = {
     favoriteLocations: Location[],
@@ -22,6 +23,7 @@ export const useFavoriteLocationStore = create<FavoriteLocationStore>((set) => (
 
             var response = await fetch(`${API_BASE_URL}/user-favorite-locations`, {
                 method: "GET",
+                headers: getAuthHeaders(),
                 credentials: "include"
             })
             
@@ -44,6 +46,7 @@ export const useFavoriteLocationStore = create<FavoriteLocationStore>((set) => (
         var response = await fetch(`${API_BASE_URL}/user-favorite-locations`, {
             method: "POST",
             headers: {
+                ...getAuthHeaders(),
                 "Content-Type": "application/json",
             },
             credentials: "include",
@@ -64,6 +67,7 @@ export const useFavoriteLocationStore = create<FavoriteLocationStore>((set) => (
     removeFavoriteLocation: async (locationId) => {
         var response = await fetch(`${API_BASE_URL}/user-favorite-locations/${locationId}`, {
             method: "DELETE",
+            headers: getAuthHeaders(),
             credentials: "include",
         })
 

@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { API_BASE_URL } from "@/shared/config/api"
+import { getAuthHeaders } from "@/shared/config/auth-token"
 import type {
   DashboardBlock,
   DashboardBlockId,
@@ -209,6 +210,7 @@ async function saveBlocksToBackend(blocks: DashboardBlock[]) {
   const response = await fetch(`${API_BASE_URL}/user-dashboard-layout`, {
     method: "PUT",
     headers: {
+      ...getAuthHeaders(),
       "Content-Type": "application/json",
     },
     credentials: "include",
@@ -238,6 +240,7 @@ export const useDashboardLayoutStore = create<DashboardLayoutStore>((set, get) =
     try {
       const response = await fetch(`${API_BASE_URL}/user-dashboard-layout`, {
         method: "GET",
+        headers: getAuthHeaders(),
         credentials: "include",
       })
 

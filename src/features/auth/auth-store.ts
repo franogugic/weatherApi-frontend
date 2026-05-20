@@ -1,5 +1,6 @@
 import type { User } from "@/entities/user/types"
 import { API_BASE_URL } from "@/shared/config/api"
+import { clearAuthSessionToken, getAuthHeaders, storeAuthSessionToken } from "@/shared/config/auth-token"
 import { create } from "zustand"
 import { getAuthErrorMessage } from "./auth-error"
 
@@ -37,6 +38,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try {
       const response = await fetch(`${API_BASE_URL}/auth/me`, {
         method: "GET",
+        headers: getAuthHeaders(),
         credentials: "include",
       })
 
@@ -69,6 +71,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     }
 
     const user = await response.json() as User
+    storeAuthSessionToken(user.sessionToken)
     set({ user, hasLoadedCurrentUser: true })
     return user
   },
@@ -91,9 +94,11 @@ export const useAuthStore = create<AuthStore>((set) => ({
   logout: async () => {
     await fetch(`${API_BASE_URL}/auth/logout`, {
       method: "POST",
+      headers: getAuthHeaders(),
       credentials: "include",
     }).catch(() => null)
 
+    clearAuthSessionToken()
     localStorage.clear()
     sessionStorage.clear()
     set({ user: null, hasLoadedCurrentUser: true })
