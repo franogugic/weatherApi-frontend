@@ -5,7 +5,10 @@ import { LANGUAGE_OPTIONS } from "@/features/language/language-options";
 import { useLanguageStore } from "@/features/language/language-store";
 import { LAST_VIEWED_LOCATION_ID_KEY } from "@/features/location/last-viewed-location";
 import { useLocationStore } from "@/features/location/location-store";
-import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store";
+import {
+  DEFAULT_UNIT_PREFERENCES,
+  useUnitPreferenceStore,
+} from "@/features/unit-preferences/unit-preference-store";
 
 import type { UnitPreferences } from "@/features/unit-preferences/unit-preferences-types";
 import { AppDropdown } from "@/shared/ui/dropdown/AppDropdown";
@@ -77,6 +80,22 @@ export function SettingsPage() {
         ...preferences,
         [key]: value,
       });
+    } catch (error) {
+      console.error(error);
+
+      setPreferenceErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Could not update preferences.",
+      );
+    }
+  }
+
+  async function handleResetUnitPreferences() {
+    setPreferenceErrorMessage("");
+
+    try {
+      await updatePreferences(DEFAULT_UNIT_PREFERENCES);
     } catch (error) {
       console.error(error);
 
@@ -169,6 +188,10 @@ export function SettingsPage() {
             preferences={preferences}
             handlePreferenceChange={handlePreferenceChange}
             preferenceErrorMessage={preferenceErrorMessage}
+            onResetDefaults={() => void handleResetUnitPreferences()}
+            isResetDisabled={
+              JSON.stringify(preferences) === JSON.stringify(DEFAULT_UNIT_PREFERENCES)
+            }
           />
         </div>
 

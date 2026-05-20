@@ -1,5 +1,6 @@
 import { useLocationStore } from "@/features/location/location-store"
 import { useAuthStore } from "@/features/auth/auth-store"
+import { useFavoriteLocationStore } from "@/features/favorite-locations/favorite-locations-store"
 import { formatTemperature } from "@/features/unit-preferences/format-units"
 import { useUnitPreferenceStore } from "@/features/unit-preferences/unit-preference-store"
 import { MapView, type MapMarker } from "@/shared/ui/map/MapView"
@@ -7,6 +8,7 @@ import { MessageState } from "@/shared/ui/status/MessageState"
 import { useTranslation } from "react-i18next"
 import { NavLink, useNavigate } from "react-router-dom"
 import { AvailableLocationsPanel } from "./AvailableLocationsPanel"
+import { FavoriteLocationsPanel } from "./FavoriteLocationsPanel"
 import { MapPageSkeleton } from "./MapPageSkeleton"
 
 type MapPageProps = {
@@ -21,6 +23,8 @@ export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
   const locations = useLocationStore((state) => state.locations)
   const isLoadingLocations = useLocationStore((state) => state.isLoading)
   const hasLoadedLocations = useLocationStore((state) => state.hasLoadedLocations)
+  const favoriteLocations = useFavoriteLocationStore((state) => state.favoriteLocations)
+  const isLoadingFavorites = useFavoriteLocationStore((state) => state.isLoadingFavorites)
   const temperatureUnit = useUnitPreferenceStore((state) => state.preferences.temperatureUnit)
   const showAuthActions = _showAuthActions || (hasLoadedCurrentUser && !user)
   const mapMarkers: MapMarker[] = locations.map((location) => ({
@@ -68,15 +72,27 @@ export function MapPage({ showAuthActions: _showAuthActions }: MapPageProps) {
         ) : null}
       </div>
       <div className="flex min-h-0 flex-1 flex-col gap-4 xl:flex-row">
-        <div className="min-h-[360px] overflow-hidden rounded-4xl sm:min-h-[460px] xl:min-h-0 xl:flex-1">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4">
+          <div className="min-h-[360px] flex-1 overflow-hidden rounded-4xl sm:min-h-[460px] xl:min-h-0">
           <MapView
             markers={mapMarkers}
             zoom={7}
             onMarkerClick={(marker) => navigate(`/${marker.id}`)}
           />
+          </div>
+
+          {user ? (
+            <FavoriteLocationsPanel
+              locations={favoriteLocations}
+              temperatureUnit={temperatureUnit}
+              isLoading={isLoadingFavorites}
+            />
+          ) : null}
         </div>
 
-        <AvailableLocationsPanel locations={locations} temperatureUnit={temperatureUnit} />
+        {!user ? (
+          <AvailableLocationsPanel locations={locations} temperatureUnit={temperatureUnit} />
+        ) : null}
       </div>
     </div>
   )

@@ -12,6 +12,7 @@ import {
   Gauge,
   Wind,
   Thermometer,
+  RotateCcw,
 } from "lucide-react";
 import { UnitSelect } from "./UnitSelect";
 import { LinearText } from "../linear-text/LinearText";
@@ -25,6 +26,8 @@ type SettingsUnitsBlockProps = {
   ) => Promise<void>;
   preferenceErrorMessage: string;
   compact?: boolean;
+  onResetDefaults?: () => void;
+  isResetDisabled?: boolean;
   showHeader?: boolean;
   showDropdownChevron?: boolean;
 };
@@ -34,6 +37,8 @@ export function SettingsUnitsBlock({
   handlePreferenceChange,
   preferenceErrorMessage,
   compact = false,
+  onResetDefaults,
+  isResetDisabled = false,
   showHeader = true,
   showDropdownChevron = true,
 }: SettingsUnitsBlockProps) {
@@ -42,10 +47,23 @@ export function SettingsUnitsBlock({
     <div>
       {showHeader ? (
         <>
-          <LinearText
-            text={t("units.title")}
-            className={compact ? "text-[16px] font-semibold" : "text-[20px] font-semibold"}
-          />
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <LinearText
+              text={t("units.title")}
+              className={compact ? "text-[16px] font-semibold" : "text-[20px] font-semibold"}
+            />
+            {onResetDefaults ? (
+              <button
+                type="button"
+                onClick={onResetDefaults}
+                disabled={isResetDisabled}
+                className="flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-[#20252c]/80 px-3 py-2 text-[12px] font-semibold text-white/70 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <RotateCcw size={14} />
+                {t("units.resetDefaults")}
+              </button>
+            ) : null}
+          </div>
           {!compact ? (
             <p className="mt-1 mb-6 text-[12px] font-light text-white/60">
               {t("units.subtitle")}

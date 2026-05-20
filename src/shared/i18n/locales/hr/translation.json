@@ -208,6 +208,8 @@
     "kelvin": "Kelvin (K)",
     "knots": "Čvorovi",
     "percent": "Postotak (%)",
-    "okta": "Okta"
+    "okta": "Okta",
+    "resetDefaults": "Vrati zadano",
+    "updateFailed": "Postavke se nisu mogle spremiti."
   }
 }
