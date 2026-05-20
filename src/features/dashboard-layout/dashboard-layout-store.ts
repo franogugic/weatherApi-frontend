@@ -8,7 +8,6 @@ import type {
 } from "./dashboard-layout-types"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
-const DASHBOARD_LAYOUT_STORAGE_KEY = "weather-dashboard-six-box-layout-v2"
 
 const DASHBOARD_WIDGET_IDS: Record<DashboardWidgetId, true> = {
   currentForecast: true,
@@ -179,32 +178,6 @@ function mergeWithDefaultBlocks(savedBlocks: DashboardBlock[]) {
   })
 }
 
-function loadBlocksFromStorage() {
-  const savedBlocks = localStorage.getItem(DASHBOARD_LAYOUT_STORAGE_KEY)
-
-  if (!savedBlocks) {
-    return DEFAULT_DASHBOARD_BLOCKS
-  }
-
-  try {
-    const parsedBlocks = JSON.parse(savedBlocks) as unknown
-
-    if (!Array.isArray(parsedBlocks) || !parsedBlocks.every(isDashboardBlock)) {
-      return DEFAULT_DASHBOARD_BLOCKS
-    }
-
-    const blocks = mergeWithDefaultBlocks(parsedBlocks)
-
-    return hasCellConflicts(blocks) ? DEFAULT_DASHBOARD_BLOCKS : blocks
-  } catch {
-    return DEFAULT_DASHBOARD_BLOCKS
-  }
-}
-
-function saveBlocksToStorage(blocks: DashboardBlock[]) {
-  localStorage.setItem(DASHBOARD_LAYOUT_STORAGE_KEY, JSON.stringify(blocks))
-}
-
 async function saveBlocksToBackend(blocks: DashboardBlock[]) {
   const response = await fetch(`${API_BASE_URL}/user-dashboard-layout`, {
     method: "PUT",
@@ -222,7 +195,7 @@ async function saveBlocksToBackend(blocks: DashboardBlock[]) {
   }
 }
 
-const initialDashboardBlocks = loadBlocksFromStorage()
+const initialDashboardBlocks = cloneBlocks(DEFAULT_DASHBOARD_BLOCKS)
 
 export const useDashboardLayoutStore = create<DashboardLayoutStore>((set, get) => ({
   blocks: initialDashboardBlocks,
@@ -253,7 +226,7 @@ export const useDashboardLayoutStore = create<DashboardLayoutStore>((set, get) =
       const loadedBlocks =
         Array.isArray(parsedBlocks) && parsedBlocks.every(isDashboardBlock)
           ? mergeWithDefaultBlocks(parsedBlocks)
-          : loadBlocksFromStorage()
+          : DEFAULT_DASHBOARD_BLOCKS
       const blocks = hasCellConflicts(loadedBlocks) ? DEFAULT_DASHBOARD_BLOCKS : loadedBlocks
 
       set({
@@ -392,7 +365,6 @@ export const useDashboardLayoutStore = create<DashboardLayoutStore>((set, get) =
 
     const savedBlocks = cloneBlocks(draftBlocks)
 
-    saveBlocksToStorage(savedBlocks)
     await saveBlocksToBackend(savedBlocks)
     set({
       blocks: savedBlocks,
@@ -420,7 +392,6 @@ export const useDashboardLayoutStore = create<DashboardLayoutStore>((set, get) =
   resetDashboardLayout: async () => {
     const defaultBlocks = cloneBlocks(DEFAULT_DASHBOARD_BLOCKS)
 
-    saveBlocksToStorage(defaultBlocks)
     await saveBlocksToBackend(defaultBlocks).catch((error) => {
       console.error("Error saving default dashboard layout:", error)
     })
