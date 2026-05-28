@@ -14,6 +14,7 @@ import { AppLayout } from "./shared/ui/app-layout/AppLayout"
 import { RegisterPage } from "./pages/register/RegisterPage"
 import { LoginPage } from "./pages/login/LoginPage"
 import { SettingsPage } from "./pages/settings/SettingsPage"
+import { WeatherChatPage } from "./pages/weather-chat/WeatherChatPage"
 import { DashboardPageSkeleton } from "./pages/dashboard/DashboardPageSkeleton"
 import { ForecastPageSkeleton } from "./pages/forecast/ForecastPageSkeleton"
 import { MapPageSkeleton } from "./pages/map/MapPageSkeleton"
@@ -184,6 +185,7 @@ function App() {
         <Route element={<LocationDataLoader />}>
           <Route path="/:id" element={<DashboardPage />} />
           <Route path="/forecast/:id" element={<ForecastPage />} />
+          <Route path="/chat/:id" element={<WeatherChatPage />} />
         </Route>
         <Route path="/register" element={<RegisterPage/>}></Route>
         <Route path="/login" element={<LoginPage/>}></Route>

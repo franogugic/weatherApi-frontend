@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/features/auth/auth-store";
 import { useLocationStore } from "@/features/location/location-store";
 import { LAST_VIEWED_LOCATION_ID_KEY } from "@/features/location/last-viewed-location";
-import { CloudSun, DoorOpen, LayoutDashboard, Map, Settings, Sun, UserRoundCheck } from "lucide-react";
+import { CloudSun, DoorOpen, LayoutDashboard, Map, MessageCircle, Settings, Sun, UserRoundCheck } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 export function Sidebar() {
@@ -14,6 +14,7 @@ export function Sidebar() {
   const fallbackLocationId = selectedLocation?.id ?? storedLocationId ?? locations[0]?.id
   const dashboardPath = fallbackLocationId ? `/${fallbackLocationId}` : "/map"
   const forecastPath = fallbackLocationId ? `/forecast/${fallbackLocationId}` : "/map"
+  const chatPath = fallbackLocationId ? `/chat/${fallbackLocationId}` : "/map"
 
   async function handleLogout() {
     await logout()
@@ -39,6 +40,11 @@ export function Sidebar() {
         <NavLink to="/map">
           {({ isActive }) => (
             <Map className={isActive ? "" : "text-white/50"} />
+          )}
+        </NavLink>
+        <NavLink to={chatPath}>
+          {({ isActive }) => (
+            <MessageCircle className={isActive ? "" : "text-white/50"} />
           )}
         </NavLink>
         <NavLink to="/settings">
