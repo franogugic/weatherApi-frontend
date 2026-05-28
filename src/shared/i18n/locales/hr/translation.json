@@ -52,6 +52,15 @@
     "previousDay": "Prethodni dan",
     "nextDay": "Sljedeći dan"
   },
+  "weatherChat": {
+    "eyebrow": "Vremenski asistent",
+    "dataSource": "Baza + opće znanje",
+    "initialMessage": "Pitaj me za {{location}}. Koristit ću podatke iz baze kao temelj, a opće znanje samo za objašnjenje i savjet.",
+    "placeholder": "Pitaj npr. je li danas dobro za šetnju...",
+    "send": "Pošalji pitanje",
+    "thinking": "Analiziram podatke iz baze...",
+    "error": "Trenutno ne mogu dobiti odgovor asistenta."
+  },
   "graph": {
     "overview": "Pregled",
     "temperature": "Temperatura",

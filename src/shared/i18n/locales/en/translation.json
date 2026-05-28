@@ -52,6 +52,15 @@
     "previousDay": "Previous day",
     "nextDay": "Next day"
   },
+  "weatherChat": {
+    "eyebrow": "Weather assistant",
+    "dataSource": "Database + general knowledge",
+    "initialMessage": "Ask me about {{location}}. I will use database weather data as the foundation, and general knowledge only for explanation and advice.",
+    "placeholder": "Ask, for example, if today is good for a walk...",
+    "send": "Send question",
+    "thinking": "Analyzing database weather data...",
+    "error": "I cannot get an assistant response right now."
+  },
   "graph": {
     "overview": "Overview",
     "temperature": "Temperature",
