@@ -23,24 +23,48 @@ export function WeatherChatPage() {
   const [draft, setDraft] = useState("")
   const [error, setError] = useState<string | null>(null)
   const locationId = Number(id)
+  const isLocationIdValid = Number.isInteger(locationId) && locationId > 0
+  const locationName = selectedLocation?.id === locationId
+    ? selectedLocation.name
+    : null
 
   const initialMessage = useMemo<WeatherChatMessage>(() => ({
     id: "initial",
     role: "assistant",
     content: t("weatherChat.initialMessage", {
-      location: selectedLocation?.name ?? t("forecast.locationUnavailable"),
+      location: locationName ?? "",
     }),
-  }), [selectedLocation?.name, t])
+  }), [locationName, t])
 
-  const messages = Number.isInteger(locationId) && locationId > 0
+  const messages = isLocationIdValid
     ? messagesByLocationId[locationId] ?? []
     : []
 
   useEffect(() => {
-    if (Number.isInteger(locationId) && locationId > 0 && !messagesByLocationId[locationId]) {
+    if (!isLocationIdValid || !locationName) {
+      return
+    }
+
+    const storedMessages = messagesByLocationId[locationId]
+
+    if (!storedMessages) {
+      setLocationMessages(locationId, [initialMessage])
+      return
+    }
+
+    const hasOnlyInitialMessage = storedMessages.length === 1 && storedMessages[0].id === "initial"
+
+    if (hasOnlyInitialMessage && storedMessages[0].content !== initialMessage.content) {
       setLocationMessages(locationId, [initialMessage])
     }
-  }, [initialMessage, locationId, messagesByLocationId, setLocationMessages])
+  }, [
+    initialMessage,
+    isLocationIdValid,
+    locationId,
+    locationName,
+    messagesByLocationId,
+    setLocationMessages,
+  ])
 
   useEffect(() => {
     setError(null)
@@ -51,7 +75,7 @@ export function WeatherChatPage() {
     event.preventDefault()
 
     const message = draft.trim()
-    if (!message || isSending || !Number.isInteger(locationId) || locationId <= 0) {
+    if (!message || isSending || !isLocationIdValid) {
       return
     }
 
