@@ -12,15 +12,41 @@ type WeatherChatResponse = {
   answer: string
   locationName: string
   dataUpdatedAt: string | null
+  source: string
+}
+
+export type WeatherChatMessage = {
+  id: string
+  role: "assistant" | "user"
+  content: string
 }
 
 type WeatherChatStore = {
   isSending: boolean
+  messagesByLocationId: Record<number, WeatherChatMessage[]>
+  setLocationMessages: (locationId: number, messages: WeatherChatMessage[]) => void
+  addLocationMessage: (locationId: number, message: WeatherChatMessage) => void
   sendMessage: (request: WeatherChatRequest) => Promise<WeatherChatResponse>
 }
 
 export const useWeatherChatStore = create<WeatherChatStore>((set) => ({
   isSending: false,
+  messagesByLocationId: {},
+  setLocationMessages: (locationId, messages) => set((state) => ({
+    messagesByLocationId: {
+      ...state.messagesByLocationId,
+      [locationId]: messages,
+    },
+  })),
+  addLocationMessage: (locationId, message) => set((state) => ({
+    messagesByLocationId: {
+      ...state.messagesByLocationId,
+      [locationId]: [
+        ...(state.messagesByLocationId[locationId] ?? []),
+        message,
+      ],
+    },
+  })),
   sendMessage: async (request) => {
     set({ isSending: true })
 

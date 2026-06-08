@@ -1,16 +1,11 @@
 import { useLocationStore } from "@/features/location/location-store"
 import { useWeatherChatStore } from "@/features/weather-chat/weather-chat-store"
+import type { WeatherChatMessage } from "@/features/weather-chat/weather-chat-store"
 import { Bot, CloudSun, Send, UserRound } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 import type { FormEvent } from "react"
 import { useTranslation } from "react-i18next"
 import { useParams } from "react-router-dom"
-
-type ChatMessage = {
-  id: string
-  role: "assistant" | "user"
-  content: string
-}
 
 function createMessageId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}`
@@ -22,11 +17,14 @@ export function WeatherChatPage() {
   const selectedLocation = useLocationStore((state) => state.selectedLocation)
   const sendMessage = useWeatherChatStore((state) => state.sendMessage)
   const isSending = useWeatherChatStore((state) => state.isSending)
+  const messagesByLocationId = useWeatherChatStore((state) => state.messagesByLocationId)
+  const setLocationMessages = useWeatherChatStore((state) => state.setLocationMessages)
+  const addLocationMessage = useWeatherChatStore((state) => state.addLocationMessage)
   const [draft, setDraft] = useState("")
   const [error, setError] = useState<string | null>(null)
   const locationId = Number(id)
 
-  const initialMessage = useMemo<ChatMessage>(() => ({
+  const initialMessage = useMemo<WeatherChatMessage>(() => ({
     id: "initial",
     role: "assistant",
     content: t("weatherChat.initialMessage", {
@@ -34,13 +32,20 @@ export function WeatherChatPage() {
     }),
   }), [selectedLocation?.name, t])
 
-  const [messages, setMessages] = useState<ChatMessage[]>([initialMessage])
+  const messages = Number.isInteger(locationId) && locationId > 0
+    ? messagesByLocationId[locationId] ?? []
+    : []
 
   useEffect(() => {
-    setMessages([initialMessage])
+    if (Number.isInteger(locationId) && locationId > 0 && !messagesByLocationId[locationId]) {
+      setLocationMessages(locationId, [initialMessage])
+    }
+  }, [initialMessage, locationId, messagesByLocationId, setLocationMessages])
+
+  useEffect(() => {
     setError(null)
     setDraft("")
-  }, [initialMessage])
+  }, [locationId])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -52,10 +57,7 @@ export function WeatherChatPage() {
 
     setError(null)
     setDraft("")
-    setMessages((currentMessages) => [
-      ...currentMessages,
-      { id: createMessageId(), role: "user", content: message },
-    ])
+    addLocationMessage(locationId, { id: createMessageId(), role: "user", content: message })
 
     try {
       const response = await sendMessage({
@@ -64,20 +66,14 @@ export function WeatherChatPage() {
         language: i18n.language,
       })
 
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        { id: createMessageId(), role: "assistant", content: response.answer },
-      ])
+      addLocationMessage(locationId, { id: createMessageId(), role: "assistant", content: response.answer })
     } catch (sendError) {
       const fallbackMessage = sendError instanceof Error
         ? sendError.message
         : t("weatherChat.error")
 
       setError(fallbackMessage)
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        { id: createMessageId(), role: "assistant", content: t("weatherChat.error") },
-      ])
+      addLocationMessage(locationId, { id: createMessageId(), role: "assistant", content: t("weatherChat.error") })
     }
   }
 
