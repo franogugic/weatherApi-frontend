@@ -40,15 +40,15 @@ export function NextHourlysPanel( {forecast, meta, visibleItems = 12}: NextHourl
     </div>
 
     <div
-      className="grid flex-1"
+      className="grid flex-1 overflow-y-auto"
       style={{ gridTemplateRows: `repeat(${visibleForecast.length}, minmax(0, 1fr))` }}
     >
       {visibleForecast.map((item, index) => (
-        <div key={index} className="grid h-full grid-cols-3 items-center px-2">
+        <div key={index} className="grid h-full min-h-[28px] grid-cols-3 items-center px-2">
           <p className="font-light">{getHourFromForecastTime(item.forecastTime, locale)}</p>
           <WeatherSymbolIcon
             symbol={item.weatherSymbol}
-            className="w-10 mx-auto"
+            className="mx-auto h-full max-h-8 w-auto"
           />
           <p className="font-light text-end">{formatTemperature(item.airTemperature, temperatureUnit, temperatureUnitLabel)}</p>
         </div>
