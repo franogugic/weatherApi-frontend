@@ -45,11 +45,11 @@ export function DailyForecastsPanel (){
 
 
     return(
-        <div className="bg-div rounded-4xl h-full min-w-0 flex flex-col gap-2 p-4 sm:p-6">
-            <div>
+        <div className="bg-div rounded-4xl h-full min-h-0 min-w-0 flex flex-col gap-2 p-4 sm:p-6">
+            <div className="shrink-0">
               <p className=" text-[22px] font-semibold">{t("dailyForecast.title", { count: dailyForecasts.length })}</p>
             </div>
-            <div className="mt-4 grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,96px),1fr))] gap-4">
+            <div className="mt-4 grid min-h-0 min-w-0 flex-1 grid-cols-[repeat(auto-fit,minmax(min(100%,96px),1fr))] gap-4 lg:overflow-y-auto">
                 {dailyForecasts.map((daily, index) => (
                     <NavLink
                         key={daily.date}
@@ -60,7 +60,7 @@ export function DailyForecastsPanel (){
                     >
                         <p className="font-semibold">{getDayLabel(daily.date, locale, t("graph.today"))}</p>
                         <p className="text-[13px] text-white/40">{formatDailyDateLabel(daily.date, locale)}</p>
-                        <WeatherSymbolIcon symbol={daily.weatherSymbol} className="w-10 drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)] py-4"/>
+                        <WeatherSymbolIcon symbol={daily.weatherSymbol} className="w-10 drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)] py-2"/>
                         <div className="flex flex-col gap-1">
                             <p className="font-semibold bg-linear-to-r from-accent-secondary to-accent-primary bg-clip-text text-transparent">{formatTemperature(daily.maxTemperature, temperatureUnit, temperatureUnitLabel)}</p>
                             <p className="font-light text-[13px]">{formatTemperature(daily.minTemperature, temperatureUnit, temperatureUnitLabel)}</p>

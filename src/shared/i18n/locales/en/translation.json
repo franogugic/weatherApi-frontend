@@ -54,11 +54,11 @@
   },
   "weatherChat": {
     "eyebrow": "Weather assistant",
-    "dataSource": "Database + general knowledge",
-    "initialMessage": "Ask me about {{location}}. I will use database weather data as the foundation, and general knowledge only for explanation and advice.",
+    "dataSource": "Forecast and advice",
+    "initialMessage": "Ask me about {{location}}. I can help with daily plans, walks, runs, rain, wind, and temperature.",
     "placeholder": "Ask, for example, if today is good for a walk...",
     "send": "Send question",
-    "thinking": "Analyzing database weather data...",
+    "thinking": "Checking the forecast...",
     "error": "I cannot get an assistant response right now."
   },
   "graph": {

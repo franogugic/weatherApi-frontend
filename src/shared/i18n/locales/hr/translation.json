@@ -54,11 +54,11 @@
   },
   "weatherChat": {
     "eyebrow": "Vremenski asistent",
-    "dataSource": "Baza + opće znanje",
-    "initialMessage": "Pitaj me za {{location}}. Koristit ću podatke iz baze kao temelj, a opće znanje samo za objašnjenje i savjet.",
+    "dataSource": "Prognoza i savjeti",
+    "initialMessage": "Pitaj me za {{location}}. Mogu ti pomoći oko planiranja dana, šetnje, trčanja, kiše, vjetra i temperature.",
     "placeholder": "Pitaj npr. je li danas dobro za šetnju...",
     "send": "Pošalji pitanje",
-    "thinking": "Analiziram podatke iz baze...",
+    "thinking": "Provjeravam prognozu...",
     "error": "Trenutno ne mogu dobiti odgovor asistenta."
   },
   "graph": {
